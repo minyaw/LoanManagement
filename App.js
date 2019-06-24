@@ -6,56 +6,46 @@ import HomeScreen from './app/components/screens/HomeScreen';
 import ProfileScreen from './app/components/screens/ProfileScreen';
 import CustomerScreen from './app/components/screens/CustomerScreen';
 import TransactionScreen from './app/components/screens/TransactionScreen';
-import Drawer from 'react-native-drawer';
-import MenuScene from './app/components/scenes/MenuScene';
-
+import DueListScreen from './app/components/screens/DueListScreen';
+import SalesListScreen from './app/components/screens/SalesListScreen';
+import CreateCustomerScreen from './app/components/screens/CreateCustomerScreen';
+import ExpensesListScreen from './app/components/screens/ExpensesListScreen';
+import TransactionDetailScreen from './app/components/screens/TransactionDetailScreen';
+import SearchCustomerScreen from './app/components/screens/SearchCustomerScreen';
+import CustomerDetailScreen from './app/components/screens/CustomerDetailScreen';
+import CreateSalesScreen from './app/components/screens/CreateSalesScreen';
+import CreateExpensesScreen from './app/components/screens/CreateExpensesScreen';
+import SalesDetailListScreen from './app/components/screens/SalesDetailListScreen';
+import SalesDetailScreen from './app/components/screens/SalesDetailScreen';
+import CreateTransactionScreen from './app/components/screens/CreateTransactionScreen';
 const Container = styled.View`
   flex: 1;
 `
-
 export default class App extends Component {
   render() {
     return (
-      <Drawer
-        ref={(ref) => this._drawer = ref}
-        type="overlay"
-        content={<MenuScene/>}
-        styles={{ shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3, height: 500}}
-        open={true}
-        openDrawerOffset={0.3}
-        tapToClose={true}
-        onClose={() => this.setState({menuOpen: false})}
-        >
-        <Container>
-          <Router>
-            <Scene key="root" hideNavBar={true}>
-              <Scene key="Home" component={HomeScreen} pandHandler={false} type={ActionConst.RESET} initial={true}/>
-              <Scene key="Profile" component={ProfileScreen}/>
-              <Scene key="Customer" component={CustomerScreen}/>
-              <Scene key="Transaction" component={TransactionScreen}/>
-            </Scene>
-          </Router>
-        </Container>
-      </Drawer>
+      <Container>
+        <Router>
+          <Scene key="root" hideNavBar={true}>
+            <Scene key="Home" component={HomeScreen} pandHandler={false} type={ActionConst.RESET} initial={true}/>
+            <Scene key="Profile" component={ProfileScreen}/>
+            <Scene key="Customer" component={CustomerScreen}/>
+            <Scene key="Transaction" component={TransactionScreen}/>
+            <Scene key="DueList" component={DueListScreen}/>
+            <Scene key="SalesList" component={SalesListScreen}/>
+            <Scene key="CreateCustomer" component={CreateCustomerScreen}/>
+            <Scene key="ExpensesList" component={ExpensesListScreen}/>
+            <Scene key="TransactionDetail" component={TransactionDetailScreen}/>
+            <Scene key="SearchCustomer" component={SearchCustomerScreen}/>
+            <Scene key="CustomerDetail" component={CustomerDetailScreen}/>
+            <Scene key="CreateSales" component={CreateSalesScreen}/>
+            <Scene key="CreateExpenses" component={CreateExpensesScreen}/>
+            <Scene key="SalesDetailList" component={SalesDetailListScreen}/>
+            <Scene key="SalesDetail" component={SalesDetailScreen}/>
+            <Scene key="CreateTransaction" component={CreateTransactionScreen}/>
+          </Scene>
+        </Router>
+      </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});

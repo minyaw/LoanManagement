@@ -3,14 +3,15 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
-import { Header, Avatar, Icon, Input, Button } from 'react-native-elements';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
+import CustomHeader from '../common/CustomHeader';
+import { Actions } from 'react-native-router-flux';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
 `
-const Card = styled.View`
+const Card = styled.TouchableOpacity`
   marginHorizontal: 15px;
   marginVertical: 10px;
   paddingBottom: 10px;
@@ -47,6 +48,10 @@ export default class App extends Component {
       menuOpen: false
     }
   }
+  
+  openMenu = () => {
+    this.setState({menuOpen: true})
+  }
 
   render() {
     const {menuOpen} = this.state;
@@ -71,29 +76,15 @@ export default class App extends Component {
       >
         <Container>
           <ScrollView>
-            <Header
-              leftComponent        = {
-                <Icon
-                  name = 'bars'
-                  type = 'font-awesome'
-                  color = '#000'
-                  containerStyle = {{paddingLeft: 15}}
-                  onPress = { () => this.setState({menuOpen: true})}
-                />
-              }
-              centerComponent = {{ text: 'Transaction', style: { color: '#192a58', fontWeight: "600", fontSize: 20} }}
-              rightComponent = {
-                <Icon
-                  name = 'search'
-                  type = 'font-awesome'
-                  color = '#3e59a6'
-                  containerStyle = {{paddingRight: 15}}
-                />
-              }
-              backgroundColor = '#FFF'
-              containerStyle  = {{paddingBottom:20, borderBottomColor: '#eee', borderBottomWidth: 1}}
+            <CustomHeader
+              title = 'Transaction'
+              openMenu = {this.openMenu.bind(this)}
+              showSearch = {true}
+              showMenu = {true}
             />
-            <Card>
+            <Card
+              onPress={() => Actions.TransactionDetail()}
+            >
               <DetailsCol>
                 <Username>LIM XUAN XUAN</Username>
                 <DueDateDetail>Repayment No.: 690531528889</DueDateDetail>

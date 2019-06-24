@@ -5,12 +5,13 @@ import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
 import { Header, Avatar, Icon, Input, Button } from 'react-native-elements';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
 `
-const Card = styled.View`
+const Card = styled.TouchableOpacity`
   marginHorizontal: 15px;
   marginVertical: 10px;
   paddingBottom: 10px;
@@ -63,6 +64,10 @@ export default class App extends Component {
     }
   }
 
+  _redirect = () => {
+    Actions.CreateCustomer();
+  }
+
   render() {
     const {menuOpen} = this.state;
     return (
@@ -108,7 +113,7 @@ export default class App extends Component {
               backgroundColor = '#FFF'
               containerStyle  = {{paddingBottom:20, borderBottomColor: '#eee', borderBottomWidth: 1}}
             />
-            <Card>
+            <Card onPress={()=> Actions.CustomerDetail()}>
               <DetailsCol>
                 <Username>LIM XUAN XUAN</Username>
                 <DueDateDetail>NRIC/Passport: 690531528889</DueDateDetail>
@@ -176,8 +181,13 @@ export default class App extends Component {
             </Card>
           </ScrollView>
           <ButtonContainer>
-            <AddButton>
-              <Text style={{color: '#FFF', fontSize:42}}>+</Text>
+            <AddButton onPress={() => this._redirect()}>
+              {/* <Text style={{color: '#FFF', fontSize:42}}>+</Text> */}
+              <Icon
+                name = 'plus'
+                type = 'font-awesome'
+                color = '#FFF'
+              />
             </AddButton>
           </ButtonContainer>
         </Container>

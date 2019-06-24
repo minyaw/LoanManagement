@@ -68,7 +68,7 @@ const list = [
   },
   {
     title: 'CUSTOMER SEARCH',
-    navigate: 'Home',
+    navigate: 'SearchCustomer',
   },
   {
     title: 'CUSTOMER',
@@ -80,15 +80,15 @@ const list = [
   },
   {
     title: 'SALES',
-    navigate: 'Home',
+    navigate: 'SalesList',
   },
   {
     title: 'DUE DATE LIST',
-    navigate: 'Home',
+    navigate: 'DueList',
   },
   {
     title: 'EXPENSES',
-    navigate: 'Home',
+    navigate: 'ExpensesList',
   },
   {
     title: 'LOGOUT',

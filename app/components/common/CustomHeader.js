@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity, Platform, Alert, Text } from 'react-native';
 import { Header, Icon, Button, Avatar } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
-import { colors } from '../../constants/colors';
-import MenuScene from '../scenes/MenuScene';
-import Drawer from 'react-native-drawer';
 
 class CustomHeader extends Component {
   constructor(props) {
@@ -15,7 +12,7 @@ class CustomHeader extends Component {
     };
   }
   render() {
-    const { title } = this.props;
+    const { title, openMenu, showSearch, showBack, showMenu } = this.props;
     const { menuOpen } = this.state;
     return (
       // <Drawer
@@ -28,11 +25,19 @@ class CustomHeader extends Component {
       //   tapToClose={true}
       //   onClose={() => this.setState({menuOpen: false})}
       // >
-        <View style={{flex:1}}>
+        <View>
           <Header
-            leftComponent        = {
+            leftComponent        = { 
+              showBack ? 
+              <Icon
+                name = 'chevron-left'
+                type = 'font-awesome'
+                color = '#000'
+                onPress = {() => Actions.pop()}
+                containerStyle = {{paddingLeft: 15}}
+              /> : showMenu ?
               <TouchableOpacity
-                onPress={() => this.setState({menuOpen: true})}
+                onPress={ () => openMenu()}
               >
                 <Icon
                   name = 'bars'
@@ -40,9 +45,17 @@ class CustomHeader extends Component {
                   color = '#000'
                   containerStyle = {{paddingLeft: 15}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> : null
             }
-            centerComponent = {{ text: title, style: { color: '#000', fontWeight: "600", fontSize: 20} }}
+            centerComponent = {{ text: title, style: { color: '#192a59', fontWeight: "600", fontSize: 20} }}
+            rightComponent = { showSearch ?
+              <Icon
+                name = 'search'
+                type = 'font-awesome'
+                color = '#3e59a6'
+                containerStyle = {{paddingRight: 15}}
+              /> : null
+            }
             backgroundColor = '#FFF'
             containerStyle  = {{paddingBottom:20, borderBottomColor: '#eee', borderBottomWidth: 1}}
           />

@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
+import CustomHeader from '../common/CustomHeader';
 import { Header, Avatar, Icon, Badge, Button } from 'react-native-elements';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import CustomHeader from '../common/CustomHeader';
 import LinearGradient from 'react-native-linear-gradient';
+import { Actions } from 'react-native-router-flux';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -61,7 +62,7 @@ const TitleContainer = styled.View`
   flex: 1;
   alignItems: flex-start;
 `
-const ButtonContainer = styled.View`
+const ButtonContainer = styled.TouchableOpacity`
   flex: 1;
   flexDirection: row;
   alignItems: center;
@@ -133,12 +134,28 @@ export default class App extends Component {
     this.setState({activeTab: name})
   }
 
+  openMenu = () => {
+    this.setState({menuOpen: true})
+  }
+
   render() {
-    const {activeTab, menuOpen, totalUnread, item, callToAdventure, userDetails, loading} = this.state;
+    const {menuOpen} = this.state;
     return (
+      <Drawer
+        ref={(ref) => this._drawer = ref}
+        type="overlay"
+        content={<MenuScene/>}
+        styles={{ shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3, height: 500}}
+        open={menuOpen}
+        openDrawerOffset={0.3}
+        tapToClose={true}
+        onClose={() => this.setState({menuOpen: false})}
+      >
         <Container>
           <CustomHeader
             title = 'HOME'
+            openMenu  = {this.openMenu.bind(this)}
+            showMenu = {true}
           />
           <InfoContainer>
             <FirstCol>
@@ -203,7 +220,9 @@ export default class App extends Component {
             <TitleContainer>
               <DueDateTitle>Due Date List</DueDateTitle>
             </TitleContainer>
-            <ButtonContainer>
+            <ButtonContainer
+              onPress = {() => Actions.DueList()}
+            >
               <ViewAllButton>View All</ViewAllButton>
               <Icon
                 name = 'chevron-right'
@@ -236,7 +255,7 @@ export default class App extends Component {
             </RemarksCol>
           </Card>
         </Container>
-      // </Drawer>
+      </Drawer>
     );
   }
 }
