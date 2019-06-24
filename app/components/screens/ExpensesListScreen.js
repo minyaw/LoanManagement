@@ -7,6 +7,7 @@ import { colors } from '../../constants/colors';
 import { ScrollView, StyleSheet, View, TouchableOpacity, Alert, Text } from 'react-native';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { Icon } from 'react-native-elements';
+import { Actions } from 'react-native-router-flux';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
