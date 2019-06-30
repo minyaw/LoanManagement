@@ -62,42 +62,30 @@ export default class App extends Component {
     super(props);
     this.state = {
       menuOpen: false,
-      contentList : [
-        [
-          "LIM XUAN XUAN",
-          "XUAN XUAN LIM",
-          "2019-03-11",
-          "J00923123",
-          "2",
-          "100",
-          "OK",
-          'haha',
-          "DING DING",
-          "YOKE YOKE",
-          "2019-03-12",
-          "J00923123",
-          "2",
-          "100",
-        ],
-        [
-          "DING DING",
-          "YOKE YOKE",
-          "2019-03-12",
-          "J00923123",
-          "2",
-          "100",
-          "OK",
-          'haha',
-          "LIM XUAN XUAN",
-          "XUAN XUAN LIM",
-          "2019-03-11",
-          "J00923123",
-          "2",
-          "100",
-        ]
-      ],
+      contentList : [],
       widthArr: [130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130]
     }
+  }
+
+  componentDidMount = () => {
+    const { content } = this.props;
+    this.state.contentList.push([
+      content.trans_id,
+      content.submit_date,
+      content.currency,
+      content.repay_rate,
+      content.trans_date,
+      content.trans_type,
+      content.trans_amount,
+      content.ref_no,
+      content.receipt_file,
+      content.remark,
+      content.agent,
+      content.bank_name,
+      content.bank_holder,
+      content.bank_account_no
+    ])
+    console.log(this.state.contentList);
   }
 
   openMenu = () => {
@@ -109,7 +97,8 @@ export default class App extends Component {
   }
 
   render () {
-    const { menuOpen, widthArr } = this.state;
+    const { menuOpen, widthArr, loading } = this.state;
+    const { content } = this.props;
     return(
       <Drawer
           ref={(ref) => this._drawer = ref}
@@ -130,7 +119,7 @@ export default class App extends Component {
           />
           <RepaymentContainer>
             <RepaymentTitle>Repayment No</RepaymentTitle>
-            <RepaymentNo>9J024-4</RepaymentNo>
+            <RepaymentNo>{content.repay_no}</RepaymentNo>
           </RepaymentContainer>
           <TransactionListContainer>
             <TransactionListTitle>Transaction List</TransactionListTitle>

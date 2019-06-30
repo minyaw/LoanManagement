@@ -18,6 +18,7 @@ import CreateExpensesScreen from './app/components/screens/CreateExpensesScreen'
 import SalesDetailListScreen from './app/components/screens/SalesDetailListScreen';
 import SalesDetailScreen from './app/components/screens/SalesDetailScreen';
 import CreateTransactionScreen from './app/components/screens/CreateTransactionScreen';
+import LoginScreen from './app/components/screens/LoginScreen';
 const Container = styled.View`
   flex: 1;
 `
@@ -27,7 +28,7 @@ export default class App extends Component {
       <Container>
         <Router>
           <Scene key="root" hideNavBar={true}>
-            <Scene key="Home" component={HomeScreen} pandHandler={false} type={ActionConst.RESET} initial={true}/>
+            <Scene key="Home" component={HomeScreen} pandHandler={false} type={ActionConst.RESET}/>
             <Scene key="Profile" component={ProfileScreen}/>
             <Scene key="Customer" component={CustomerScreen}/>
             <Scene key="Transaction" component={TransactionScreen}/>
@@ -43,6 +44,7 @@ export default class App extends Component {
             <Scene key="SalesDetailList" component={SalesDetailListScreen}/>
             <Scene key="SalesDetail" component={SalesDetailScreen}/>
             <Scene key="CreateTransaction" component={CreateTransactionScreen}/>
+            <Scene key="Login" component={LoginScreen} initial={true}/>
           </Scene>
         </Router>
       </Container>

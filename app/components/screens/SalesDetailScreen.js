@@ -9,6 +9,8 @@ import CustomHeader from '../common/CustomHeader';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import { Button } from 'react-native-elements';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
+import Loader from '../common/Loader';
+import ApiService from '../common/ApiService';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -66,6 +68,14 @@ const HeaderList = [
   'Remark',
   'Action By'
 ]
+const TransactionListContainer = styled.View`
+  paddingHorizontal : 15px;
+  paddingVertical: 15px;
+  marginTop: -100px;
+`
+const TransactionListTitle = styled.Text`
+  fontWeight: 600
+`
 const styles = StyleSheet.create({
   label: {
     color: '#8a8f9f',
@@ -82,7 +92,13 @@ const styles = StyleSheet.create({
   listItem: {
     borderBottomWidth: 0,
     marginLeft :0
-  }
+  },
+  header: { height: 50 },
+  text: { textAlign: 'center', fontWeight: '100' },
+  row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
+  btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
+  btnText: { textAlign: 'center', color: '#fff', padding: 5 },
+  cellText: { margin: 6, textAlign: 'center'}
 })
 
 export default class App extends Component {
@@ -91,40 +107,47 @@ export default class App extends Component {
     this.state = {
       menuOpen: false,
       gender: '',
-      contentList : [
-        [
-          "LIM XUAN XUAN",
-          "A223",
-          "J00923123",
-          "2019-03-11",
-          "200,000.00",
-          "Approve",
-          "2019-03-11",
-          "I123",
-          "2019-03-11",
-          'Type A',
-          '200,000.00',
-          'Remark',
-          'John'
-        ],
-        [
-          "LIM XUAN XUAN",
-          "6628A",
-          "J00923123",
-          "2019-03-11",
-          "500,000.00",
-          "Approve",
-          "2019-03-11",
-          "I123",
-          "2019-03-11",
-          'Type A',
-          '120,000.00',
-          'Remark',
-          'Wick'
-        ]
-      ],
+      loading: false,
+      item: null,
+      contentList : [],
       widthArr: [130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130]
     }
+  }
+
+  componentDidMount = () => {
+    this._getSalesDetail();
+  }
+  
+  _getSalesDetail = () => {
+    const { cust_id, sales_id } = this.props;
+    console.log(sales_id);
+    const body = {
+      act: 'getCustomerSalesDetail',
+      cust_id,
+      sales_id
+    }
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({item: res.data.response.sales_detail})
+      for (const content of res.data.response.sales_detail.sales_transaction) {
+        this.state.contentList.push([
+          content.action,
+          content.no,
+          content.repay_no,
+          content.due_date,
+          content.installment_amount,
+          content.status,
+          content.submit_date,
+          content.trans_id,
+          content.trans_date,
+          content.trans_amount,
+          content.remark,
+          content.action_by
+        ])
+        this.setState({contentList: this.state.contentList})
+        console.log(this.state.contentList);
+      }
+      console.log(res);
+    });
   }
 
   _redirect = () => {
@@ -136,68 +159,111 @@ export default class App extends Component {
   }
 
   render() {
-    const { menuOpen, widthArr } = this.state;
-    return (
-      <Drawer
-        ref={(ref) => this._drawer = ref}
-        type="overlay"
-        content={
-        <MenuScene
-          closeMenu = {() => this.setState({activeTab:'home', menuOpen: false})}
-          switchTab = {() => this.setState({activeTab:'pillar', menuOpen:false})}
-          switchStratecution = {() => this.setState({activeTab:'stratecution', menuOpen:false})}
-          avatar = {`https://app.leadapreneur.com/storage/${this.state.userAvatar}`}
-        />
-      }
-        styles={{ shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3}}
-        // open={true}
-        open={menuOpen}
-        openDrawerOffset={0.3}
-        tapToClose={true}
-        onClose={() => this.setState({menuOpen: false})}
-      >
-        <Container>
-          <CustomHeader
-            title = 'Sales Detail'
-            showBack = {true}
+    const { menuOpen, widthArr, loading, item } = this.state;
+    if (item) {
+      return (
+        <Drawer
+          ref={(ref) => this._drawer = ref}
+          type="overlay"
+          content={
+          <MenuScene
+            closeMenu = {() => this.setState({activeTab:'home', menuOpen: false})}
+            switchTab = {() => this.setState({activeTab:'pillar', menuOpen:false})}
+            switchStratecution = {() => this.setState({activeTab:'stratecution', menuOpen:false})}
+            avatar = {`https://app.leadapreneur.com/storage/${this.state.userAvatar}`}
           />
-          <ScrollView>
-            <FormContainer>
+        }
+          styles={{ shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3}}
+          // open={true}
+          open={menuOpen}
+          openDrawerOffset={0.3}
+          tapToClose={true}
+          onClose={() => this.setState({menuOpen: false})}
+        >
+          <Container>
+          <Loader loading={loading}/>
+            <CustomHeader
+              title = 'Sales Detail'
+              showBack = {true}
+            />
+            <ScrollView>
+              <FormContainer>
                 <DetailContainer>
                   <DetailTitle>Sales ID</DetailTitle>
-                  <DetailValue>9J027</DetailValue>
+                  <DetailValue>{item.sales_id}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Agent</DetailTitle>
-                  <DetailValue>Group-LBC</DetailValue>
+                  <DetailValue>{item.agent}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Sales Amount</DetailTitle>
-                  <DetailValue>233,000.00</DetailValue>
+                  <DetailValue>{item.sales_amount}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Credit</DetailTitle>
-                  <DetailValue>4,000.00</DetailValue>
+                  <DetailValue>{item.credit_amount}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Outstanding Amt</DetailTitle>
-                  <DetailValue>5,000.00</DetailValue>
+                  <DetailValue>{item.outstanding_amount}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Status</DetailTitle>
-                  <DetailValue>Arrears</DetailValue>
+                  <DetailValue>{item.status}</DetailValue>
                 </DetailContainer>
-              <ButtonContainer>
-                <Button
-                  title = 'Create Trans'
-                  buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
-                  onPress= {() => Actions.CreateTransaction()}
-                />
-              </ButtonContainer>
-            </FormContainer>
-          </ScrollView>
+                <ButtonContainer>
+                  <Button
+                    title = 'Create Trans'
+                    buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
+                    onPress= {() => Actions.CreateTransaction()}
+                  />
+                </ButtonContainer>
+              </FormContainer>
+              </ScrollView>
+              <TransactionListContainer>
+                <TransactionListTitle>Repayment List</TransactionListTitle>
+              </TransactionListContainer>
+              <ScrollView horizontal={true}>
+                <View>
+                  <Table borderStyle={{borderColor: 'transparent'}}>
+                    <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                  </Table>
+                  <ScrollView>
+                      {
+                        this.state.contentList.map((rowData, index) => {
+                          return(
+                            <TouchableOpacity>
+                              <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
+                                {
+                                  rowData.map((cellData, cellIndex) => {
+                                    return(
+                                      <Cell
+                                        key={cellIndex}
+                                        data={cellData} textStyle={styles.cellText}
+                                        style={[{width:130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                      />
+                                    )
+                                  })
+                                }
+                              </TableWrapper>
+                            </TouchableOpacity>
+                          )
+                        })
+                      }
+                  </ScrollView>
+                </View>
+              </ScrollView>
+            
+          </Container>
+        </Drawer>
+      )
+    } else {
+      return(
+        <Container>
+          <Loader loading={true}/>
         </Container>
-      </Drawer>
-    )
+      )
+    }
   }
 }
