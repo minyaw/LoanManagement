@@ -151,6 +151,7 @@ export default class App extends Component {
                     type = 'font-awesome'
                     color = '#3e59a6'
                     containerStyle = {{paddingRight: 15}}
+                    onPress = { () => Actions.Filter({pgView: 'customer'})}
                   />
                 }
                 backgroundColor = '#FFF'

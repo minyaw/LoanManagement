@@ -136,6 +136,7 @@ export default class App extends Component {
                         <DueDateDetail>Repayment No: {content.repay_no}</DueDateDetail>
                         <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
                         <DueDateDetail>Trans Amt: {content.trans_amount}</DueDateDetail>
+                        <DueDateDetail>Agent: {content.agent}</DueDateDetail>
                       </DetailsCol>
                       <RemarksCol>
                         <Remark>{content.trans_type}</Remark>

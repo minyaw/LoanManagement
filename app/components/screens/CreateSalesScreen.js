@@ -89,7 +89,10 @@ export default class App extends Component {
       nationality: 'm',
       country: '',
       state: '',
-      copyAddr: false
+      copyAddr: false,
+      bank1: 'm',
+      bank2: 'c',
+      bank3: 'i'
     }
   }
 
@@ -99,7 +102,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { currentPage, gender, race, nationality, country, state, copyAddr } = this.state;
+    const { currentPage, gender, race, nationality, country, state, copyAddr, bank1, bank2, bank3 } = this.state;
     return(
       <Container>
         <ScrollView>
@@ -153,10 +156,16 @@ export default class App extends Component {
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Currency</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(phoneNo) => this.setState({phoneNo: phoneNo})}
-                      keyboardType = 'number-pad'
-                    />
+                    <Picker
+                      mode="dropdown"
+                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      style={{ width: undefined }}
+                      // selectedValue={race}
+                      onValueChange={(value) => this.setState({race: value})}
+                    >
+                      <Picker.Item label="MYR" value="m" />
+                      <Picker.Item label="USD" value="c" />
+                    </Picker>
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Sales Amount</Label>
@@ -220,6 +229,48 @@ export default class App extends Component {
                       onChangeText = {(email) => this.setState({email: email})}
                       keyboardType = 'number-pad'
                     />
+                  </Item>
+                  <Item fixedLabel style={styles.inputContainer}>
+                    <Label style={styles.label}>Bank Account</Label>
+                    <Picker
+                      mode="dropdown"
+                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      style={{ width: undefined }}
+                      selectedValue={bank1}
+                      onValueChange={(value) => this.setState({bank1: value})}
+                    >
+                      <Picker.Item label="Maybank" value="m" />
+                      <Picker.Item label="Public Bank" value="c" />
+                      <Picker.Item label="RHB Bank" value="i" />
+                    </Picker>
+                  </Item>
+                  <Item fixedLabel style={styles.inputContainer}>
+                    <Label style={styles.label}>Bank Account 2</Label>
+                    <Picker
+                      mode="dropdown"
+                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      style={{ width: undefined }}
+                      selectedValue={bank2}
+                      onValueChange={(value) => this.setState({bank2: value})}
+                    >
+                      <Picker.Item label="Maybank" value="m" />
+                      <Picker.Item label="Public Bank" value="c" />
+                      <Picker.Item label="RHB Bank" value="i" />
+                    </Picker>
+                  </Item>
+                  <Item fixedLabel style={styles.inputContainer}>
+                    <Label style={styles.label}>Bank Account 3</Label>
+                    <Picker
+                      mode="dropdown"
+                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      style={{ width: undefined }}
+                      selectedValue={bank3}
+                      onValueChange={(value) => this.setState({bank3: value})}
+                    >
+                      <Picker.Item label="Maybank" value="m" />
+                      <Picker.Item label="Public Bank" value="c" />
+                      <Picker.Item label="RHB Bank" value="i" />
+                    </Picker>
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Remark</Label>

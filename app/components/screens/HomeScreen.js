@@ -189,18 +189,22 @@ export default class App extends Component {
             />
             <InfoContainer>
               <FirstCol>
-                <LinearGradient colors={['#f5f7ff', '#d9e1ff', '#becdff']} style={styles.linearGradient}>
-                  <IconContainer>
-                    <Icon
-                      name = 'shopping-cart'
-                      type = 'font-awesome'
-                    />
-                  </IconContainer>
-                  <DetailsContainer>
-                    <Detail>Today's Sales</Detail>
-                    <Detail>{item.summary.today_sales}</Detail>
-                  </DetailsContainer>
-                </LinearGradient>
+                <TouchableOpacity
+                  onPress= {() => Actions.SalesList()}
+                >
+                  <LinearGradient colors={['#f5f7ff', '#d9e1ff', '#becdff']} style={styles.linearGradient}>
+                    <IconContainer>
+                      <Icon
+                        name = 'shopping-cart'
+                        type = 'font-awesome'
+                      />
+                    </IconContainer>
+                    <DetailsContainer>
+                      <Detail>Today's Sales</Detail>
+                      <Detail>{item.summary.today_sales}</Detail>
+                    </DetailsContainer>
+                  </LinearGradient>
+                </TouchableOpacity>
                 <LinearGradient colors={['#ddf3e2', '#c2f3cc', '#9eecac']} style={styles.linearGradient}>
                   <IconContainer>
                     <Icon
@@ -215,18 +219,22 @@ export default class App extends Component {
                 </LinearGradient>
               </FirstCol>
               <SecondCol>
-                <LinearGradient colors={['#fff2f6', '#ffc1d3', '#ff9cba']} style={styles.linearGradient}>
-                  <IconContainer>
-                    <Icon
-                      name = 'cash-multiple'
-                      type = 'material-community'
-                    />
-                  </IconContainer>
-                  <DetailsContainer>
-                    <Detail>Today's Trans</Detail>
-                    <Detail>{item.summary.today_transaction}</Detail>
-                  </DetailsContainer>
-                </LinearGradient>
+                <TouchableOpacity
+                  onPress= {() => Actions.Transaction()}
+                >
+                  <LinearGradient colors={['#fff2f6', '#ffc1d3', '#ff9cba']} style={styles.linearGradient}>
+                    <IconContainer>
+                      <Icon
+                        name = 'cash-multiple'
+                        type = 'material-community'
+                      />
+                    </IconContainer>
+                    <DetailsContainer>
+                      <Detail>Today's Trans</Detail>
+                      <Detail>{item.summary.today_transaction}</Detail>
+                    </DetailsContainer>
+                  </LinearGradient>
+                </TouchableOpacity>
                 <LinearGradient colors={['#f7e8ce', '#fedb99', '#ffca65']} style={styles.linearGradient}>
                   <IconContainer>
                     <Icon
@@ -243,7 +251,7 @@ export default class App extends Component {
             </InfoContainer>
             <ActionContainer>
               <ActionText>
-                You have {item.total_approval_count} case(s) of sales waiting for your approval or rejection. Please <Link onPress={()=> console.log('haha')}>click here</Link> to process
+                You have {item.total_approval_count} case(s) of sales waiting for your approval or rejection. Please <Link onPress={()=> Actions.ApprovalList()}>click here</Link> to process
               </ActionText>
             </ActionContainer>
             <DueDateListTitleContainer>
@@ -265,17 +273,17 @@ export default class App extends Component {
             {
               item.due_date_list.length > 0 ? (
                 item.due_date_list.map((content) => {
-                  <Card>
-                    <DetailsCol>
-                      <Username>LIM XUAN XUAN</Username>
-                      <DueDateDetail>Due Date: 11 March 2019</DueDateDetail>
-                      <DueDateDetail>Repayment No: 9J000010-1</DueDateDetail>
-                      <DueDateDetail>Due Amt: RM5,000.00</DueDateDetail>
-                    </DetailsCol>
-                    <RemarksCol>
-                      <Remark>Arrears</Remark>
-                    </RemarksCol>
-                  </Card>
+                  // <Card>
+                  //   <DetailsCol>
+                  //     <Username>LIM XUAN XUAN</Username>
+                  //     <DueDateDetail>Due Date: 11 March 2019</DueDateDetail>
+                  //     <DueDateDetail>Repayment No: 9J000010-1</DueDateDetail>
+                  //     <DueDateDetail>Due Amt: RM5,000.00</DueDateDetail>
+                  //   </DetailsCol>
+                  //   <RemarksCol>
+                  //     <Remark>Arrears</Remark>
+                  //   </RemarksCol>
+                  // </Card>
                 })
               ) : (
                   <BlankContainer>

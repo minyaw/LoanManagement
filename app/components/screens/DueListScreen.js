@@ -19,9 +19,9 @@ const HeaderList = [
   'Agent Name',
   'Customer Name',
   'Due Date',
+  'Installment Amount',
   'Repayment No',
   'Repayment Count',
-  'Currency and Installment Amount',
   'Status',
 ]
 
@@ -51,7 +51,9 @@ export default class App extends Component {
       contentList : [
       ],
       widthArr: [130, 130, 130, 130, 130, 130, 130],
-      loadPage: 1
+      loadPage: 1,
+      custIdList: [],
+      salesIdList:[]
     }
   }
 
@@ -76,11 +78,13 @@ export default class App extends Component {
               content.agent,
               content.customer_name,
               content.due_date,
+              content.installment_amount,
               content.repay_no,
               content.repay_count,
-              `${content.currency}${content.installment_amount}`,
               content.status,
             ])
+            this.state.salesIdList.push(content.sales_id);
+            this.state.custIdList.push(content.cust_id);
           }
           this.state.item.records = this.state.item.records.concat(res.data.response.records);
           this.setState({contentList: this.state.contentList})
@@ -91,11 +95,13 @@ export default class App extends Component {
                 content.agent,
                 content.customer_name,
                 content.due_date,
+                content.installment_amount,
                 content.repay_no,
                 content.repay_count,
-                `${content.currency}${content.installment_amount}`,
                 content.status,
               ])
+              this.state.salesIdList.push(content.sales_id);
+              this.state.custIdList.push(content.cust_id);
             }
             this.setState({contentList: this.state.contentList})
           });
@@ -158,7 +164,7 @@ export default class App extends Component {
                       this.state.contentList.map((rowData, index) => {
                         return(
                           <TouchableOpacity
-                            onPress= {()=> Actions.CreateTransaction()}
+                            onPress= {()=> Actions.SalesDetail({cust_id: this.state.custIdList[index], sales_id: this.state.salesIdList[index]})}
                           >
                             <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
                               {

@@ -19,6 +19,8 @@ import SalesDetailListScreen from './app/components/screens/SalesDetailListScree
 import SalesDetailScreen from './app/components/screens/SalesDetailScreen';
 import CreateTransactionScreen from './app/components/screens/CreateTransactionScreen';
 import LoginScreen from './app/components/screens/LoginScreen';
+import FilterScreen from './app/components/screens/FilterScreen';
+import ApprovalListScreen from './app/components/screens/ApprovalListScreen';
 const Container = styled.View`
   flex: 1;
 `
@@ -44,6 +46,8 @@ export default class App extends Component {
             <Scene key="SalesDetailList" component={SalesDetailListScreen}/>
             <Scene key="SalesDetail" component={SalesDetailScreen}/>
             <Scene key="CreateTransaction" component={CreateTransactionScreen}/>
+            <Scene key="Filter" component={FilterScreen}/>
+            <Scene key="ApprovalList" component={ApprovalListScreen}/>
             <Scene key="Login" component={LoginScreen} initial={true}/>
           </Scene>
         </Router>

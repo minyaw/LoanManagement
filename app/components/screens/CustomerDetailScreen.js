@@ -86,10 +86,16 @@ export default class App extends Component {
   }
 
   componentDidMount = () => {
-    const { custId } = this.props;
+    const { custId, salesId } = this.props;
+
     const body = {
       act: 'getCustomerProfile',
-      cust_id: `${custId}`
+    }
+
+    if (custId) {
+      body.cust_id = custId
+    } else if (salesId) {
+      body.sales_id = salesId
     }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
