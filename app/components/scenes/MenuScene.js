@@ -5,6 +5,8 @@ import {View, Text,StyleSheet, TouchableOpacity, Alert, Dimensions, ScrollView} 
 import { Avatar, ListItem, Icon, Image } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
+import ApiService from '../common/ApiService';
+import Loader from '../common/Loader';
 
 export class LeftIcon extends Component {
   render() {
@@ -107,17 +109,33 @@ class Scene extends Component {
     this.state = {
       username:null,
       changedPassword: null
-      ,userAvatar: null
+      ,userAvatar: null,
+      loading: false
     }
   }
 
   _onItemPress = (item) => {
     const { title, navigate } = item;
-    Actions[navigate](); 
+    if (title === 'LOGOUT') {
+      const body = {
+        act: 'logout'
+      }
+      this.setState({loading: true})
+      ApiService.post(ApiService.getUrl(), body).then((res) => {
+        this.setState({loading: false})
+        if (res.status === 200) {
+          Actions.Login();
+        }
+      })
+    } else {
+      Actions[navigate](); 
+    }
   }
   render() {
+    const {loading} = this.state;
       return (
         <Container>
+          <Loader loading={loading}/>
           <ProfileImageContainer
             onPress = {() => Actions.Profile()}
           >
