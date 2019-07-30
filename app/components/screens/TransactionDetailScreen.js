@@ -32,20 +32,20 @@ const TransactionListTitle = styled.Text`
   fontWeight: 600
 `
 const HeaderList = [
-'Trans ID',
-'Submit Date',
-'Trans Currency',
-'Trans Rate',
+// 'Trans ID',
+// 'Submit Date',
+// 'Trans Currency',
+// 'Trans Rate',
 'Trans Date',
-'Trans Type',
 'Trans Amount',
-'Receipt No. / Reference No.',
-'Payment Receipt',
-'Remark',
-'Action By',
-'Bank Name',
-'Bank Holder Name',
-'Bank Account No'
+'Trans Type',
+// 'Receipt No. / Reference No.',
+// 'Payment Receipt',
+// 'Remark',
+// 'Action By',
+// 'Bank Name',
+// 'Bank Holder Name',
+// 'Bank Account No'
 ]
 
 const styles = StyleSheet.create({
@@ -63,27 +63,27 @@ export default class App extends Component {
     this.state = {
       menuOpen: false,
       contentList : [],
-      widthArr: [130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130]
+      widthArr: [130, 130, 130]
     }
   }
 
   componentDidMount = () => {
     const { content } = this.props;
     this.state.contentList.push([
-      content.trans_id,
-      content.submit_date,
-      content.currency,
-      content.repay_rate,
+      // content.trans_id,
+      // content.submit_date,
+      // content.currency,
+      // content.repay_rate,
       content.trans_date,
-      content.trans_type,
       content.trans_amount,
-      content.ref_no,
-      content.receipt_file,
-      content.remark,
-      content.agent,
-      content.bank_name,
-      content.bank_holder,
-      content.bank_account_no
+      content.trans_type,
+      // content.ref_no,
+      // content.receipt_file,
+      // content.remark,
+      // content.agent,
+      // content.bank_name,
+      // content.bank_holder,
+      // content.bank_account_no
     ])
     console.log(this.state.contentList);
   }

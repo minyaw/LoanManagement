@@ -20,11 +20,7 @@ const InfoContainer = styled.View`
   paddingVertical: 20px;
   flexDirection: row;
 `
-const FirstCol = styled.View`
-  flex: 1
-  paddingHorizontal: 10px;
-`
-  const SecondCol = styled.View`
+const Col = styled.View`
   flex: 1
   paddingHorizontal: 10px;
 `
@@ -188,7 +184,7 @@ export default class App extends Component {
               showMenu = {true}
             />
             <InfoContainer>
-              <FirstCol>
+              <Col>
                 <TouchableOpacity
                   onPress= {() => Actions.SalesList()}
                 >
@@ -217,8 +213,20 @@ export default class App extends Component {
                     <Detail>{item.summary.total_outstanding}</Detail>
                   </DetailsContainer>
                 </LinearGradient>
-              </FirstCol>
-              <SecondCol>
+                <LinearGradient colors={['#bfeafe', '#7ed1f8', '#57c0f1']} style={styles.linearGradient}>
+                  <IconContainer>
+                    <Icon
+                      name = 'currency-usd'
+                      type = 'material-community'
+                    />
+                  </IconContainer>
+                  <DetailsContainer>
+                    <Detail>Bad Debt</Detail>
+                    <Detail>333,000.33</Detail>
+                  </DetailsContainer>
+                </LinearGradient>
+              </Col>
+              <Col>
                 <TouchableOpacity
                   onPress= {() => Actions.Transaction()}
                 >
@@ -247,7 +255,7 @@ export default class App extends Component {
                     <Detail>{item.summary.total_late}</Detail>
                   </DetailsContainer> 
                 </LinearGradient>
-              </SecondCol>
+              </Col>
             </InfoContainer>
             <ActionContainer>
               <ActionText>

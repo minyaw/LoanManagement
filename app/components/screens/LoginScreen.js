@@ -16,6 +16,11 @@ const Container = styled.View`
 const Content = styled.View`
   paddingHorizontal: 20px;
 `
+const VersionNo = styled.Text`
+  textAlign: center;
+  fontSize: 14px;
+  paddingTop: 20px;
+`
 const styles = StyleSheet.create({
   content: {
     paddingBottom:20
@@ -73,6 +78,7 @@ export default class App extends Component {
           <Button full style={styles.button} onPress={() => this._login()}>
             <Text>Login</Text>
           </Button>
+          <VersionNo>v1.0.5</VersionNo>
         </Content>  
       </Container>
     )

@@ -102,7 +102,7 @@ export default class App extends Component {
   }
 
   _redirect = () => {
-    Actions.CreateCustomer();
+    Actions.CreateCustomer({pgView: 'add'});
   }
 
   _loadmore = () => {

@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
+import { Actions } from 'react-native-router-flux';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -58,7 +59,33 @@ const ButtonContainer = styled.View`
 
 `
 const ButtonsContainer = styled.View`
-  flexDirection: row
+  flexDirection: row;
+`
+const CustomerTab = styled.TouchableOpacity`
+  flex:1;
+  justifyContent: center;
+  paddingVertical: 10px;
+  borderColor: #ccc;
+`
+const GuarantorTab = styled.TouchableOpacity`
+  paddingVertical: 10px;
+  flex:1;
+  justifyContent: center;
+  borderColor: #ccc;
+`
+const Tab = styled.View`
+  flexDirection: row;
+  flex:1;
+`
+const Customer = styled.Text`
+  fontSize: 16px;
+  textAlign: center;
+  fontWeight: 500;
+`
+const Guarantor = styled.Text`
+  fontSize: 16px;
+  textAlign: center;
+  fontWeight: 500;
 `
 const styles = StyleSheet.create({
   label: {
@@ -98,29 +125,94 @@ export default class App extends Component {
     this.setState({copyAddr: !copyAddr})
   }
 
+  _submit = () => {
+    Alert.alert('','Create Sales?',[
+      {
+        text: 'Cancel',
+        onPress: () => {}
+      },
+      {
+        text: 'OK',
+        onPress: () => Actions.CreateSales({item: this.state})
+      }
+    ],
+    {
+      cancelable: false
+    })
+  }
+
   render() {
     const { currentPage, gender, race, nationality, country, state, copyAddr } = this.state;
+    const { pgView, item } = this.props;
     return(
       <Container>
         <ScrollView>
           <CustomHeader
-            title = 'Create Customer'
-            showBack = {currentPage === 1 ? true : false}
+            title = {pgView === 'add' ? 'Create Customer' : 'Edit'}
+            showBack = {currentPage === 1 && pgView === 'add' ? true : currentPage === 2 && pgView === 'add' ? false : true}
             showMenu = {false}
           />
           {
-            currentPage === 1 ? 
-            <View>
+            pgView === 'add' ? 
+              currentPage === 1 ?
               <Divider>
                 <DividerText>Customer Details</DividerText>
                 <Pagination>
                   <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
                   <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
                 </Pagination>
+              </Divider> : 
+              <Divider>
+                <DividerText>Guarantor Details</DividerText>
+                <Pagination>
+                  <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                  <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                </Pagination>
               </Divider>
+              : 
+              <Tab>
+                <CustomerTab
+                  style = {{borderBottomColor: currentPage === 1 ? '#999' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
+                  onPress = {() => this.setState({currentPage: 1})}
+                >
+                  <Customer>Customer</Customer>
+                </CustomerTab>
+                <GuarantorTab
+                  style = {{borderBottomColor: currentPage === 2 ? '#999' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
+                  onPress = {() => this.setState({currentPage: 2})}
+                >
+                  <Guarantor>Guarantor</Guarantor>
+                </GuarantorTab>
+              </Tab>
+
+          }
+          {
+            currentPage === 1 ? 
+            <View>
               <Section>
                 <SectionName>Personal Details</SectionName>
                 <Form>
+                  {
+                    pgView === 'edit' ?
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Register Date</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(regDate) => this.setState({regDate: regDate})}
+                          value = {item.register_date}
+                          editable = {false}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Customer ID</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(custID) => this.setState({custID: custID})}
+                          value = {item.cust_code}
+                          editable = {false}
+                        />
+                      </Item>
+                    </Form> : null
+                  }
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Salutation</Label>
                     <Input style={styles.input}
@@ -131,12 +223,14 @@ export default class App extends Component {
                     <Label style={styles.label}>Customer Name</Label>
                     <Input style={styles.input}
                       onChangeText = {(cusName) => this.setState({cusName: cusName})}
+                      value = {pgView === 'add' ? null : item.customer_name}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>NRIC/Passport</Label>
                     <Input style={styles.input}
                       onChangeText = {(nric) => this.setState({nric: nric})}
+                      value = {pgView === 'add' ? null: item.ic_no}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -511,13 +605,6 @@ export default class App extends Component {
             </View>
             :
             <View>
-              <Divider>
-                <DividerText>Guarantor Details</DividerText>
-                <Pagination>
-                  <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
-                  <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
-                </Pagination>
-              </Divider>
               <Section>
                 <SectionName>Personal Details</SectionName>
                 <Form>
@@ -536,14 +623,14 @@ export default class App extends Component {
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Phone No</Label>
                     <Input style={styles.input}
-                      onChangeText = {(gName) => this.setState({gName: gName})}
+                      // onChangeText = {(gName) => this.setState({gName: gName})}
                       keyboardType = 'number-pad'
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Relationship</Label>
                     <Input style={styles.input}
-                      onChangeText = {(relationship) => this.setState({relationship: relationship})}
+                      // onChangeText = {(relationship) => this.setState({relationship: relationship})}
                     />
                   </Item>
                 </Form>
@@ -670,7 +757,7 @@ export default class App extends Component {
           
         </ScrollView>
         {
-          currentPage === 1 ? 
+          currentPage === 1 && pgView === 'add' ? 
             <ButtonContainer>
               <Button
                 title = 'NEXT'
@@ -678,7 +765,7 @@ export default class App extends Component {
                 onPress = {() => this.setState({currentPage: 2})}
               />
             </ButtonContainer> 
-            :
+            : currentPage === 2 && pgView === 'add' ?
             <ButtonsContainer>
               <View style={{flex:1}}>
                 <Button
@@ -691,10 +778,18 @@ export default class App extends Component {
                 <Button
                   title = 'SUBMIT'
                   buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                  onPress = {() => this.setState({currentPage: 2})}
+                  onPress = {() => this._submit()}
                 />
               </View>
-            </ButtonsContainer> 
+            </ButtonsContainer>
+            : 
+            <ButtonContainer>
+              <Button
+                title = 'UPDATE'
+                buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                onPress = {() => this.setState({currentPage: 2})}
+              />
+            </ButtonContainer> 
         }
       </Container>
     )

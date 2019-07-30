@@ -36,7 +36,7 @@ const DetailTitle = styled.Text`
   color: #acb0bb;
   fontSize: 16px;
   textAlign: left;
-  flex:2
+  flex:1
 `
 const DetailValue = styled.Text`
   color: ${colors.primary};
@@ -54,24 +54,23 @@ const DividerText = styled.Text`
   fontSize: 16px;
 `
 const HeaderList = [
-  'Action',
-  'No',
+  // 'Action',
+  // 'No',
   'Repayment No',
   'Due Date',
-  'Installment Amount',
-  'Status',
-  'Submit Date',
-  'Trans ID',
+  // 'Installment Amount',
+  // 'Status',
+  // 'Submit Date',
+  // 'Trans ID',
   'Trans Date',
   'Trans Type',
   'Trans Amount',
-  'Remark',
-  'Action By'
+  // 'Remark',
+  // 'Action By'
 ]
 const TransactionListContainer = styled.View`
   paddingHorizontal : 15px;
   paddingVertical: 15px;
-  marginTop: -100px;
 `
 const TransactionListTitle = styled.Text`
   fontWeight: 600
@@ -110,7 +109,7 @@ export default class App extends Component {
       loading: false,
       item: null,
       contentList : [],
-      widthArr: [130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130]
+      widthArr: [130, 130, 130, 130, 130]
     }
   }
 
@@ -130,18 +129,19 @@ export default class App extends Component {
       this.setState({item: res.data.response.sales_detail})
       for (const content of res.data.response.sales_detail.sales_transaction) {
         this.state.contentList.push([
-          content.action,
-          content.no,
+          // content.action,
+          // content.no,
           content.repay_no,
           content.due_date,
-          content.installment_amount,
-          content.status,
-          content.submit_date,
-          content.trans_id,
+          // content.installment_amount,
+          // content.status,
+          // content.submit_date,
+          // content.trans_id,
           content.trans_date,
+          content.trans_type,
           content.trans_amount,
-          content.remark,
-          content.action_by
+          // content.remark,
+          // content.action_by
         ])
         this.setState({contentList: this.state.contentList})
         console.log(this.state.contentList);
@@ -183,7 +183,7 @@ export default class App extends Component {
           <Container>
           <Loader loading={loading}/>
             <CustomHeader
-              title = 'Sales Detail'
+              title = 'Trans History'
               showBack = {true}
             />
             <ScrollView>
@@ -197,6 +197,14 @@ export default class App extends Component {
                   <DetailValue>{item.agent}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
+                  <DetailTitle>Customer</DetailTitle>
+                  <DetailValue>{item.customer_name}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Sales Date</DetailTitle>
+                  <DetailValue></DetailValue>
+                </DetailContainer>
+                <DetailContainer>
                   <DetailTitle>Sales Amount</DetailTitle>
                   <DetailValue>{item.sales_amount}</DetailValue>
                 </DetailContainer>
@@ -205,12 +213,56 @@ export default class App extends Component {
                   <DetailValue>{item.credit_amount}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
+                  <DetailTitle>Interest</DetailTitle>
+                  <DetailValue>{item.interest}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Deposit</DetailTitle>
+                  <DetailValue>{item.deposit}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Fees</DetailTitle>
+                  <DetailValue>{item.fees}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Payment</DetailTitle>
+                  <DetailValue>{item.payment}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Days</DetailTitle>
+                  <DetailValue>{item.days}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
                   <DetailTitle>Outstanding Amt</DetailTitle>
                   <DetailValue>{item.outstanding_amount}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
+                  <DetailTitle>Gain/Loss</DetailTitle>
+                  <DetailValue>{item.gain_loss_amount}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Total Principal</DetailTitle>
+                  <DetailValue>{item.total_principal}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Total Renew</DetailTitle>
+                  <DetailValue>{item.total_renew}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Total Penalty</DetailTitle>
+                  <DetailValue>{item.total_penalty}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Total Refund</DetailTitle>
+                  <DetailValue>{item.total_refund}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
                   <DetailTitle>Status</DetailTitle>
                   <DetailValue>{item.status}</DetailValue>
+                </DetailContainer>
+                <DetailContainer>
+                  <DetailTitle>Remarks</DetailTitle>
+                  <DetailValue></DetailValue>
                 </DetailContainer>
                 <ButtonContainer>
                   <Button
@@ -220,7 +272,6 @@ export default class App extends Component {
                   />
                 </ButtonContainer>
               </FormContainer>
-              </ScrollView>
               <TransactionListContainer>
                 <TransactionListTitle>Repayment List</TransactionListTitle>
               </TransactionListContainer>
@@ -254,7 +305,7 @@ export default class App extends Component {
                   </ScrollView>
                 </View>
               </ScrollView>
-            
+            </ScrollView>
           </Container>
         </Drawer>
       )

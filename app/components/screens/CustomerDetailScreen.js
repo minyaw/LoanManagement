@@ -136,7 +136,9 @@ export default class App extends Component {
                 source        = { { uri: item.user_profile_image} }
               />
               <UsernameContainer>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress = {() => Actions.CreateCustomer({pgView: 'edit', item: item})}
+                >
                   <Username>{item.customer_name} ></Username>
                 </TouchableOpacity>
                 <UserDetail>{item.ic_no}</UserDetail>

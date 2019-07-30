@@ -16,13 +16,11 @@ const Container = styled.View`
 `
 
 const HeaderList = [
-  'Agent Name',
   'Customer Name',
   'Due Date',
-  'Installment Amount',
   'Repayment No',
-  'Repayment Count',
-  'Status',
+  'Agent Name',
+  'Installment Amount',
 ]
 
 const Loadmore = styled.Text`
@@ -50,7 +48,7 @@ export default class App extends Component {
       loading: false,
       contentList : [
       ],
-      widthArr: [130, 130, 130, 130, 130, 130, 130],
+      widthArr: [130, 130, 130, 130, 130],
       loadPage: 1,
       custIdList: [],
       salesIdList:[]
@@ -75,13 +73,11 @@ export default class App extends Component {
         if (this.state.item) {
           for (const content of res.data.response.records) {
             this.state.contentList.push([
-              content.agent,
               content.customer_name,
               content.due_date,
-              content.installment_amount,
               content.repay_no,
-              content.repay_count,
-              content.status,
+              content.agent,
+              content.installment_amount,
             ])
             this.state.salesIdList.push(content.sales_id);
             this.state.custIdList.push(content.cust_id);
@@ -92,13 +88,11 @@ export default class App extends Component {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
               this.state.contentList.push([
-                content.agent,
                 content.customer_name,
                 content.due_date,
-                content.installment_amount,
                 content.repay_no,
-                content.repay_count,
-                content.status,
+                content.agent,
+                content.installment_amount,
               ])
               this.state.salesIdList.push(content.sales_id);
               this.state.custIdList.push(content.cust_id);

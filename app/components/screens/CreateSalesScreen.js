@@ -103,6 +103,7 @@ export default class App extends Component {
 
   render() {
     const { currentPage, gender, race, nationality, country, state, copyAddr, bank1, bank2, bank3 } = this.state;
+    const { item } = this.props;
     return(
       <Container>
         <ScrollView>
@@ -127,13 +128,15 @@ export default class App extends Component {
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Customer Name</Label>
                     <Input style={styles.input}
-                      onChangeText = {(salutation) => this.setState({salutation: salutation})}
+                      onChangeText = {(cusName) => this.setState({cusName: cusName})}
+                      value = {item ? item.cusName : null}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>NRIC/Passport</Label>
                     <Input style={styles.input}
-                      onChangeText = {(cusName) => this.setState({cusName: cusName})}
+                      onChangeText = {(nric) => this.setState({nric: nric})}
+                      value = {item ? item.nric : null}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
