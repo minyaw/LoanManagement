@@ -23,6 +23,7 @@ const HeaderList = [
 // 'Sales Date',
 // 'Apply Date',
 'Sales',
+'Next Due'
 // 'Currency and Sales Amount',
 // 'Credit',
 // 'Int',
@@ -69,7 +70,7 @@ export default class App extends Component {
       salesIdList:[],
       contentList : [
       ],
-      widthArr: [130, 130, 130, 130]
+      widthArr: [130, 130, 130, 130, 130]
     }
   }
 
@@ -103,6 +104,7 @@ export default class App extends Component {
               // content.sales_date,
               // content.apply_date,
               `${content.currency}${content.installment_amount}`,
+              content.next_due_date
               // content.credit,
               // content.int,
               // content.dep,
@@ -135,6 +137,7 @@ export default class App extends Component {
                 // content.sales_date,
                 // content.apply_date,
                 `${content.currency}${content.installment_amount}`,
+                content.next_due_date
                 // content.credit,
                 // content.int,
                 // content.dep,

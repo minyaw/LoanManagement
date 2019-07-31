@@ -130,7 +130,7 @@ export default class App extends Component {
                 item.records.map((content, index) => {
                   return(
                     // this._renderList(content, index)
-                    <Card onPress={()=> Actions.TransactionDetail({content: content})} key={index}>
+                    <Card onPress={()=> Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })} key={index}>
                       <DetailsCol>
                         <Username>{content.customer_name}</Username>
                         <DueDateDetail>Repayment No: {content.repay_no}</DueDateDetail>
