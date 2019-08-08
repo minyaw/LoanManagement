@@ -149,7 +149,7 @@ export default class App extends Component {
               <DetailContainer>
                 <DetailTitle>Total Sales Application</DetailTitle>
                 <TouchableOpacity
-                  // onPress={() => Actions.SalesDetailList()}
+                  onPress={() => Actions.SalesDetailList({cust_id: item.cust_id})}
                 >
                   <DetailValue>{item.total_sales_application} ></DetailValue>
                 </TouchableOpacity>
@@ -180,7 +180,7 @@ export default class App extends Component {
             <Button
               title = 'CREATE NEW SALES'
               buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-              onPress = {() => Actions.CreateSales()}
+              onPress = {() => Actions.CreateSales({item: item})}
             />
           </ButtonContainer>
         </Container>

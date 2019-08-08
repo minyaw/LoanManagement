@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "415488378892",
+    "firebase_url": "https://aabb-20571.firebaseio.com",
+    "project_id": "aabb-20571",
+    "storage_bucket": "aabb-20571.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415488378892:android:bb1b6ad22b8427a2",
+        "android_client_info": {
+          "package_name": "com.loanmanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "415488378892-8s1f2cv026rijvgriloflmen8sbcqjtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN2ukZlByJps6FBcUmBsC4tCkacLccQJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415488378892-8s1f2cv026rijvgriloflmen8sbcqjtb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

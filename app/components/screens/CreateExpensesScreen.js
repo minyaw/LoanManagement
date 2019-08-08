@@ -2,9 +2,12 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
+import ApiService from '../common/ApiService';
+import Loader from '../common/Loader';
+import { Actions } from 'react-native-router-flux';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -83,33 +86,136 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentPage: 1,
-      gender: 'm',
-      race: 'm',
-      nationality: 'm',
-      country: '',
-      state: '',
-      copyAddr: false
+      expensesOptions: [],
+      currencyOptions: [],
+      bankOptions: [],
+      loading: false,
+      trans_date: null,
+      trans_amount: null,
+      currency: null,
+      expense_type: null,
+      ref_no: null,
+      remark: null,
+      bank_acct_id: null
+    },
+    this.setDate = this.setDate.bind(this)
+  }
+
+  componentDidMount = () => {
+    this._getBank();
+    this._getCurrency();
+    this._getExpensesType();
+  }
+  
+  _getBank = () => {
+    const body = {
+      act: "getMasterDataList",
+      type: "Bank"
     }
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      if (res.status === 200) {
+        this.setState({
+          bankOptions: res.data.response.records,
+        })
+      }
+    })
+  }
+  _getExpensesType = () => {
+    const body = {
+      act: "getMasterDataList",
+      type: "ExpensesType"
+    }
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      if (res.status === 200) {
+        this.setState({
+          expensesOptions: res.data.response.records,
+        })
+      }
+    })
+  }
+  _getCurrency = () => {
+    const body = {
+      act: "getMasterDataList",
+      type: "Currency"
+    }
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      if (res.status === 200) {
+        this.setState({
+          currencyOptions: res.data.response.records,
+        })
+      }
+    })
   }
 
-  _copyAddr = () => {
-    const { copyAddr } = this.state;
-    this.setState({copyAddr: !copyAddr})
-  }
+  _submit = () => {
+    let { expensesOptions, currencyOptions, bankOptions, trans_date, trans_amount, expense_type, currency, bank_acct_id, ref_no, remark } = this.state;
 
-  render() {
-    const { currentPage, gender, race, nationality, country, state, copyAddr } = this.state;
-    return(
-      <Container>
-        <ScrollView>
-          <CustomHeader
-            title = 'Create Expenses'
-            showBack = {true}
-            showMenu = {false}
-          />
+    if (trans_date === null) {
+      Alert.alert('Error', 'Please select Trans Date.');
+      return;
+    }
+    if (trans_amount === null) {
+      Alert.alert('Error', 'Please fill in Trans Amount.');
+      return;
+    }
+    if (expense_type === null) {
+      expense_type = expensesOptions[0].id;
+    }
+    if (currency === null) {
+      currency = currencyOptions[0].id;
+    }
+    if (bank_acct_id === null) {
+      bank_acct_id = bankOptions[0].id;
+    }
+
+    const body = {
+      act: 'createExpenses',
+      sec_pass: 'v123456',
+      bank_acct_id,
+      trans_date,
+      trans_amount,
+      currency,
+      expense_type,
+      ref_no,
+      remark
+    }
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({loading: false})
+      console.log(res);
+      if (res.status === 200) {
+        Alert.alert('Info', res.data.errMsg,[
           {
-            currentPage === 1 ? 
+            text: 'OK',
+            onPress:() => Actions.pop()
+          }
+        ])
+      }
+    })
+  }
+
+  setDate(newDate) {
+    let month = '' + (newDate.getMonth() + 1)
+    let day = '' + newDate.getDate()
+    let year = newDate.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    this.setState({ trans_date: [year, month, day].join('-') });
+  }
+  render() {
+    const { expensesOptions, currencyOptions, bankOptions, loading } = this.state;
+    if (expensesOptions.length > 0 && currencyOptions.length > 0 && bankOptions.length > 0) {
+      return(
+        <Container>
+          <Loader loading={loading}/>
+          <ScrollView>
+            <CustomHeader
+              title = 'Create Expenses'
+              showBack = {true}
+              showMenu = {false}
+            />
             <View>
               <Divider>
                 <DividerText>New Expenses</DividerText>
@@ -122,9 +228,9 @@ export default class App extends Component {
                 {/* <SectionName>Personal Details</SectionName> */}
                 <Form>
                   <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Transaction Date</Label>
+                    <Label style={styles.label}>Transaction Date*</Label>
                     <DatePicker
-                      defaultDate={new Date(1990, 1, 1)}
+                      defaultDate={new Date()}
                       // minimumDate={new Date(2018, 1, 1)}
                       maximumDate={new Date()}
                       locale={"en"}
@@ -142,261 +248,111 @@ export default class App extends Component {
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Customer Name</Label>
                     <Input style={styles.input}
-                      onChangeText = {(salutation) => this.setState({salutation: salutation})}
+                      onChangeText = {(salutation) => this.setState({fullname: salutation})}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Expenses Type</Label>
+                    <Label style={styles.label}>Expenses Type*</Label>
                     <Picker
                       mode="dropdown"
                       // iosIcon={<Icon name="ios-arrow-down-outline" />}
                       style={{ width: undefined }}
-                      selectedValue={gender}
-                      onValueChange={(value) => this.setState({gender: value})}
+                      selectedValue={this.state.expense_type}
+                      onValueChange={(value) => this.setState({expense_type: value})}
                     >
-                      <Picker.Item label="Type A" value="m" />
-                      <Picker.Item label="Type B" value="f" />
-                      <Picker.Item label="Type C" value="o" />
+                      {
+                        expensesOptions.map((item, index) => {
+                          return(
+                            <Picker.Item label={item.value} value={item.id}/>
+                          )
+                        })
+                      }
                     </Picker>
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Transaction Amt</Label>
+                    <Label style={styles.label}>Transaction Amt*</Label>
                     <Input style={styles.input}
-                      onChangeText = {(phoneNo) => this.setState({phoneNo: phoneNo})}
+                      onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
                       keyboardType = 'number-pad'
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Currency</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(phoneNo2) => this.setState({phoneNo2: phoneNo2})}
-                      keyboardType = 'number-pad'
-                    />
+                    <Label style={styles.label}>Currency*</Label>
+                    <Picker
+                      mode="dropdown"
+                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      style={{ width: undefined }}
+                      selectedValue={this.state.currency}
+                      onValueChange={(value) => this.setState({currency: value})}
+                      placeholder="Select Currency"
+                      placeholderStyle={{ color: "#bfc6ea" }}
+                      placeholderIconColor="#007aff"
+                    >
+                      {
+                        currencyOptions.map((item, index) => {
+                          return(
+                            <Picker.Item label={item.value} value={item.id}/>
+                          )
+                        })
+                      }
+                    </Picker>
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Reference No.</Label>
                     <Input style={styles.input}
-                      onChangeText = {(email) => this.setState({email: email})}
+                      onChangeText = {(ref_no) => this.setState({ref_no: ref_no})}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Upload Receipt</Label>
-                    <Input style={styles.input}
+                    {/* <Input style={styles.input}
                       onChangeText = {(email) => this.setState({email: email})}
                       keyboardType = 'number-pad'
-                    />
+                    /> */}
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Bank Account</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(email) => this.setState({email: email})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Remark</Label>
+                    <Label style={styles.label}>Bank Account*</Label>
                     <Picker
                       mode="dropdown"
                       // iosIcon={<Icon name="ios-arrow-down-outline" />}
                       style={{ width: undefined }}
-                      selectedValue={gender}
-                      onValueChange={(value) => this.setState({gender: value})}
+                      selectedValue={this.state.bank_acct_id}
+                      onValueChange={(value) => this.setState({bank_acct_id: value})}
                     >
-                      <Picker.Item label="Bank A" value="m" />
-                      <Picker.Item label="Bank B" value="f" />
-                      <Picker.Item label="Bank C" value="o" />
+                      {
+                        bankOptions.map((item, index) => {
+                          return(
+                            <Picker.Item label={item.value} value={item.id}/>
+                          )
+                        })
+                      }
                     </Picker>
                   </Item>
-                </Form>
-              </Section>
-            </View>
-            :
-            <View>
-              <Divider>
-                <DividerText>Guarantor Details</DividerText>
-                <Pagination>
-                  <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
-                  <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
-                </Pagination>
-              </Divider>
-              <Section>
-                <SectionName>Personal Details</SectionName>
-                <Form>
                   <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Name</Label>
+                    <Label style={styles.label}>Remark</Label>
                     <Input style={styles.input}
-                      onChangeText = {(gName) => this.setState({gName: gName})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>NRIC/Passport</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(gNric) => this.setState({gNric: gNric})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Phone No</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(gName) => this.setState({gName: gName})}
-                      keyboardType = 'number-pad'
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Relationship</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(relationship) => this.setState({relationship: relationship})}
+                      onChangeText = {(remark) => this.setState({remark: remark})}
                     />
                   </Item>
                 </Form>
               </Section>
-              <Section>
-                <SectionName>Guarantor's Address</SectionName>
-                <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Address 1</Label>
-                  <Input style={styles.input}
-                      onChangeText = {(addr1) => this.setState({addr1: addr1})}
-                    />
-                </Item>
-                <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Address 2</Label>
-                  <Input style={styles.input}
-                      onChangeText = {(addr2) => this.setState({addr2: addr2})}
-                    />
-                </Item>
-                <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Country</Label>
-                  <Picker
-                    mode="dropdown"
-                    // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                    style={{ width: undefined }}
-                    selectedValue={country}
-                    onValueChange={(value) => this.setState({country: value})}
-                  >
-                  </Picker>
-                </Item>
-                <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>State</Label>
-                  <Picker
-                    mode="dropdown"
-                    // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                    style={{ width: undefined }}
-                    selectedValue={state}
-                    onValueChange={(value) => this.setState({state: value})}
-                  >
-                  </Picker>
-                </Item>
-                <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>City</Label>
-                  <Input style={styles.input}
-                      onChangeText = {(city) => this.setState({city: city})}
-                    />
-                </Item>
-                <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Postcode</Label>
-                  <Input style={styles.input}
-                    onChangeText = {(postcode) => this.setState({postcode: postcode})}
-                    keyboardType = 'number-pad'
-                  />
-                </Item>
-              </Section>
-              <Section>
-                <SectionName>Upload Photos/Documents</SectionName>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>Guarantor's Photo</ImageLabel>
-                </ImageContainer>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>NRIC Photo 1</ImageLabel>
-                </ImageContainer>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>NRIC Photo 2</ImageLabel>
-                </ImageContainer>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>Document 1</ImageLabel>
-                </ImageContainer>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>Document 2</ImageLabel>
-                </ImageContainer>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>Document 3</ImageLabel>
-                </ImageContainer>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>Document 4</ImageLabel>
-                </ImageContainer>
-                <ImageContainer>
-                  <Icon
-                    name = 'image'
-                    type = 'font-awesome'
-                    color = '#000'
-                  />
-                  <ImageLabel>Document 5</ImageLabel>
-                </ImageContainer>
-              </Section>
             </View>
-          }
-          
-        </ScrollView>
-        {
-          currentPage === 1 ? 
-            <ButtonContainer>
-              <Button
-                title = 'NEXT'
-                buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                onPress = {() => this.setState({currentPage: 2})}
-              />
-            </ButtonContainer> 
-            :
-            <ButtonsContainer>
-              <View style={{flex:1}}>
-                <Button
-                  title = 'Back'
-                  buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
-                  onPress = {() => this.setState({currentPage: 1})}
-                />
-              </View>
-              <View style={{flex:1}}>
-                <Button
-                  title = 'SUBMIT'
-                  buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                  onPress = {() => this.setState({currentPage: 2})}
-                />
-              </View>
-            </ButtonsContainer> 
-        }
-      </Container>
-    )
+          </ScrollView>
+          <ButtonContainer>
+            <Button
+              title = 'NEXT'
+              buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+              onPress = {() => this._submit()}
+            />
+          </ButtonContainer> 
+        </Container>
+      )
+    } else {
+      return (
+        <Container>
+          <Loader loading={true}/>
+        </Container>
+      )
+    }
   }
 }

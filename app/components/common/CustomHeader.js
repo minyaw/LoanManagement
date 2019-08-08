@@ -18,7 +18,7 @@ class CustomHeader extends Component {
   }
 
   render() {
-    const { title, openMenu, showSearch, showBack, showMenu, showDone } = this.props;
+    const { title, openMenu, showSearch, showBack, showMenu, showDone, showEdit, edit } = this.props;
     const { menuOpen } = this.state;
     return (
       // <Drawer
@@ -61,12 +61,19 @@ class CustomHeader extends Component {
                 color = '#3e59a6'
                 containerStyle = {{paddingRight: 15}}
                 onPress = {() => this._onSearchPress()}
-                /> : showDone ? 
-                <Icon
+              /> : showDone ? 
+              <Icon
                 name = 'check'
                 type = 'font-awesome'
                 color = '#3e59a6'
                 containerStyle = {{paddingRight: 15}}
+              /> : showEdit ? 
+              <Icon
+                name = 'md-create'
+                type = 'ionicon'
+                color = '#3e59a6'
+                containerStyle = {{paddingRight: 15}}
+                onPress= {edit}
               /> : null
             }
             backgroundColor = '#FFF'

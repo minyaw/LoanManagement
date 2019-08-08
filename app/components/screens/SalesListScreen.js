@@ -85,7 +85,6 @@ export default class App extends Component {
 
   _getSalesList = () => {
     const { loadPage } = this.state;
-    console.log('loadpage', loadPage);
     const body = {
       act: 'getCustomerSalesList',
       page_no: loadPage
@@ -122,7 +121,7 @@ export default class App extends Component {
               // content.bank_holder,
               // content.bank_account_no,
             ])
-            this.state.salesIdList.push(content.sales_id);
+            this.state.salesIdList.push(content.cust_id);
           }
           this.state.item.records = this.state.item.records.concat(res.data.response.records);
           this.setState({contentList: this.state.contentList, salesIdList: this.state.salesIdList})
@@ -155,7 +154,7 @@ export default class App extends Component {
                 // content.bank_holder,
                 // content.bank_account_no,
               ])
-              this.state.salesIdList.push(content.sales_id);
+              this.state.salesIdList.push(content.cust_id);
             }
             this.setState({contentList: this.state.contentList, salesIdList: this.state.salesIdList})
           });
@@ -207,7 +206,7 @@ export default class App extends Component {
                       this.state.contentList.map((rowData, index) => {
                         return(
                           <TouchableOpacity
-                            onPress={() => Actions.SalesDetail({cust_id: rowData[2], sales_id: this.state.salesIdList[index]})}
+                            onPress={() => Actions.SalesDetail({sales_id: rowData[2], cust_id: this.state.salesIdList[index]})}
                           >
                             <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
                               {

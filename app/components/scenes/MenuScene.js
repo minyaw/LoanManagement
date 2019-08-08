@@ -147,7 +147,7 @@ class Scene extends Component {
                 // source        = { { uri: path === '' ? avatar : path} }
               />
             </AvatarContainer>
-            <UsernameContainer>
+          <UsernameContainer>
               <Username>John Doe</Username>
               <Role>Admin</Role>
             </UsernameContainer>

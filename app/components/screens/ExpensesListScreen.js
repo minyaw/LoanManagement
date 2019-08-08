@@ -49,16 +49,6 @@ export default class App extends Component {
     this.state = {
       menuOpen: false,
       contentList : [
-        [
-          "LIM XUAN XUAN",
-          "XUAN XUAN LIM",
-          "2019-03-11",
-        ],
-        [
-          "DING DING",
-          "YOKE YOKE",
-          "2019-03-12",
-        ]
       ],
       widthArr: [130, 130, 130]
     }

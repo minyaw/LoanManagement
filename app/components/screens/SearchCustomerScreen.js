@@ -111,9 +111,16 @@ export default class App extends Component {
                   />
                 </Item>
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Phone No</Label>
+                  <Label style={styles.label}>Key In Phone No</Label>
                   <Input style={styles.input}
-                    onChangeText = {(phoneNo) => this.setState({phoneNo: phoneNo})}
+                    onChangeText = {(phoneNo) => this.setState({kphoneNo: phoneNo})}
+                    keyboardType = 'number-pad'
+                  />
+                </Item>
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Search Phone No</Label>
+                  <Input style={styles.input}
+                    onChangeText = {(phoneNo) => this.setState({sphoneNo: phoneNo})}
                     keyboardType = 'number-pad'
                   />
                 </Item>

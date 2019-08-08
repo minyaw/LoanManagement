@@ -10,6 +10,7 @@ import { ScrollView, TouchableOpacity, View, Alert, Text } from 'react-native';
 import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
+import { CheckBox } from 'native-base';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -32,6 +33,10 @@ const RemarksCol = styled.View`
   justifyContent: center;
   alignItems: flex-end;
 `
+const SelectCol = styled.View`
+  flex:1;
+  justifyContent: center;
+`
 const Username = styled.Text`
   color: #3e59a6;
   fontSize: 18px;
@@ -48,13 +53,18 @@ const IconContainer = styled.View`
   flex:1;
   alignItems: flex-end;
 `  
+const ButtonsContainer = styled.View`
+  flexDirection: row;
+`
 
 export default class App extends Component {
   constructor (props) {
     super(props);
     this.state = {
       loading:false,
-      item: []
+      item: [],
+      edit: false,
+      selectedList: []
     }
   }
 
@@ -82,8 +92,38 @@ export default class App extends Component {
     }
   }
 
+  _updateStatus = () => {
+    if (this.state.edit) {
+      this.setState({edit: false})
+    } else {
+      this.setState({edit: true})
+    }
+  }
+  _select = (id) => {
+    if (this.state[id]) {
+      this.setState({[id]: false})
+      for (let i = 0; i < this.state.selectedList.length; i++) {
+        if (this.state.selectedList[i] === id) {
+          this.state.selectedList.splice(i, 1)
+        }
+      }
+    } else {
+      this.setState({[id]: true})
+      this.state.selectedList.push(id)
+    }
+
+    console.log(this.state.selectedList);
+  }
+
+  _approve = () => {
+    // const body = {
+    //   act: 'processSalesApproval'
+    //   cust_id: 
+    // }
+  }
+
   render () {
-    const { item } = this.state;
+    const { item, edit } = this.state;
     if (item.records) {
       return(
         <Container>
@@ -91,20 +131,32 @@ export default class App extends Component {
             <CustomHeader
               title = 'Approval Listing'
               showBack = {true}
+              showEdit  ={true}
+              edit = {() => this._updateStatus()}
             />
             {
               item.records.map((content, index) => {
-                const cardId = content.sales_id;
+                const cardId = `${content.sales_id}i`;
                 return (
                   <View>
                     <Collapse
                       onToggle = {() => this._toggle(cardId)}
                       isCollapsed = {this.state[cardId]}
+                      disabled = {edit}
                     >
                       <CollapseHeader>
                         <Card
                           style={{borderBottomWidth: 0, marginTop:10, marginBottom: 0, paddingBottom: 0}}
                         >
+                          {
+                            edit ?
+                            <SelectCol>
+                              <CheckBox 
+                                checked={this.state[content.sales_id]}
+                                onPress={() => this._select(content.sales_id)}
+                              />
+                            </SelectCol> : null
+                          }
                           <DetailsCol>
                             <Username>{content.customer_name}</Username>
                             <DueDateDetail>Apply Date: {content.apply_date}</DueDateDetail>
@@ -157,6 +209,22 @@ export default class App extends Component {
               })
             }
           </ScrollView>
+          <ButtonsContainer>
+            <View style={{flex:1}}>
+              <Button
+                title = 'REJECT'
+                buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                onPress = {() => this._reject()}
+              />
+            </View>
+            <View style={{flex:1}}>
+              <Button
+                title = 'APPROVE'
+                buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                onPress = {() => this._approve()}
+              />
+            </View>
+          </ButtonsContainer>
         </Container>
       )
     } else {

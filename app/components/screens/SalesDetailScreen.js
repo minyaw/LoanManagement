@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import CustomHeader from '../common/CustomHeader';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
@@ -56,7 +56,7 @@ const DividerText = styled.Text`
 const HeaderList = [
   // 'Action',
   // 'No',
-  'Repayment No',
+  // 'Repayment No',
   'Due Date',
   // 'Installment Amount',
   // 'Status',
@@ -109,7 +109,8 @@ export default class App extends Component {
       loading: false,
       item: null,
       contentList : [],
-      widthArr: [130, 130, 130, 130, 130]
+      salesIdList: [],
+      widthArr: [130, 130, 130, 130]
     }
   }
 
@@ -119,7 +120,7 @@ export default class App extends Component {
   
   _getSalesDetail = () => {
     const { cust_id, sales_id } = this.props;
-    console.log(sales_id);
+    this.setState({cust_id});
     const body = {
       act: 'getCustomerSalesDetail',
       cust_id,
@@ -131,7 +132,7 @@ export default class App extends Component {
         this.state.contentList.push([
           // content.action,
           // content.no,
-          content.repay_no,
+          // content.repay_no,
           content.due_date,
           // content.installment_amount,
           // content.status,
@@ -143,9 +144,9 @@ export default class App extends Component {
           // content.remark,
           // content.action_by
         ])
-        this.setState({contentList: this.state.contentList})
-        console.log(this.state.contentList);
+        this.state.salesIdList.push(content.sales_id);
       }
+      this.setState({contentList: this.state.contentList, salesIdList: this.state.salesIdList})
       console.log(res);
     });
   }
@@ -158,8 +159,28 @@ export default class App extends Component {
     this.setState({menuOpen: true})
   }
 
+  _getInfo = (sales_id) => {
+    console.log(sales_id);
+    const { cust_id } = this.state;
+    const body = {
+      act: 'getSalesRepaymentInfo',
+      cust_id,
+      sales_id,
+      sel_group_id: '6'
+    }
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({loading: false})
+      console.log(res);
+      if (res.status === 200) {
+        Alert.alert('Error', res.data.errMsg)
+      }
+    });
+  }
+
   render() {
     const { menuOpen, widthArr, loading, item } = this.state;
+    const { cust_id, sales_id } = this.props;
     if (item) {
       return (
         <Drawer
@@ -268,7 +289,7 @@ export default class App extends Component {
                   <Button
                     title = 'Create Trans'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
-                    onPress= {() => Actions.CreateTransaction()}
+                    onPress= {() => Actions.CreateTransaction({cust_id, sales_id, item})}
                   />
                 </ButtonContainer>
               </FormContainer>
@@ -284,7 +305,9 @@ export default class App extends Component {
                       {
                         this.state.contentList.map((rowData, index) => {
                           return(
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => this._getInfo({sales_id: this.state.salesIdList[index]})}
+                            >
                               <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
                                 {
                                   rowData.map((cellData, cellIndex) => {
