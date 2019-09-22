@@ -5,11 +5,13 @@ import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
 import CustomHeader from '../common/CustomHeader';
 import { Header, Avatar, Icon, Badge, Button, Text } from 'react-native-elements';
-import { TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Actions } from 'react-native-router-flux';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
+import { Label, Item, Picker } from 'native-base';
+import DataService from '../common/DataService';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -74,7 +76,7 @@ const ViewAllButton = styled.Text`
   fontWeight: 600;
   color: #192a58;
 `
-const Card = styled.View`
+const Card = styled.TouchableOpacity`
   marginHorizontal: 15px;
   marginBottom: 10px;
   paddingBottom: 10px;
@@ -114,7 +116,10 @@ const EmptyText = styled.Text`
   textAlign: center;
   fontSize: 16px;
   paddingVertical: 20px;
-`   
+` 
+const GroupContainer = styled.View`
+
+`  
 const styles = StyleSheet.create({
   linearGradient: {
     borderRadius: 10,
@@ -124,6 +129,23 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     flexDirection: 'row',
     borderColor: 'transparent',
+  },
+  label: {
+    color: '#8a8f9f',
+    fontWeight: "600"
+  },
+  inputContainer: {
+    paddingVertical: 10,
+    // borderBottomWidth: 0,
+    paddingLeft: 15
+  },
+  input : {
+    borderWidth: 0.5,
+    borderColor: '#ccc'
+  },
+  listItem: {
+    borderBottomWidth: 0,
+    marginLeft :0
   }
 })
 export default class App extends Component {
@@ -136,13 +158,36 @@ export default class App extends Component {
       totalUnread:0,
       token: null,
       refreshing: false,
+      loading: false,
+      groupOptions: [],
+      role: null,
       loading: false
     }
   }
 
   componentDidMount = () => {
+    this.setState({ 
+      groupOptions: DataService.getGroup(),
+      role: ApiService.getRole(),
+      groupId: DataService.getSelectedGroup()
+    })
+    this._getDashBoardData();
+    console.log('id', DataService.getSelectedGroup());
+  }
+
+  componentWillReceiveProps = () => {
+    this.setState({ 
+      groupOptions: DataService.getGroup(),
+      role: ApiService.getRole(),
+      groupId: DataService.getSelectedGroup()
+    })
+    this._getDashBoardData();
+  }
+
+  _getDashBoardData = () => {
     const body = {
       act: 'getDashboardData',
+      sel_group_id: DataService.getSelectedGroup()
     }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -163,8 +208,15 @@ export default class App extends Component {
     this.setState({menuOpen: true})
   }
 
+  _selectGroup = (groupId) => {
+    console.log(groupId);
+    DataService.setSelectedGroup(groupId);
+    this.setState({ groupId });
+    this._getDashBoardData();
+  }
+
   render() {
-    const {menuOpen, item} = this.state;
+    const {menuOpen, item, groupOptions, role, loading} = this.state;
     if (item) {
       return (
         <Drawer
@@ -178,129 +230,176 @@ export default class App extends Component {
           onClose={() => this.setState({menuOpen: false})}
         >
           <Container>
-            <CustomHeader
-              title = 'HOME'
-              openMenu  = {this.openMenu.bind(this)}
-              showMenu = {true}
-            />
-            <InfoContainer>
-              <Col>
-                <TouchableOpacity
-                  onPress= {() => Actions.SalesList()}
+          <Loader loading={loading}/>
+            <ScrollView>
+              <CustomHeader
+                title = 'HOME'
+                openMenu  = {this.openMenu.bind(this)}
+                showMenu = {true}
+              />
+              {
+                role === 'Admin' ? (
+                  <GroupContainer>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Current Group</Label>
+                      <Picker
+                        mode="dropdown"
+                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.groupId}
+                        onValueChange={(value) => this._selectGroup(value)}
+                      >
+                        {
+                          groupOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                  </GroupContainer>
+                ) : null
+              }
+              <InfoContainer>
+                <Col>
+                  <TouchableOpacity
+                    onPress= {() => Actions.SalesList()}
+                  >
+                    <LinearGradient colors={['#f5f7ff', '#d9e1ff', '#becdff']} style={styles.linearGradient}>
+                      <IconContainer>
+                        <Icon
+                          name = 'shopping-cart'
+                          type = 'font-awesome'
+                        />
+                      </IconContainer>
+                      <DetailsContainer>
+                        <Detail>Today's Sales</Detail>
+                        <Detail>{item.summary.today_sales}</Detail>
+                      </DetailsContainer>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress = {() => Actions.OutstandingList()}
+                  >
+                    <LinearGradient colors={['#ddf3e2', '#c2f3cc', '#9eecac']} style={styles.linearGradient}>
+                      <IconContainer>
+                        <Icon
+                          name = 'clock'
+                          type = 'material-community'
+                        />
+                      </IconContainer>
+                      <DetailsContainer>
+                        <Detail>Outstanding</Detail>
+                        <Detail>{item.summary.total_outstanding}</Detail>
+                      </DetailsContainer>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress = {() => Actions.SalesList({pgView: 'dashboard'})}
+                  >
+                    <LinearGradient colors={['#bfeafe', '#7ed1f8', '#57c0f1']} style={styles.linearGradient}>
+                      <IconContainer>
+                        <Icon
+                          name = 'currency-usd'
+                          type = 'material-community'
+                        />
+                      </IconContainer>
+                      <DetailsContainer>
+                        <Detail>Bad Debt</Detail>
+                        <Detail>{item.summary.total_bad_debt}</Detail>
+                      </DetailsContainer>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </Col>
+                <Col>
+                  <TouchableOpacity
+                    onPress= {() => Actions.Transaction()}
+                  >
+                    <LinearGradient colors={['#fff2f6', '#ffc1d3', '#ff9cba']} style={styles.linearGradient}>
+                      <IconContainer>
+                        <Icon
+                          name = 'cash-multiple'
+                          type = 'material-community'
+                        />
+                      </IconContainer>
+                      <DetailsContainer>
+                        <Detail>Today's Trans</Detail>
+                        <Detail>{item.summary.today_transaction}</Detail>
+                      </DetailsContainer>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress= {() => Actions.DueList()}
+                  >
+                    <LinearGradient colors={['#f7e8ce', '#fedb99', '#ffca65']} style={styles.linearGradient}>
+                      <IconContainer>
+                        <Icon
+                          name = 'exclamation-circle'
+                          type = 'font-awesome'
+                        />
+                      </IconContainer>
+                      <DetailsContainer>
+                        <Detail>Late</Detail>
+                        <Detail>{item.summary.total_late}</Detail>
+                      </DetailsContainer> 
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </Col>
+              </InfoContainer>
+              {
+                role === 'Admin' ? (
+                  <ActionContainer>
+                    <ActionText>
+                      You have {item.total_approval_count} case(s) of sales waiting for your approval or rejection. Please <Link onPress={()=> Actions.ApprovalList()}>click here</Link> to process
+                    </ActionText>
+                  </ActionContainer>
+                ) : null
+              }
+              <DueDateListTitleContainer>
+                <TitleContainer>
+                  <DueDateTitle>Due Date List</DueDateTitle>
+                </TitleContainer>
+                <ButtonContainer
+                  onPress = {() => Actions.DueList()}
                 >
-                  <LinearGradient colors={['#f5f7ff', '#d9e1ff', '#becdff']} style={styles.linearGradient}>
-                    <IconContainer>
-                      <Icon
-                        name = 'shopping-cart'
-                        type = 'font-awesome'
-                      />
-                    </IconContainer>
-                    <DetailsContainer>
-                      <Detail>Today's Sales</Detail>
-                      <Detail>{item.summary.today_sales}</Detail>
-                    </DetailsContainer>
-                  </LinearGradient>
-                </TouchableOpacity>
-                <LinearGradient colors={['#ddf3e2', '#c2f3cc', '#9eecac']} style={styles.linearGradient}>
-                  <IconContainer>
-                    <Icon
-                      name = 'clock'
-                      type = 'material-community'
-                    />
-                  </IconContainer>
-                  <DetailsContainer>
-                    <Detail>Outstanding</Detail>
-                    <Detail>{item.summary.total_outstanding}</Detail>
-                  </DetailsContainer>
-                </LinearGradient>
-                <LinearGradient colors={['#bfeafe', '#7ed1f8', '#57c0f1']} style={styles.linearGradient}>
-                  <IconContainer>
-                    <Icon
-                      name = 'currency-usd'
-                      type = 'material-community'
-                    />
-                  </IconContainer>
-                  <DetailsContainer>
-                    <Detail>Bad Debt</Detail>
-                    <Detail>333,000.33</Detail>
-                  </DetailsContainer>
-                </LinearGradient>
-              </Col>
-              <Col>
-                <TouchableOpacity
-                  onPress= {() => Actions.Transaction()}
-                >
-                  <LinearGradient colors={['#fff2f6', '#ffc1d3', '#ff9cba']} style={styles.linearGradient}>
-                    <IconContainer>
-                      <Icon
-                        name = 'cash-multiple'
-                        type = 'material-community'
-                      />
-                    </IconContainer>
-                    <DetailsContainer>
-                      <Detail>Today's Trans</Detail>
-                      <Detail>{item.summary.today_transaction}</Detail>
-                    </DetailsContainer>
-                  </LinearGradient>
-                </TouchableOpacity>
-                <LinearGradient colors={['#f7e8ce', '#fedb99', '#ffca65']} style={styles.linearGradient}>
-                  <IconContainer>
-                    <Icon
-                      name = 'exclamation-circle'
-                      type = 'font-awesome'
-                    />
-                  </IconContainer>
-                  <DetailsContainer>
-                    <Detail>Late</Detail>
-                    <Detail>{item.summary.total_late}</Detail>
-                  </DetailsContainer> 
-                </LinearGradient>
-              </Col>
-            </InfoContainer>
-            <ActionContainer>
-              <ActionText>
-                You have {item.total_approval_count} case(s) of sales waiting for your approval or rejection. Please <Link onPress={()=> Actions.ApprovalList()}>click here</Link> to process
-              </ActionText>
-            </ActionContainer>
-            <DueDateListTitleContainer>
-              <TitleContainer>
-                <DueDateTitle>Due Date List</DueDateTitle>
-              </TitleContainer>
-              <ButtonContainer
-                onPress = {() => Actions.DueList()}
-              >
-                <ViewAllButton>View All</ViewAllButton>
-                <Icon
-                  name = 'chevron-right'
-                  type = 'font-awesome'
-                  size = {12}
-                  containerStyle = {{justifyContent:'center', paddingLeft: 2, paddingTop: 2}}
-                />
-              </ButtonContainer>
-            </DueDateListTitleContainer>
-            {
-              item.due_date_list.length > 0 ? (
-                item.due_date_list.map((content) => {
-                  // <Card>
-                  //   <DetailsCol>
-                  //     <Username>LIM XUAN XUAN</Username>
-                  //     <DueDateDetail>Due Date: 11 March 2019</DueDateDetail>
-                  //     <DueDateDetail>Repayment No: 9J000010-1</DueDateDetail>
-                  //     <DueDateDetail>Due Amt: RM5,000.00</DueDateDetail>
-                  //   </DetailsCol>
-                  //   <RemarksCol>
-                  //     <Remark>Arrears</Remark>
-                  //   </RemarksCol>
-                  // </Card>
-                })
-              ) : (
-                  <BlankContainer>
-                    <EmptyCard>
-                      <EmptyText>Empty</EmptyText>
-                    </EmptyCard>
-                  </BlankContainer>
-              )
-            }
+                  <ViewAllButton>View All</ViewAllButton>
+                  <Icon
+                    name = 'chevron-right'
+                    type = 'font-awesome'
+                    size = {12}
+                    containerStyle = {{justifyContent:'center', paddingLeft: 2, paddingTop: 2}}
+                  />
+                </ButtonContainer>
+              </DueDateListTitleContainer>
+              {
+                item.due_date_list.length > 0 ? (
+                  item.due_date_list.map((content) => {
+                    return(
+                    <Card
+                      onPress = {() => Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id})}
+                    >
+                      <DetailsCol>
+                        <Username>{content.customer_name}</Username>
+                        <DueDateDetail>Due Date: {content.due_date}</DueDateDetail>
+                        <DueDateDetail>Repayment No: {content.repayment_no}</DueDateDetail>
+                        <DueDateDetail>Due Amt: {content.repayment_amount}</DueDateDetail>
+                      </DetailsCol>
+                      <RemarksCol>
+                        <Remark>{content.status}</Remark>
+                      </RemarksCol>
+                    </Card>
+                    )
+                  })
+                ) : (
+                    <BlankContainer>
+                      <EmptyCard>
+                        <EmptyText>Empty</EmptyText>
+                      </EmptyCard>
+                    </BlankContainer>
+                )
+              }
+            </ScrollView>
           </Container>
         </Drawer>
       );

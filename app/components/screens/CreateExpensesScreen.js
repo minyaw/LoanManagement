@@ -2,13 +2,19 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
 import { Actions } from 'react-native-router-flux';
+import SecurityModal from "../common/SecurityModal";
+import DataService from '../common/DataService';
+import ActionSheet from 'react-native-action-sheet';
+import ImagePicker from 'react-native-image-picker';
+import Modal from "react-native-modal";
 
+const { width, height } = Dimensions.get('window');
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
@@ -96,7 +102,11 @@ export default class App extends Component {
       expense_type: null,
       ref_no: null,
       remark: null,
-      bank_acct_id: null
+      bank_acct_id: null,
+      sVisible: false,
+      isVisible: false,
+      attachment: null,
+      source: null
     },
     this.setDate = this.setDate.bind(this)
   }
@@ -148,16 +158,8 @@ export default class App extends Component {
   }
 
   _submit = () => {
-    let { expensesOptions, currencyOptions, bankOptions, trans_date, trans_amount, expense_type, currency, bank_acct_id, ref_no, remark } = this.state;
+    let { expensesOptions, currencyOptions, bankOptions, trans_date, trans_amount, expense_type, currency, bank_acct_id, ref_no, remark, attachment } = this.state;
 
-    if (trans_date === null) {
-      Alert.alert('Error', 'Please select Trans Date.');
-      return;
-    }
-    if (trans_amount === null) {
-      Alert.alert('Error', 'Please fill in Trans Amount.');
-      return;
-    }
     if (expense_type === null) {
       expense_type = expensesOptions[0].id;
     }
@@ -170,14 +172,15 @@ export default class App extends Component {
 
     const body = {
       act: 'createExpenses',
-      sec_pass: 'v123456',
+      sec_pass: DataService.getPassword(),
       bank_acct_id,
       trans_date,
       trans_amount,
       currency,
       expense_type,
       ref_no,
-      remark
+      remark,
+      attachment
     }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -187,7 +190,7 @@ export default class App extends Component {
         Alert.alert('Info', res.data.errMsg,[
           {
             text: 'OK',
-            onPress:() => Actions.pop()
+            onPress:() => Actions.pop({refresh: true})
           }
         ])
       }
@@ -204,19 +207,120 @@ export default class App extends Component {
 
     this.setState({ trans_date: [year, month, day].join('-') });
   }
+
+  _upload = (path) => {
+    if (this.state[path] !== null) {
+      ActionSheet.showActionSheetWithOptions({
+        options: ['View Image', 'Upload Image', 'Cancel'],
+        tintColor: 'blue',
+        cancelButtonIndex: 2
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          this.setState({isVisible: true, source: this.state[path]})
+        } else if (buttonIndex === 1) {
+          const options = {
+            quality                     : 0.72,
+            maxWidth                    : 480,
+            title                       : null,
+            chooseFromLibraryButtonTitle: 'Choose From Library...',
+            takePhotoButtonTitle: 'Take Photo...',
+            cancelButtonTitle: 'Cancel',
+            storageOptions              : {
+              skipBackup: true
+            }
+          };
+          ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel){
+              console.log('user cancelled');
+            } else {
+              let source = 'data:image/jpeg;base64,' + response.data ;
+              this.setState({
+                [path]: source,
+              });
+      
+              // formdata.append('avatar', response)
+              
+            }
+          });
+        }
+      })
+    } else {
+      const options = {
+        quality                     : 0.72,
+        maxWidth                    : 480,
+        title                       : null,
+        chooseFromLibraryButtonTitle: 'Choose From Library...',
+        takePhotoButtonTitle: 'Take Photo...',
+        cancelButtonTitle: 'Cancel',
+        storageOptions              : {
+          skipBackup: true
+        }
+      };
+      ImagePicker.showImagePicker(options, (response) => {
+        if (response.didCancel){
+          console.log('user cancelled');
+        } else {
+          let source = 'data:image/jpeg;base64,' + response.data ;
+          this.setState({
+            [path]: source,
+          });
+  
+          // formdata.append('avatar', response)
+          
+        }
+      });
+    }
+  }
+
+  _checkRequiredField = () => {
+    const { trans_date, trans_amount } = this.state;
+    if (trans_date === null) {
+      Alert.alert('Error', 'Please select Trans Date.');
+      return;
+    }
+    if (trans_amount === null) {
+      Alert.alert('Error', 'Please fill in Trans Amount.');
+      return;
+    }
+    this.setState({ sVisible: true })
+  }
+
   render() {
-    const { expensesOptions, currencyOptions, bankOptions, loading } = this.state;
+    const { expensesOptions, currencyOptions, bankOptions, loading, sVisible, isVisible, source, attachment } = this.state;
     if (expensesOptions.length > 0 && currencyOptions.length > 0 && bankOptions.length > 0) {
       return(
         <Container>
           <Loader loading={loading}/>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
               title = 'Create Expenses'
               showBack = {true}
               showMenu = {false}
             />
             <View>
+              <View>
+                <Modal
+                  isVisible = {isVisible}
+                  onBackdropPress = {() => this.setState({isVisible: false})}
+                  onBackButtonPress = {() => this.setState({isVisible: false})}
+                >
+                  <View
+                    style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
+                  >
+                    <ImageBackground
+                      source = {{uri: source}}
+                      style = {{width: width, height: '90%'}}
+                    >
+                    </ImageBackground>
+                  </View>
+                </Modal>
+              </View>
+              <SecurityModal
+                isVisible = {sVisible}
+                closeModal = {() => this.setState({sVisible: false})}
+                submit = {() => this._submit()}
+              />
               <Divider>
                 <DividerText>New Expenses</DividerText>
                 {/* <Pagination>
@@ -243,12 +347,6 @@ export default class App extends Component {
                       placeHolderTextStyle={{ color: "#d3d3d3" }}
                       onDateChange={this.setDate}
                       disabled={false}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Customer Name</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(salutation) => this.setState({fullname: salutation})}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -305,10 +403,24 @@ export default class App extends Component {
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Upload Receipt</Label>
-                    {/* <Input style={styles.input}
-                      onChangeText = {(email) => this.setState({email: email})}
-                      keyboardType = 'number-pad'
-                    /> */}
+                    <View style={{ justifyContent: 'center' }}>
+                      <Button
+                        title = 'Select file to upload'
+                        buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
+                        onPress = {()=> this._upload('attachment')}
+                        icon={
+                          attachment ? (
+                            <Icon
+                              name="check-circle"
+                              size={15}
+                              color="#4eff4e"
+                              style={{paddingLeft: 5}}
+                            />
+                          ) : null
+                        }
+                        iconRight
+                      />
+                    </View>
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Bank Account*</Label>
@@ -342,7 +454,7 @@ export default class App extends Component {
             <Button
               title = 'NEXT'
               buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-              onPress = {() => this._submit()}
+              onPress = {() => this._checkRequiredField()}
             />
           </ButtonContainer> 
         </Container>

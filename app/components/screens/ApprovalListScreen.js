@@ -109,24 +109,62 @@ export default class App extends Component {
       }
     } else {
       this.setState({[id]: true})
-      this.state.selectedList.push(id)
+      this.state.selectedList.push({id})
     }
 
     console.log(this.state.selectedList);
   }
 
   _approve = () => {
-    // const body = {
-    //   act: 'processSalesApproval'
-    //   cust_id: 
-    // }
+    const { selectedList, item } = this.state;
+    const body = {
+      act: 'processSalesApproval',
+      cust_id: item.cust_id,
+      records: selectedList
+    }
+    this.setState({loading: true})
+      ApiService.post(ApiService.getUrl(), body).then((res) => {
+        this.setState({loading: false})
+        console.log(res);
+        if (res.status === 200) {
+          Alert.alert('Info', res.data.errMsg,[
+            {
+              text: 'OK',
+              onPress: () => Actions.pop({ refresh: true })
+            }
+          ])
+        }
+      })
+  }
+
+  _reject = () => {
+    const { selectedList, item } = this.state;
+    const body = {
+      act: 'processSalesReject',
+      cust_id: item.cust_id,
+      records: selectedList
+    }
+    this.setState({loading: true})
+      ApiService.post(ApiService.getUrl(), body).then((res) => {
+        this.setState({loading: false})
+        console.log(res);
+        if (res.status === 200) {
+          Alert.alert('Info', res.data.errMsg,[
+            {
+              text: 'OK',
+              onPress: () => Actions.pop({ refresh: true })
+            }
+          ])
+        }
+      })
   }
 
   render () {
-    const { item, edit } = this.state;
+    const { item, edit, selectedList, loading } = this.state;
     if (item.records) {
       return(
         <Container>
+          <Loader loading={loading}/>
           <ScrollView>
             <CustomHeader
               title = 'Approval Listing'
@@ -198,7 +236,7 @@ export default class App extends Component {
                             <Button
                               title = 'View'
                               buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0}}
-                              onPress = {() => Actions.CustomerDetail({salesId: content.sales_id})}
+                              onPress = {() => Actions.CustomerDetail({custId: content.cust_id})}
                             />
                           </RemarksCol>
                         </Card>
@@ -214,6 +252,7 @@ export default class App extends Component {
               <Button
                 title = 'REJECT'
                 buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                disabled = {selectedList.length > 0 ? false: true}
                 onPress = {() => this._reject()}
               />
             </View>
@@ -221,6 +260,7 @@ export default class App extends Component {
               <Button
                 title = 'APPROVE'
                 buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                disabled = {selectedList.length > 0 ? false: true}
                 onPress = {() => this._approve()}
               />
             </View>

@@ -8,6 +8,8 @@ import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body 
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
 import { Actions } from 'react-native-router-flux';
+import SecurityModal from "../common/SecurityModal";
+import DataService from '../common/DataService';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -100,7 +102,8 @@ export default class App extends Component {
       interest_amount: null,
       payment: null,
       remark: null,
-      sales_amount: null
+      sales_amount: null,
+      sVisible: false
     }
     this.setDate = this.setDate.bind(this)
   }
@@ -127,12 +130,18 @@ export default class App extends Component {
   _getBank = () => {
     const body = {
       act: "getMasterDataList",
-      type: "Bank"
+      type: "BankAccount"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
+        console.log(res);
+        let options = [];
+        options.push({id: "0", value: "None"});
+        for (const item of res.data.response.records) {
+          options.push(item);
+        }
         this.setState({
-          bankOptions: res.data.response.records,
+          bankOptions: options
         })
       }
     })
@@ -154,7 +163,7 @@ export default class App extends Component {
     this.setState({ apply_date: [year, month, day].join('-') });
   }
 
-  _createSales = () => {
+  _submit = () => {
     let { apply_date, sales_amount, currency, interest_amount, deposit_amount, fee_amount, payment, days, bank_acct_id, bank_acct_id2, bank_acct_id3, remark, currencyOptions, bankOptions } = this.state;
     const { item } = this.props;
 
@@ -162,8 +171,8 @@ export default class App extends Component {
       currency = currencyOptions[0].id
     }
 
-    if (bank_acct_id === null) {
-      bank_acct_id = bankOptions[0].id
+    if (bank_acct_id === "0") {
+      Alert.alert('Error', 'Please select bank account')
     }
     if (bank_acct_id2 === null) {
       bank_acct_id2 = 0;
@@ -202,8 +211,7 @@ export default class App extends Component {
 
     const body = {
       act: 'createSales',
-      sec_pass: 'v123456',
-      sel_group_id: '6',
+      sec_pass: DataService.getPassword(),
       cust_id: item.cust_id,
       apply_date,
       sales_amount,
@@ -234,19 +242,24 @@ export default class App extends Component {
   }
 
   render() {
-    const { currentPage, gender, race, nationality, country, state, copyAddr, currencyOptions, bankOptions, loading } = this.state;
+    const { currentPage, gender, race, nationality, country, state, copyAddr, currencyOptions, bankOptions, loading, sales_amount, deposit_amount, fee_amount, interest_amount, payment, sVisible } = this.state;
     const { item } = this.props;
     if (currencyOptions.length > 0 && bankOptions.length > 0) {
       return(
         <Container>
           <Loader loading={loading}/>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
               title = 'Create Sales'
               showBack = {true}
               showMenu = {false}
             />
               <View>
+                <SecurityModal
+                  isVisible = {sVisible}
+                  closeModal = {() => this.setState({sVisible: false})}
+                  submit = {() => this._submit()}
+                />
                 <Divider>
                   <DividerText>New Sales Application</DividerText>
                   {/* <Pagination>
@@ -262,6 +275,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(cusName) => this.setState({fullname: cusName})}
                         defaultValue = {item ? item.customer_name : null}
+                        editable = {false}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -269,6 +283,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(nric) => this.setState({nricno: nric})}
                         defaultValue = {item ? item.ic_no : null}
+                        editable = {false}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -355,25 +370,22 @@ export default class App extends Component {
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Loan Final Amt</Label>
                       <Input style={styles.input}
-                        // value= {this.state.sales_amount}
-                        // disabled={true}
-                        keyboardType = 'number-pad'
+                        editable = {false}
+                        value = {sales_amount}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Credit</Label>
                       <Input style={styles.input}
-                        // value= {this.state.sales_amount}
-                        // disabled={true}
-                        keyboardType = 'number-pad'
+                        value= { (sales_amount - interest_amount - deposit_amount - fee_amount).toString()}
+                        editable = {false}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Instalment Amt</Label>
+                      <Label style={styles.label}>Installment Amt</Label>
                       <Input style={styles.input}
-                        // value= {this.state.sales_amount}
-                        // disabled={true}
-                        keyboardType = 'number-pad'
+                        value= {(sales_amount / payment).toString()}
+                        editable = {false}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -444,7 +456,7 @@ export default class App extends Component {
             <Button
               title = 'NEXT'
               buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-              onPress = {() => this._createSales()}
+              onPress = {() => this.setState({ sVisible: true })}
             />
           </ButtonContainer> 
         </Container>

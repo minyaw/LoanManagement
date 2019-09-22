@@ -7,6 +7,7 @@ import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
+import DataService from '../common/DataService';
 
 export class LeftIcon extends Component {
   render() {
@@ -81,6 +82,10 @@ const list = [
     navigate: 'Transaction',
   },
   {
+    title:'OTHER INCOME',
+    navigate: 'IncomeList',
+  },
+  {
     title: 'SALES',
     navigate: 'SalesList',
   },
@@ -122,6 +127,7 @@ class Scene extends Component {
       }
       this.setState({loading: true})
       ApiService.post(ApiService.getUrl(), body).then((res) => {
+        DataService.clearGroup();
         this.setState({loading: false})
         if (res.status === 200) {
           Actions.Login();
@@ -148,8 +154,8 @@ class Scene extends Component {
               />
             </AvatarContainer>
           <UsernameContainer>
-              <Username>John Doe</Username>
-              <Role>Admin</Role>
+              <Username>{ApiService.getFullName()}</Username>
+              <Role>{ApiService.getRole()}</Role>
             </UsernameContainer>
             <IconContainer>
               <Icon
@@ -180,6 +186,8 @@ class Scene extends Component {
                     path = require("../../../assets/icons/ic_attach_money_24px.png")
                   } else if (item.title === 'LOGOUT') {
                     path = require("../../../assets/icons/ic_exit_to_app_24px.png")
+                  } else {
+                    path = null
                   }
                   return(
                     <ListItem

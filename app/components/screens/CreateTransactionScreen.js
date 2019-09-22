@@ -2,13 +2,19 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
 import { Actions } from 'react-native-router-flux';
+import DataService from '../common/DataService';
+import ActionSheet from 'react-native-action-sheet';
+import ImagePicker from 'react-native-image-picker';
+import Modal from "react-native-modal";
+import SecurityModal from "../common/SecurityModal";
 
+const { width, height } = Dimensions.get('window');
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
@@ -82,6 +88,8 @@ const styles = StyleSheet.create({
   }
 })
 
+const today = new Date();
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -91,27 +99,46 @@ export default class App extends Component {
       bankOptions: [],
       loading: false,
       repayment_no: null,
-      currency: null,
-      currency_rate: null,
+      currency: "MYR",
+      currency_rate: "1",
       trans_date: null,
-      trans_type: null,
+      trans_type: 'Repayment',
       trans_amount: null,
       bank_acct_id: null,
-
+      attachment: null,
+      isVisible: false,
+      sVisible: false,
+      source: null,
+      next_due_date: null,
+      refund_amount: "0",
+      showNextDue: false,
+      next_default_date: null,
+      display_trans_date: null,
+      display_next_due_date: null,
+      ref_no: null
     },
-    this.setDate = this.setDate.bind(this)
+    this.setDate = this.setDate.bind(this),
+    this.setNexyPayDate = this.setNexyPayDate.bind(this)
   }
 
   componentDidMount = () => {
+    console.log(this.props.transInfo);
+    const next_default_date = new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))
+
+    this.setState({ next_default_date: new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))})
+
+    this._displayNextDue(new Date(next_default_date))
+    this.setDate(new Date());
     this._getBank();
     this._getCurrency();
     this._getTransactionType();
+    this._getSalesRepaymentInfo();
   }
 
   _getBank = () => {
     const body = {
       act: "getMasterDataList",
-      type: "Bank"
+      type: "BankAccount"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
@@ -153,45 +180,44 @@ export default class App extends Component {
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
 
+    const display_month = month;
+    const display_day = day;
+
     if (month.length < 2) month = '0' + month;
     if (day.length < 2) day = '0' + day;
 
-    this.setState({ trans_date: [year, month, day].join('-') });
+    this.setState({ trans_date: [year, month, day].join('-'), display_trans_date: [display_day, display_month, year].join('/') });
+  }
+
+  setNexyPayDate(newDate) {
+    let month = '' + (newDate.getMonth() + 1)
+    let day = '' + newDate.getDate()
+    let year = newDate.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    this.setState({ next_due_date: [year, month, day].join('-') });
+  }
+
+  _displayNextDue(newDate) {
+    let month = '' + (newDate.getMonth() + 1)
+    let day = '' + newDate.getDate()
+    let year = newDate.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    this.setState({ display_next_due_date: [day, month, year].join('/') });
   }
 
   _submit = () => {
-    const { cust_id, sales_id, item } = this.props;
-    let { repayment_no, currency, currency_rate, trans_date, trans_type, trans_amount, bank_acct_id, currencyOptions, bankOptions, transTypeOptions} = this.state;
-
-    if (currency === null) {
-      currency = currencyOptions[0].id
-    }
-    if (repayment_no === null) {
-      Alert.alert('Error', 'Please fill in Repayment No.')
-      return;
-    }
-    if (currency_rate === null) {
-      Alert.alert('Error', 'Please fill in Currency Rate.')
-      return;
-    }
-    if (trans_date === null) {
-      Alert.alert('Error', 'Please select Trans Date.')
-      return;
-    }
-    if (trans_type === null) {
-      trans_type = transTypeOptions[0].id
-    }
-    if (trans_amount === null) {
-      Alert.alert('Error', 'Please fill in Trans Amount.')
-      return;
-    }
-    if (bank_acct_id === null) {
-      bank_acct_id = bankOptions[0].id
-    }
+    const { cust_id, sales_id } = this.props;
+    let { repayment_no, currency, currency_rate, trans_date, trans_type, trans_amount, bank_acct_id, currencyOptions, bankOptions, transTypeOptions, attachment, next_due_date, refund_amount, repayOptions, ref_no } = this.state;
 
     const body = {
       act: 'createTransaction',
-      sec_pass: 'v123456',
+      sec_pass: DataService.getPassword(),
       cust_id,
       sales_id,
       repayment_no,
@@ -201,12 +227,11 @@ export default class App extends Component {
       trans_type,
       trans_amount,
       bank_acct_id,
-      deposit_amount: item.deposit,
-      fee_amount: item.fees,
-      payment: item.payment,
-      days: item.days
+      attachment,
+      next_due_date,
+      refund_amount,
+      ref_no
     }
-    console.log(body);
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
@@ -215,26 +240,190 @@ export default class App extends Component {
         Alert.alert('Info', res.data.errMsg,[
           {
             text: 'OK',
-            onPress:() => Actions.pop()
+            onPress:() => Actions.pop({refresh: true, cust_id, sales_id})
           }
         ])
       }
     })
   }
 
+  _upload = (path) => {
+    if (this.state[path] !== null) {
+      ActionSheet.showActionSheetWithOptions({
+        options: ['View Image', 'Upload Image', 'Cancel'],
+        tintColor: 'blue',
+        cancelButtonIndex: 2
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          this.setState({isVisible: true, source: this.state[path]})
+        } else if (buttonIndex === 1) {
+          const options = {
+            quality                     : 0.72,
+            maxWidth                    : 480,
+            title                       : null,
+            chooseFromLibraryButtonTitle: 'Choose From Library...',
+            takePhotoButtonTitle: 'Take Photo...',
+            cancelButtonTitle: 'Cancel',
+            storageOptions              : {
+              skipBackup: true
+            }
+          };
+          ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel){
+              console.log('user cancelled');
+            } else {
+              let source = 'data:image/jpeg;base64,' + response.data ;
+              this.setState({
+                [path]: source,
+              });
+      
+              // formdata.append('avatar', response)
+              
+            }
+          });
+        }
+      })
+    } else {
+      const options = {
+        quality                     : 0.72,
+        maxWidth                    : 480,
+        title                       : null,
+        chooseFromLibraryButtonTitle: 'Choose From Library...',
+        takePhotoButtonTitle: 'Take Photo...',
+        cancelButtonTitle: 'Cancel',
+        storageOptions              : {
+          skipBackup: true
+        }
+      };
+      ImagePicker.showImagePicker(options, (response) => {
+        if (response.didCancel){
+          console.log('user cancelled');
+        } else {
+          let source = 'data:image/jpeg;base64,' + response.data ;
+          this.setState({
+            [path]: source,
+          });
+  
+          // formdata.append('avatar', response)
+          
+        }
+      });
+    }
+  }
+
+  _getSalesRepaymentInfo = () => {
+    const { cust_id, sales_id } = this.props;
+    const body = {
+      act: 'getSalesRepaymentInfo',
+      cust_id,
+      sales_id
+    }
+    this.setState({ loading: true });
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({ loading: false});
+      if (res.status === 200) {
+        console.log('res', res);
+        if (res.data.response.records.length < 1) {
+          this.setState({ item: res.data.response.records })
+          Alert.alert('Error', res.data.errMsg, [
+            {
+              text: 'OK',
+              onPress: () => Actions.pop()
+            }
+          ])
+        } else {
+          this.setState({ item: res.data.response.records, repayOptions: res.data.response.records.repayment_list })
+        }
+      } 
+    })
+  }
+
+  _checkRequiredField = () => {
+    let { repayment_no, currency, currency_rate, trans_date, trans_type, trans_amount, bank_acct_id, currencyOptions, bankOptions, transTypeOptions, attachment, next_due_date, refund_amount, repayOptions, showNextDue } = this.state;
+
+    if (trans_type === 'Settle' && refund_amount === null) {
+      Alert.alert('Error', 'Please fill in Refund Amount.')
+      return;
+    }
+    if (trans_type === 'Renew' && next_due_date === null) {
+      Alert.alert('Error', 'Please select Next Due Date')
+      return;
+    }
+    if ((trans_type == 'Renew' || showNextDue) && next_due_date === null ) {
+      Alert.alert('Error', 'Please select Next Due Date')
+      return;
+    }
+    if (repayment_no === null) {
+      this.setState ({ repayment_no: repayOptions[0].id})
+    }
+    if (currency !== "MYR" && currency_rate === null ) {
+      Alert.alert('Error', 'Please fill in Currency Rate.')
+      return;
+    }
+    if (trans_date === null) {
+      Alert.alert('Error', 'Please select Trans Date.')
+      return;
+    }
+    if (trans_type === null) {
+      this.setState({ trans_type: transTypeOptions[0].id })
+    }
+    if (trans_amount === null) {
+      Alert.alert('Error', 'Please fill in Trans Amount.')
+      return;
+    }
+    if (bank_acct_id === null) {
+      this.setState({ bank_acct_id: bankOptions[0].id })
+    }
+
+    this.setState({ sVisible: true })
+  }
+
+  _checkTransAmount = (value) => {
+    const { item } = this.state;
+    if (parseInt(value) < item.installment_amount) {
+      this.setState({ showNextDue: true, trans_amount: value })
+    } else {
+      this.setState({ showNextDue: false, trans_amount: value})
+    }
+  }
+
   render() {
-    const { currencyOptions, transTypeOptions, bankOptions, loading } = this.state;
-    if (currencyOptions.length > 0 && transTypeOptions.length > 0 && bankOptions.length > 0) {
+    const { currencyOptions, transTypeOptions, bankOptions, loading, isVisible, sVisible, source, attachment, item, repayOptions, repayment_no, trans_type, currency_rate, showNextDue, next_default_date, display_trans_date, display_next_due_date, trans_amount } = this.state;
+    const { transInfo } = this.props;
+    if (currencyOptions.length > 0 && transTypeOptions.length > 0 && bankOptions.length > 0 && item && repayOptions) {
       return(
         <Container>
           <Loader loading={loading}/>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
               title = 'Create Transaction'
               showBack = {true}
               showMenu = {false}
             />
               <View>
+                <View>
+                  <Modal
+                    isVisible = {isVisible}
+                    onBackdropPress = {() => this.setState({isVisible: false})}
+                    onBackButtonPress = {() => this.setState({isVisible: false})}
+                  >
+                    <View
+                      style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
+                    >
+                      <ImageBackground
+                        source = {{uri: source}}
+                        style = {{width: width, height: '90%'}}
+                      >
+                      </ImageBackground>
+                    </View>
+                  </Modal>
+                </View>
+                <SecurityModal
+                  isVisible = {sVisible}
+                  closeModal = {() => this.setState({sVisible: false})}
+                  submit = {() => this._submit()}
+                />
                 <Divider>
                   <DividerText>Customer Transaction</DividerText>
                   {/* <Pagination>
@@ -248,33 +437,56 @@ export default class App extends Component {
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Customer Name</Label>
                       <Input style={styles.input}
-                        onChangeText = {(salutation) => this.setState({fullname: salutation})}
+                        // onChangeText = {(salutation) => this.setState({fullname: salutation})}
+                        value = {item.customer}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>NRIC/Passport</Label>
                       <Input style={styles.input}
                         onChangeText = {(cusName) => this.setState({nricno: cusName})}
+                        value = {item.ic_no}
+                        disabled = {true}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Phone No</Label>
                       <Input style={styles.input}
-                        onChangeText = {(phoneNo) => this.setState({phoneno: phoneNo})}
-                        keyboardType = 'number-pad'
+                        value = {item.pheno_no}
+                        disabled = {true}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Outstanding Amount</Label>
+                      <Input style={styles.input}
+                        value = {item.outstanding_amount}
+                        disabled = {true}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Repayment No.*</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(phoneNo) => this.setState({repayment_no: phoneNo})}
-                      />
+                      <Picker
+                        mode="dropdown"
+                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        style={{ width: undefined }}
+                        selectedValue={repayment_no}
+                        onValueChange={(value) => this.setState({filter_agent: value})}
+                      >
+                      {
+                        repayOptions.map((item, index) => {
+                          return (
+                            <Picker.Item label={item.value} value={item.id} />
+                          )
+                        })
+                      }
+                      </Picker>
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Repayment Value</Label>
                       <Input style={styles.input}
-                        onChangeText = {(phoneNo) => this.setState({repayment_val: phoneNo})}
-                        keyboardType = 'number-pad'
+                        placeholder = "0"
+                        value = {trans_amount === null ? "0" : (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
+                        disabled = {true}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -301,13 +513,15 @@ export default class App extends Component {
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Currency Rate*</Label>
                       <Input style={styles.input}
-                        onChangeText = {(currency_rate) => this.setState({currency_rate: currency_rate})}
-                        keyboardType = 'number-pad'
+                        defaultValue = {currency_rate}
+                        disabled = {this.state.currency === "MYR"}
+                        onChangeText = {(value) => this.setState({ currency_rate: value })}
+                        keyboardType = "number-pad"
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Trans Date*</Label>
-                      <DatePicker
+                      {/* <DatePicker
                         defaultDate={new Date()}
                         // minimumDate={new Date(2018, 1, 1)}
                         maximumDate={new Date()}
@@ -321,6 +535,11 @@ export default class App extends Component {
                         placeHolderTextStyle={{ color: "#d3d3d3" }}
                         onDateChange={this.setDate}
                         disabled={false}
+                      /> */}
+                      <Input style={styles.input}
+                        value = {display_trans_date}
+                        disabled = {true}
+                        style = {{textAlign: 'right'}}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -344,10 +563,53 @@ export default class App extends Component {
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Trans Amount*</Label>
                       <Input style={styles.input}
-                        onChangeText = {(phoneNo2) => this.setState({trans_amount: phoneNo2})}
+                        onChangeText = {(value) => this._checkTransAmount(value) }
                         keyboardType = 'number-pad'
                       />
                     </Item>
+                    {
+                      trans_type === 'Renew' ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Next Pay Amount</Label>
+                          <Input style={styles.input}
+                            value = {(parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
+                            disabled = {true}
+                          />
+                        </Item>
+                      ) : null
+                    }
+                    {
+                      trans_type === 'Renew' || showNextDue ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Next Due Date*</Label>
+                          <DatePicker
+                            defaultDate={next_default_date}
+                            // minimumDate={new Date(2018, 1, 1)}
+                            locale={"en"}
+                            timeZoneOffsetInMinutes={undefined}
+                            modalTransparent={false}
+                            animationType={"fade"}
+                            androidMode={"default"}
+                            placeHolderText= {display_next_due_date}
+                            textStyle={{ color: "#000" }}
+                            placeHolderTextStyle={{ color: "#d3d3d3" }}
+                            onDateChange={this.setNexyPayDate}
+                            disabled={false}
+                          />
+                        </Item>
+                      ) : null
+                    }
+                    {
+                      trans_type === 'Settle' ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Refund Amount*</Label>
+                          <Input style={styles.input}
+                            onChangeText = {(phoneNo2) => this.setState({refund_amount: phoneNo2})}
+                            keyboardType = 'number-pad'
+                          />
+                        </Item>
+                      ) : null
+                    }
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Bank Account*</Label>
                       <Picker
@@ -369,16 +631,29 @@ export default class App extends Component {
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Receipt No</Label>
                       <Input style={styles.input}
-                        onChangeText = {(email) => this.setState({email: email})}
-                        keyboardType = 'number-pad'
+                        onChangeText = {(value) => this.setState({ref_no: value})}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Payment Receipt</Label>
-                      {/* <Input style={styles.input}
-                        onChangeText = {(email) => this.setState({email: email})}
-                        keyboardType = 'number-pad'
-                      /> */}
+                      <View style={{ justifyContent: 'center' }}>
+                        <Button
+                          title = 'Select file to upload'
+                          buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
+                          onPress = {()=> this._upload('attachment')}
+                          icon={
+                            attachment ? (
+                              <Icon
+                                name="check-circle"
+                                size={15}
+                                color="#4eff4e"
+                                style={{paddingLeft: 5}}
+                              />
+                            ) : null
+                          }
+                          iconRight
+                        />
+                      </View>
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Remark</Label>
@@ -394,7 +669,7 @@ export default class App extends Component {
               <Button
                 title = 'NEXT'
                 buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                onPress = {() => this._submit()}
+                onPress = {() => this._checkRequiredField()}
               />
             </ButtonContainer> 
         </Container>
@@ -402,7 +677,7 @@ export default class App extends Component {
     } else {
       return (
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

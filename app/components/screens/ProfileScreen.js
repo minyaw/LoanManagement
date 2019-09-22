@@ -4,10 +4,12 @@ import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
 import { Header, Avatar, Icon, Button } from 'react-native-elements';
-import { ScrollView, Text, StyleSheet, Alert } from 'react-native';
+import { ScrollView, Text, StyleSheet, Alert, View } from 'react-native';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
+import DataService from '../common/DataService';
+import CustomHeader from '../common/CustomHeader';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -82,7 +84,8 @@ export default class App extends Component {
       raceOptions: [],
       nationalityOptions: [],
       stateOptions:[],
-      countryOptions: []
+      countryOptions: [],
+      role: null
     }
     this.setDate = this.setDate.bind(this)
   }
@@ -94,6 +97,7 @@ export default class App extends Component {
     this._getNationality();
     this._getState();
     this._getCountry();
+    this.setState({ role: ApiService.getRole() })
   }
 
   _getGender = () => {
@@ -221,11 +225,15 @@ export default class App extends Component {
     this.setState({copyAddr: !copyAddr})
   }
 
+  openMenu = () => {
+    this.setState({menuOpen: true})
+  }
+
   _update = () => {
     const { fullname, nricno, phoneno, email, gender, dob, nationality, address, address2, city, postcode, state,country,  mail_address, mail_address2, mail_city, mail_postcode, mail_state, mail_country } = this.state
     const body = {
       act: 'updateProfile',
-      sec_pass: "v123456",
+      sec_pass: DataService.getPassword(),
       fullname,
       nricno,
       phoneno,
@@ -255,7 +263,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {menuOpen, copyAddr, item, loading, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions} = this.state;
+    const {menuOpen, copyAddr, item, loading, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, role} = this.state;
     if (item && genderOptions && raceOptions && countryOptions && nationalityOptions && stateOptions) {
       return (
         <Drawer
@@ -279,7 +287,7 @@ export default class App extends Component {
           <Container>
             <Loader loading={loading}/>
             <ScrollView>
-              <Header
+              {/* <Header
                 leftComponent        = {
                   <Icon
                     name = 'bars'
@@ -292,269 +300,308 @@ export default class App extends Component {
                 centerComponent = {{ text: 'My Profile', style: { color: '#192a58', fontWeight: "600", fontSize: 20} }}
                 backgroundColor = '#FFF'
                 containerStyle  = {{paddingBottom:20, borderBottomColor: '#eee', borderBottomWidth: 1}}
+              /> */}
+              <CustomHeader
+                title = 'My Profile'
+                openMenu  = {this.openMenu.bind(this)}
+                showMenu = {true}
               />
-              <Divider>
-                <DividerText>Personal Details</DividerText>
-              </Divider>
-              <FormContainer>
-                <Form>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Full Name</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.fullname}
-                      onChangeText = {(fullname) => this.setState({fullname: fullname})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>NRIC/Passport</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.icno}
-                      onChangeText = {(nricno) => this.setState({nricno: nricno})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Phone No</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.phoneno}
-                      onChangeText = {(phoneno) => this.setState({phoneno: phoneno})}
-                      keyboardType = 'number-pad'
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Email</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.email}
-                      onChangeText = {(email) => this.setState({email: email})}
-                      keyboardType = 'email-address'
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Gender</Label>
-                    <Picker
-                      mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.gender}
-                      onValueChange={(value) => this.setState({gender: value})}
-                    >
-                      {
-                        genderOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Date of Birth</Label>
-                    <DatePicker
-                      defaultDate={new Date(1990, 1, 1)}
-                      // minimumDate={new Date(2018, 1, 1)}
-                      maximumDate={new Date()}
-                      locale={"en"}
-                      timeZoneOffsetInMinutes={undefined}
-                      modalTransparent={false}
-                      animationType={"fade"}
-                      androidMode={"default"}
-                      placeHolderText="Select date"
-                      textStyle={{ color: "#000" }}
-                      placeHolderTextStyle={{ color: "#d3d3d3" }}
-                      onDateChange={this.setDate}
-                      disabled={false}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Race</Label>
-                    <Picker
-                      mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.race}
-                      onValueChange={(value) => this.setState({race: value})}
-                    >
-                      {
-                        raceOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Nationality</Label>
-                    <Picker
-                      mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                      style={{ width: undefined }}
-                      selectedValue ={this.state.nationality}
-                      onValueChange={(value) => this.setState({nationality: value})}
-                    >
-                      {
-                        nationalityOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                </Form>
-              </FormContainer>
-              <Divider>
-                <DividerText>Permanent Address</DividerText>
-              </Divider>
-              <FormContainer>
-                <Form>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 1</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.address}
-                      onChangeText = {(addr1) => this.setState({address: addr1})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 2</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.address2}
-                      onChangeText = {(addr2) => this.setState({address2: addr2})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Country</Label>
-                    <Picker
-                      mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.country}
-                      onValueChange={(value) => this.setState({country: value})}
-                    >
-                      {
-                        countryOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.value}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>State</Label>
-                    <Picker
-                      mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.state}
-                      onValueChange={(value) => this.setState({state: value})}
-                    >
-                      {
-                        stateOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>City</Label>
-                    <Input style={styles.input}
-                      defaultValue={item.city}
-                      onChangeText = {(city) => this.setState({city: city})}
-                    />
-                  </Item>
-  
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Postcode</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.zip}
-                      onChangeText = {(postcode) => this.setState({postcode: postcode})}
-                    />
-                  </Item>
-                </Form>
-              </FormContainer>
-              <Divider>
-                <DividerText>Mailing Address</DividerText>
-              </Divider>
-              <FormContainer>
-                <Form>
-                  <ListItem style={styles.listItem}>
-                    <CheckBox 
-                      checked={copyAddr}
-                      onPress={() => this._copyAddr()}
-                    />
-                    <Body>
-                      <Text style={[styles.label, {paddingLeft: 10}]}>Same as above address</Text>
-                    </Body>
-                  </ListItem>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 1</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.mail_address}
-                      onChangeText = {(addr1) => this.setState({mail_address: addr1})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 2</Label>
-                    <Input style={styles.input}
-                      defaultValue = {item.mail_address2}
-                      onChangeText = {(addr2) => this.setState({mail_address2: addr2})}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Country</Label>
-                    <Picker
-                      mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.mail_country}
-                      onValueChange={(value) => this.setState({mail_country: value})}
-                    >
-                      {
-                        countryOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.value}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>State</Label>
-                    <Picker
-                      mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.mail_state}
-                      onValueChange={(value) => this.setState({mail_state: value})}
-                    >
-                      {
-                        stateOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>City</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(city) => this.setState({city: city})}
-                      defaultValue = {item.mail_city}
-                    />
-                  </Item>
-  
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Postcode</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(city) => this.setState({city: city})}
-                      defaultValue = {item.mail_postcode}
-                    />
-                  </Item>
-                </Form>
-              </FormContainer>
+              {
+                role === 'Admin' ? (
+                <View>
+                  <Divider>
+                    <DividerText>Personal Details</DividerText>
+                  </Divider>
+                  <FormContainer>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Full Name</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.fullname}
+                          onChangeText = {(fullname) => this.setState({fullname: fullname})}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>NRIC/Passport</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.icno}
+                          onChangeText = {(nricno) => this.setState({nricno: nricno})}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Phone No</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.phoneno}
+                          onChangeText = {(phoneno) => this.setState({phoneno: phoneno})}
+                          keyboardType = 'number-pad'
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Email</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.email}
+                          onChangeText = {(email) => this.setState({email: email})}
+                          keyboardType = 'email-address'
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Gender</Label>
+                        <Picker
+                          mode="dropdown"
+                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.gender}
+                          onValueChange={(value) => this.setState({gender: value})}
+                        >
+                          {
+                            genderOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Date of Birth</Label>
+                        <DatePicker
+                          defaultDate={new Date(1990, 1, 1)}
+                          // minimumDate={new Date(2018, 1, 1)}
+                          maximumDate={new Date()}
+                          locale={"en"}
+                          timeZoneOffsetInMinutes={undefined}
+                          modalTransparent={false}
+                          animationType={"fade"}
+                          androidMode={"default"}
+                          placeHolderText="Select date"
+                          textStyle={{ color: "#000" }}
+                          placeHolderTextStyle={{ color: "#d3d3d3" }}
+                          onDateChange={this.setDate}
+                          disabled={false}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Race</Label>
+                        <Picker
+                          mode="dropdown"
+                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.race}
+                          onValueChange={(value) => this.setState({race: value})}
+                        >
+                          {
+                            raceOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Nationality</Label>
+                        <Picker
+                          mode="dropdown"
+                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          style={{ width: undefined }}
+                          selectedValue ={this.state.nationality}
+                          onValueChange={(value) => this.setState({nationality: value})}
+                        >
+                          {
+                            nationalityOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                    </Form>
+                  </FormContainer>
+                  <Divider>
+                    <DividerText>Permanent Address</DividerText>
+                  </Divider>
+                  <FormContainer>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 1</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.address}
+                          onChangeText = {(addr1) => this.setState({address: addr1})}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 2</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.address2}
+                          onChangeText = {(addr2) => this.setState({address2: addr2})}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Country</Label>
+                        <Picker
+                          mode="dropdown"
+                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.country}
+                          onValueChange={(value) => this.setState({country: value})}
+                        >
+                          {
+                            countryOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.value}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>State</Label>
+                        <Picker
+                          mode="dropdown"
+                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.state}
+                          onValueChange={(value) => this.setState({state: value})}
+                        >
+                          {
+                            stateOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>City</Label>
+                        <Input style={styles.input}
+                          defaultValue={item.city}
+                          onChangeText = {(city) => this.setState({city: city})}
+                        />
+                      </Item>
+      
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Postcode</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.zip}
+                          onChangeText = {(postcode) => this.setState({postcode: postcode})}
+                        />
+                      </Item>
+                    </Form>
+                  </FormContainer>
+                  <Divider>
+                    <DividerText>Mailing Address</DividerText>
+                  </Divider>
+                  <FormContainer>
+                    <Form>
+                      <ListItem style={styles.listItem}>
+                        <CheckBox 
+                          checked={copyAddr}
+                          onPress={() => this._copyAddr()}
+                        />
+                        <Body>
+                          <Text style={[styles.label, {paddingLeft: 10}]}>Same as above address</Text>
+                        </Body>
+                      </ListItem>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 1</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.mail_address}
+                          onChangeText = {(addr1) => this.setState({mail_address: addr1})}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 2</Label>
+                        <Input style={styles.input}
+                          defaultValue = {item.mail_address2}
+                          onChangeText = {(addr2) => this.setState({mail_address2: addr2})}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Country</Label>
+                        <Picker
+                          mode="dropdown"
+                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.mail_country}
+                          onValueChange={(value) => this.setState({mail_country: value})}
+                        >
+                          {
+                            countryOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.value}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>State</Label>
+                        <Picker
+                          mode="dropdown"
+                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.mail_state}
+                          onValueChange={(value) => this.setState({mail_state: value})}
+                        >
+                          {
+                            stateOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>City</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(city) => this.setState({city: city})}
+                          defaultValue = {item.mail_city}
+                        />
+                      </Item>
+      
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Postcode</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(city) => this.setState({city: city})}
+                          defaultValue = {item.mail_postcode}
+                        />
+                      </Item>
+                    </Form>
+                  </FormContainer>
+                </View>
+                ) : (
+                  <View>
+                    <FormContainer>
+                      <Form>
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Current Password*</Label>
+                          <Input style={styles.input}
+                            onChangeText = {(city) => this.setState({currentPass: city})}
+                            // defaultValue = {item.mail_postcode}
+                          />
+                        </Item>
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>New Password*</Label>
+                          <Input style={styles.input}
+                            onChangeText = {(city) => this.setState({newPass: city})}
+                            // defaultValue = {item.mail_postcode}
+                          />
+                        </Item>
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Confirm Password*</Label>
+                          <Input style={styles.input}
+                            onChangeText = {(city) => this.setState({confirmPass: city})}
+                            // defaultValue = {item.mail_postcode}
+                          />
+                        </Item>
+                      </Form>
+                    </FormContainer>
+                  </View>
+                )
+              }
             </ScrollView>
             <ButtonContainer>
               <Button

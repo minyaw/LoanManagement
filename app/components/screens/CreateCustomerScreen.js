@@ -2,13 +2,19 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
+import ImagePicker from 'react-native-image-picker';
+import ActionSheet from 'react-native-action-sheet';
+import Modal from "react-native-modal";
+import SecurityModal from "../common/SecurityModal";
+import DataService from '../common/DataService';
 
+const { width, height } = Dimensions.get('window');
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
@@ -131,19 +137,19 @@ export default class App extends Component {
       gender: null,
       dob: null,
       salutation: null,
-      nationality: null,
+      nationality: 'MY',
       address: null,
       address2: null,
       city: null,
       postcode: null,
       state: null,
-      country: null,
+      country: 'MY',
       mail_address: null,
       mail_address2: null,
       mail_city: null,
       mail_postcode: null,
       mail_state: null,
-      mail_country: null,
+      mail_country: 'MY',
       bankid: null,
       bank_holder_name: null,
       bank_accountno: null,
@@ -155,7 +161,7 @@ export default class App extends Component {
       company_city: null,
       company_postcode: null,
       company_state: null,
-      company_country: null,
+      company_country: 'MY',
       beneficiary_fullname: null,
       beneficiary_phoneno: null,
       beneficiary_nricno: null,
@@ -165,19 +171,97 @@ export default class App extends Component {
       beneficiary_city: null,
       beneficiary_postcode: null,
       beneficiary_state: null,
-      beneficiary_country: null
+      beneficiary_country: 'MY',
+      profile_image: null,
+      nric_doc_image1: null,
+      nric_doc_image2: null,
+      doc_image1: null,
+      doc_image2: null,
+      doc_image3: null,
+      doc_image4: null,
+      doc_image5: null,
+      beneficiary_profile_image: null,
+      beneficiary_nric_doc_image1: null,
+      beneficiary_nric_doc_image2: null,
+      beneficiary_doc_image1: null,
+      beneficiary_doc_image2: null,
+      beneficiary_doc_image3: null,
+      beneficiary_doc_image4: null,
+      beneficiary_doc_image5: null,
+      isVisible: false,
+      broker: null,
+      sVisible: false
     }
   }
 
   componentDidMount = () => {
-    this._getGender();
+    // this._getGender();
     this._getRace();
     this._getNationality();
     this._getState();
     this._getCountry();
     this._getBank();
     this._getBroker();
-    this._getSalutation();
+    // this._getSalutation();
+    if (this.props.item) {
+      const {item} = this.props;
+      this.setState({
+        profile_image: item.user_profile_image ? item.user_profile_image : null,
+        nric_doc_image1: item.filename_nric1 ? item.filename_nric1 : null,
+        nric_doc_image2: item.filename_nric2 ? item.filename_nric2 : null,
+        doc_image1: item.filename_doc1 ? item.filename_doc1 : null,
+        doc_image2: item.filename_doc2 ? item.filename_doc2 : null,
+        doc_image3: item.filename_doc3 ? item.filename_doc3 : null,
+        doc_image4: item.filename_doc4 ? item.filename_doc4 : null,
+        doc_image5: item.filename_doc5 ? item.filename_doc5 : null,
+        beneficiary_profile_image: item.beneficiary_profile_image ? item.beneficiary_profile_image : null,
+        beneficiary_nric_doc_image1: item.beneficiary_nric_image1 ? item.beneficiary_nric_image1 : null,
+        beneficiary_nric_doc_image2: item.beneficiary_nric_image2 ? item.beneficiary_nric_image2 : null,
+        beneficiary_doc_image1: item.beneficiary_doc_image1 ? item.beneficiary_doc_image1 : null,
+        beneficiary_doc_image2: item.beneficiary_doc_image2 ? item.beneficiary_doc_image2 : null,
+        beneficiary_doc_image3: item.beneficiary_doc_image3 ? item.beneficiary_doc_image3 : null,
+        beneficiary_doc_image4: item.beneficiary_doc_image4 ? item.beneficiary_doc_image4 : null,
+        beneficiary_doc_image5: item.beneficiary_doc_image5 ? item.beneficiary_doc_image5 : null,
+        gender: item.gender,
+        race: item.race,
+        salutation: item.salutation,
+        nationality: item.nationality,
+        country: item.country,
+        state: item.state,
+        mail_country: item.mail_country,
+        mail_state: item.mail_state,
+        company_country: item.company_country,
+        company_state: item.company_state,
+        broker: item.broker_id,
+        beneficiary_country: item.beneficiary_country,
+        beneficiary_state: item.beneficiary_state,
+        customer_name: item.customer_name,
+        ic_no: item.ic_no,
+        phoneno: item.phone_no,
+        phoneno2: item.phone_no2,
+        email: item.email,
+        remark: item.remark,
+        address: item.address,
+        address2: item.address2,
+        city: item.city,
+        postcode: item.postcode,
+        bank_accountno: item.bank_acct_no,
+        bank_holder_name: item.bank_holder_name,
+        mail_address: item.mail_address,
+        mail_address2: item.mail_address2,
+        mail_city: item.mail_city,
+        mail_postcode: item.mail_postcode,
+        company_address: item.company_address,
+        company_address2: item.company_address2,
+        company_city: item.company_city,
+        company_postcode: item.company_zip,
+        beneficiary_address: item.beneficiary_address,
+        beneficiary_address2: item.beneficiary_address2,
+        beneficiary_city: item.beneficiary_city,
+        beneficiary_postcode: item.beneficiary_zip,
+        bank: item.bankid
+      })
+    }
   }
 
   _getGender = () => {
@@ -187,6 +271,7 @@ export default class App extends Component {
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
+        console.log(res);
         this.setState({
           genderOptions: res.data.response.records,
         })
@@ -239,6 +324,7 @@ export default class App extends Component {
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
+        console.log('country', res);
         this.setState({
           countryOptions: res.data.response.records,
         })
@@ -252,6 +338,7 @@ export default class App extends Component {
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
+        console.log(res);
         this.setState({
           salutationOptions: res.data.response.records,
         })
@@ -266,7 +353,7 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
         this.setState({
-          bankOptions: res.data.response.records,
+          bankOptions: res.data.response.records
         })
       }
     })
@@ -278,8 +365,13 @@ export default class App extends Component {
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
+        let options = [];
+        options.push({id: "0", value: "None"});
+        for (const item of res.data.response.records) {
+          options.push(item)
+        }
         this.setState({
-          brokerOptions: res.data.response.records,
+          brokerOptions: options
         })
       }
     })
@@ -290,9 +382,8 @@ export default class App extends Component {
     this.setState({copyAddr: !copyAddr})
   }
 
-  _submit = () => {
-    let { customer_name, ic_no, phoneno, phoneno2, email, gender, dob, salutation, nationality, address, address2, city, postcode, state, country, mail_address, mail_address2, mail_city, mail_country, mail_postcode, mail_state, bankid, bank_holder_name, bank_accountno, company_name, jobtitle, company_phoneno, company_address, company_address2, company_city, company_postcode, company_state, company_country, beneficiary_address, beneficiary_address2, beneficiary_city, beneficiary_country, beneficiary_fullname, beneficiary_phoneno, beneficiary_postcode, beneficiary_relationship, beneficiary_nricno, beneficiary_state, genderOptions, salutationOptions } = this.state;
-
+  _checkRequiredField = () => {
+    const { customer_name, ic_no, phoneno, phoneno2} = this.state;
     if (customer_name === null) {
       Alert.alert('Error', 'Please fill in Customer Name.')
       return;
@@ -305,86 +396,260 @@ export default class App extends Component {
       Alert.alert('Error', 'Please fill in Phone No.')
       return;
     }
-    if (gender === null) {
-      gender = genderOptions[0].id
+    if (phoneno2 === null) {
+      Alert.alert('Error', 'Please fill in Phone No.')
+      return;
     }
-    if (salutation === null) {
-      salutation = salutationOptions[0].id
+    this.setState({sVisible: true})
+  }
+  _submit = () => {
+    let { customer_name, ic_no, phoneno, phoneno2, email, gender, dob, salutation, nationality, address, address2, city, postcode, state, country, mail_address, mail_address2, mail_city, mail_country, mail_postcode, mail_state, bankid, bank_holder_name, bank_accountno, company_name, jobtitle, company_phoneno, company_address, company_address2, company_city, company_postcode, company_state, company_country, beneficiary_address, beneficiary_address2, beneficiary_city, beneficiary_country, beneficiary_fullname, beneficiary_phoneno, beneficiary_postcode, beneficiary_relationship, beneficiary_nricno, beneficiary_state, genderOptions, salutationOptions, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5, beneficiary_profile_image, beneficiary_nric_doc_image1, beneficiary_nric_doc_image2, beneficiary_doc_image1, beneficiary_doc_image2, beneficiary_doc_image3, beneficiary_doc_image4, beneficiary_doc_image5 } = this.state;
+    if (this.props.item) {
+      const body = {
+        act: 'updateCustomer',
+        sec_pass: DataService.getPassword(),
+        cust_id: this.props.item.cust_id,
+        fullname: customer_name,
+        nricno: ic_no,
+        phoneno,
+        phoneno2,
+        email,
+        dob,
+        nationality,
+        address,
+        address2,
+        city,
+        postcode,
+        state,
+        country,
+        mail_address,
+        mail_address2,
+        mail_city,
+        mail_postcode,
+        mail_state,
+        mail_country,
+        bankid,
+        bank_holder_name,
+        bank_accountno,
+        jobtitle,
+        company_name,
+        company_phoneno,
+        company_address,
+        company_address2,
+        company_city,
+        company_postcode,
+        company_state,
+        company_country,
+        profile_image,
+        nric_doc_image1,
+        nric_doc_image2,
+        doc_image1,
+        doc_image2,
+        doc_image3,
+        doc_image4,
+        doc_image5,
+        salutation: 'Mr.',
+        gender: 'm'
+      }
+      this.setState({loading: true})
+      ApiService.post(ApiService.getUrl(), body).then((res) => {
+        this.setState({loading: false})
+        console.log(res);
+        if (res.status === 200) {
+          Alert.alert('Info', res.data.errMsg,[
+            {
+              text: 'OK',
+              onPress: () => Actions.pop()
+            }
+          ])
+        }
+      })
+    } else {
+      const body = {
+        act: 'createCustomer',
+        sec_pass: DataService.getPassword(),
+        fullname: customer_name,
+        nricno: ic_no,
+        phoneno,
+        phoneno2,
+        email,
+        dob,
+        nationality,
+        address,
+        address2,
+        city,
+        postcode,
+        state,
+        country,
+        mail_address,
+        mail_address2,
+        mail_city,
+        mail_postcode,
+        mail_state,
+        mail_country,
+        bankid,
+        bank_holder_name,
+        bank_accountno,
+        jobtitle,
+        company_name,
+        company_phoneno,
+        company_address,
+        company_address2,
+        company_city,
+        company_postcode,
+        company_state,
+        company_country,
+        beneficiary_address,
+        beneficiary_address2,
+        beneficiary_city,
+        beneficiary_country,
+        beneficiary_fullname,
+        beneficiary_nricno,
+        beneficiary_phoneno,
+        beneficiary_postcode,
+        beneficiary_relationship,
+        beneficiary_state,
+        profile_image,
+        nric_doc_image1,
+        nric_doc_image2,
+        doc_image1,
+        doc_image2,
+        doc_image3,
+        doc_image4,
+        doc_image5,
+        beneficiary_profile_image,
+        beneficiary_nric_doc_image1,
+        beneficiary_nric_doc_image2,
+        beneficiary_doc_image1,
+        beneficiary_doc_image2,
+        beneficiary_doc_image3,
+        beneficiary_doc_image4,
+        beneficiary_doc_image5,
+        salutation: 'Mr.',
+        gender: 'm'
+      }
+      this.setState({loading: true})
+      ApiService.post(ApiService.getUrl(), body).then((res) => {
+        this.setState({loading: false})
+        console.log(res);
+        if (res.status === 200) {
+          Alert.alert('Info', res.data.errMsg,[
+            {
+              text: 'Done',
+              onPress: () => Actions.pop({ refresh: true})
+            },
+            {
+              text: 'Create Sales',
+              onPress: () => Actions.CreateSales({item: this.state})
+            }
+          ])
+        }
+      })
     }
 
-    const body = {
-      act: 'createCustomer',
-      sec_pass: 'v123456',
-      fullname: customer_name,
-      nricno: ic_no,
-      phoneno,
-      phoneno2,
-      email,
-      gender,
-      dob,
-      salutation,
-      nationality,
-      address,
-      address2,
-      city,
-      postcode,
-      state,
-      country,
-      mail_address,
-      mail_address2,
-      mail_city,
-      mail_postcode,
-      mail_state,
-      mail_country,
-      bankid,
-      bank_holder_name,
-      bank_accountno,
-      jobtitle,
-      company_phoneno,
-      company_address,
-      company_address2,
-      company_city,
-      company_postcode,
-      company_state,
-      company_country,
-      beneficiary_address,
-      beneficiary_address2,
-      beneficiary_city,
-      beneficiary_country,
-      beneficiary_fullname,
-      beneficiary_nricno,
-      beneficiary_phoneno,
-      beneficiary_postcode,
-      beneficiary_relationship,
-      beneficiary_state
+  }
+
+  _upload = (path) => {
+    if (this.state[path] !== null) {
+      ActionSheet.showActionSheetWithOptions({
+        options: ['View Image', 'Upload Image', 'Cancel'],
+        tintColor: 'blue',
+        cancelButtonIndex: 2
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          this.setState({isVisible: true, source: this.state[path]})
+        } else if (buttonIndex === 1) {
+          const options = {
+            quality                     : 0.72,
+            maxWidth                    : 480,
+            title                       : null,
+            chooseFromLibraryButtonTitle: 'Choose From Library...',
+            takePhotoButtonTitle: 'Take Photo...',
+            cancelButtonTitle: 'Cancel',
+            storageOptions              : {
+              skipBackup: true
+            }
+          };
+          ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel){
+              console.log('user cancelled');
+            } else {
+              let source = 'data:image/jpeg;base64,' + response.data ;
+              console.log(source);
+              this.setState({
+                [path]: source,
+              });
+      
+              // formdata.append('avatar', response)
+              
+            }
+          });
+        }
+      })
+    } else {
+      const options = {
+        quality                     : 0.72,
+        maxWidth                    : 480,
+        title                       : null,
+        chooseFromLibraryButtonTitle: 'Choose From Library...',
+        takePhotoButtonTitle: 'Take Photo...',
+        cancelButtonTitle: 'Cancel',
+        storageOptions              : {
+          skipBackup: true
+        }
+      };
+      ImagePicker.showImagePicker(options, (response) => {
+        if (response.didCancel){
+          console.log('user cancelled');
+        } else {
+          let source = 'data:image/jpeg;base64,' + response.data ;
+          console.log(source);
+          this.setState({
+            [path]: source,
+          });
+  
+          // formdata.append('avatar', response)
+          
+        }
+      });
     }
-    this.setState({loading: true})
-    ApiService.post(ApiService.getUrl(), body).then((res) => {
-      this.setState({loading: false})
-      console.log(res);
-      if (res.status === 200) {
-        Alert.alert('Info', res.data.errMsg,[
-          {
-            text: 'OK',
-            onPress: () => Actions.CreateSales({item: this.state})
-          }
-        ])
-      }
-    })
   }
 
   render() {
-    const { currentPage, gender, race, nationality, country, state, copyAddr, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, bankOptions, brokerOptions, salutationOptions, loading } = this.state;
+    const { currentPage, gender, race, nationality, country, state, copyAddr, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, bankOptions, brokerOptions, salutationOptions, loading, customer_name, ic_no, phoneno, phoneno2, email, remark, address, address2, city, postcode, mail_address, mail_address2, mail_city, mail_postcode, bank_holder_name, bank_accountno, company_name, jobtitle, company_phoneno, company_address, company_address2, company_city, company_postcode, company_country, company_state, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5, beneficiary_profile_image, beneficiary_doc_image1, beneficiary_doc_image2, beneficiary_doc_image3, beneficiary_doc_image4, beneficiary_doc_image5, beneficiary_nric_doc_image1, beneficiary_nric_doc_image2, isVisible, source, sVisible } = this.state;
     const { pgView, item } = this.props;
-    if (genderOptions.length > 0 && raceOptions.length > 0 && countryOptions.length > 0 && nationalityOptions.length > 0 && stateOptions.length > 0 && bankOptions.length > 0 && brokerOptions.length > 0 && salutationOptions.length > 0) {
+    if (raceOptions.length > 0 && countryOptions.length > 0 && nationalityOptions.length > 0 && stateOptions.length > 0 && bankOptions.length > 0 && brokerOptions.length > 0) {
       return(
         <Container>
           <Loader loading={loading}/>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
               title = {pgView === 'add' ? 'Create Customer' : 'Edit'}
               showBack = {currentPage === 1 && pgView === 'add' ? true : currentPage === 2 && pgView === 'add' ? false : true}
               showMenu = {false}
+            />
+            <View>
+              <Modal
+                isVisible = {isVisible}
+                onBackdropPress = {() => this.setState({isVisible: false})}
+                onBackButtonPress = {() => this.setState({isVisible: false})}
+              >
+                <View
+                  style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
+                >
+                  <ImageBackground
+                    source = {{uri: source}}
+                    style = {{width: width, height: '90%'}}
+                  >
+                  </ImageBackground>
+                </View>
+              </Modal>
+            </View>
+            <SecurityModal
+              isVisible = {sVisible}
+              closeModal = {() => this.setState({sVisible: false})}
+              submit = {() => this._submit()}
             />
             {
               pgView === 'add' ? 
@@ -446,35 +711,17 @@ export default class App extends Component {
                       </Form> : null
                     }
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>{pgView === 'edit' ? 'Salutation' : 'Salutation*'}</Label>
-                      <Picker
-                        mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                        style={{ width: undefined }}
-                        selectedValue={this.state.salutation}
-                        onValueChange={(value) => this.setState({salutation: value})}
-                      >
-                        {
-                          salutationOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.value}/>
-                            )
-                          })
-                        }
-                    </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>{pgView === 'edit' ? 'Customer Name' : 'Customer Name*'}</Label>
                       <Input style={styles.input}
                         onChangeText = {(cusName) => this.setState({customer_name: cusName})}
-                        value = {pgView === 'add' ? null : item.customer_name}
+                        defaultValue = {pgView === 'add' ? customer_name : item.customer_name}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>{pgView === 'edit' ? 'NRIC/Passport' : 'NRIC/Passport*'}</Label>
                       <Input style={styles.input}
                         onChangeText = {(nric) => this.setState({ic_no: nric})}
-                        value = {pgView === 'add' ? null: item.ic_no}
+                        defaultValue = {pgView === 'add' ? ic_no: item.ic_no}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -482,13 +729,15 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(phoneNo) => this.setState({phoneno: phoneNo})}
                         keyboardType = 'number-pad'
+                        defaultValue = {item ? item.phone_no : null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Phone No.2</Label>
+                      <Label style={styles.label}>Phone No.2*</Label>
                       <Input style={styles.input}
                         onChangeText = {(phoneNo2) => this.setState({phoneno2: phoneNo2})}
                         keyboardType = 'number-pad'
+                        defaultValue = {item ? item.phone_no2 : null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -496,25 +745,8 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(email) => this.setState({email: email})}
                         keyboardType = 'email-address'
+                        defaultValue = {item ? item.email : null}
                       />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Gender</Label>
-                      <Picker
-                        mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
-                        style={{ width: undefined, borderWidth:0.5, borderColor: '#000' }}
-                        selectedValue={this.state.gender}
-                        onValueChange={(value) => this.setState({gender: value})}
-                      >
-                        {
-                          genderOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Race</Label>
@@ -556,6 +788,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Remark</Label>
                       <Input style={styles.input}
                         onChangeText = {(remark) => this.setState({remark: remark})}
+                        defaultValue = {item ? item.remark : null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -564,7 +797,7 @@ export default class App extends Component {
                         mode="dropdown"
                         // iosIcon={<Icon name="ios-arrow-down-outline" />}
                         style={{ width: undefined }}
-                        selectedValue={race}
+                        selectedValue={this.state.broker}
                         onValueChange={(value) => this.setState({broker: value})}
                       >
                         {
@@ -585,12 +818,14 @@ export default class App extends Component {
                       <Label style={styles.label}>Address 1</Label>
                       <Input style={styles.input}
                         onChangeText = {(addr1) => this.setState({address: addr1})}
+                        defaultValue = {item ? item.address: null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Address 2</Label>
                       <Input style={styles.input}
                         onChangeText = {(addr2) => this.setState({address2: addr2})}
+                        defaultValue = {item ? item.address2: null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -605,7 +840,7 @@ export default class App extends Component {
                         {
                           countryOptions.map((item,index) => {
                             return (
-                              <Picker.Item label={item.value} value={item.value}/>
+                              <Picker.Item label={item.value} value={item.id}/>
                             )
                           })
                         }
@@ -623,7 +858,7 @@ export default class App extends Component {
                         {
                           stateOptions.map((item,index) => {
                             return (
-                              <Picker.Item label={item.value} value={item.value}/>
+                              <Picker.Item label={item.value} value={item.id}/>
                             )
                           })
                         }
@@ -633,6 +868,7 @@ export default class App extends Component {
                       <Label style={styles.label}>City</Label>
                       <Input style={styles.input}
                           onChangeText = {(city) => this.setState({city: city})}
+                          defaultValue = {item ? item.city: null}
                         />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -640,6 +876,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(postcode) => this.setState({postcode: postcode})}
                         keyboardType = 'number-pad'
+                        defaultValue = {item ? item.postcode: null}
                       />
                     </Item>
                   </Form>
@@ -660,12 +897,14 @@ export default class App extends Component {
                     <Label style={styles.label}>Address 1</Label>
                     <Input style={styles.input}
                         onChangeText = {(addr1) => this.setState({mail_address: addr1})}
+                        defaultValue = {item ? item.mail_address: null}
                       />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Address 2</Label>
                     <Input style={styles.input}
                         onChangeText = {(addr2) => this.setState({mail_address2: addr2})}
+                        defaultValue = {item ? item.mail_address2: null}
                       />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -680,7 +919,7 @@ export default class App extends Component {
                       {
                         countryOptions.map((item,index) => {
                           return (
-                            <Picker.Item label={item.value} value={item.value}/>
+                            <Picker.Item label={item.value} value={item.id}/>
                           )
                         })
                       }
@@ -708,6 +947,7 @@ export default class App extends Component {
                     <Label style={styles.label}>City</Label>
                     <Input style={styles.input}
                         onChangeText = {(city) => this.setState({mail_city: city})}
+                        defaultValue = {item ? item.mail_city: null}
                       />
                   </Item>
   
@@ -716,6 +956,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(postcode) => this.setState({mail_postcode: postcode})}
                       keyboardType = 'number-pad'
+                      defaultValue = {item ? item.mail_postcode: null}
                     />
                   </Item>
                   </Form>
@@ -745,12 +986,14 @@ export default class App extends Component {
                       <Label style={styles.label}>Account Holder</Label>
                       <Input style={styles.input}
                           onChangeText = {(accHolder) => this.setState({bank_holder_name: accHolder})}
+                          defaultValue = {item ? item.bank_holder_name: null}
                         />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Account No.</Label>
                       <Input style={styles.input}
                           onChangeText = {(accNo) => this.setState({bank_accountno: accNo})}
+                          defaultValue = {item ? item.bank_acct_no: null}
                         />
                     </Item>
                   </Form>
@@ -762,18 +1005,21 @@ export default class App extends Component {
                       <Label style={styles.label}>Company Name</Label>
                       <Input style={styles.input}
                         onChangeText = {(companyName) => this.setState({company_name: companyName})}
+                        defaultValue = {item ? item.company_name: null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Job Title</Label>
                       <Input style={styles.input}
                           onChangeText = {(jobTitle) => this.setState({jobtitle: jobTitle})}
+                          // defaultValue = {item ? item.bank_holder_name: null}
                         />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Company Phone</Label>
                       <Input style={styles.input}
                           onChangeText = {(companyPhone) => this.setState({company_phoneno: companyPhone})}
+                          defaultValue = {item ? item.company_phoneno: null}
                         />
                     </Item>
                   </Form>
@@ -785,12 +1031,14 @@ export default class App extends Component {
                       <Label style={styles.label}>Address 1</Label>
                       <Input style={styles.input}
                           onChangeText = {(addr1) => this.setState({company_address: addr1})}
+                          defaultValue = {item ? item.company_address: null}
                         />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Address 2</Label>
                       <Input style={styles.input}
                           onChangeText = {(addr2) => this.setState({company_address2: addr2})}
+                          defaultValue = {item ? item.company_address2: null}
                         />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -799,13 +1047,13 @@ export default class App extends Component {
                         mode="dropdown"
                         // iosIcon={<Icon name="ios-arrow-down-outline" />}
                         style={{ width: undefined }}
-                        selectedValue={country}
+                        selectedValue={company_country}
                         onValueChange={(value) => this.setState({company_country: value})}
                       >
                         {
                           countryOptions.map((item,index) => {
                             return (
-                              <Picker.Item label={item.value} value={item.value}/>
+                              <Picker.Item label={item.value} value={item.id}/>
                             )
                           })
                         }
@@ -817,7 +1065,7 @@ export default class App extends Component {
                         mode="dropdown"
                         // iosIcon={<Icon name="ios-arrow-down-outline" />}
                         style={{ width: undefined }}
-                        selectedValue={state}
+                        selectedValue={company_state}
                         onValueChange={(value) => this.setState({company_state: value})}
                       >
                         {
@@ -833,6 +1081,7 @@ export default class App extends Component {
                       <Label style={styles.label}>City</Label>
                       <Input style={styles.input}
                           onChangeText = {(city) => this.setState({company_city: city})}
+                          defaultValue = {item ? item.company_city: null}
                         />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -840,76 +1089,214 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(postcode) => this.setState({company_postcode: postcode})}
                         keyboardType = 'number-pad'
+                        defaultValue = {item ? item.company_postcode: null}
                       />
                     </Item>
                   </Form>
                 </Section>
                 <Section>
                   <SectionName>Upload Photos/Documents</SectionName>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Customer's Photo</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('profile_image')}
+                  >
+                  {
+                    profile_image == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Customer's Photo</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Customer's Photo</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>NRIC Photo 1</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('nric_doc_image1')}
+                  >
+                  {
+                    nric_doc_image1 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>NRIC Photo 1</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>NRIC Photo 1</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>NRIC Photo 2</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('nric_doc_image2')}
+                  >
+                  {
+                    nric_doc_image2 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>NRIC Photo 2</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>NRIC Photo 2</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 1</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('doc_image1')}
+                  >
+                  {
+                    doc_image1 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 1</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 1</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 2</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('doc_image2')}
+                  >
+                  {
+                    doc_image2 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 2</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 2</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 3</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('doc_image3')}
+                  >
+                  {
+                    doc_image3 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 3</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 3</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 4</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('doc_image4')}
+                  >
+                  {
+                    doc_image4 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 4</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 4</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 5</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('doc_image5')}
+                  >
+                  {
+                    doc_image5 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 5</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 5</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
+                  
                 </Section>
               </View>
               : null
@@ -924,18 +1311,21 @@ export default class App extends Component {
                       <Label style={styles.label}>Name</Label>
                       <Input style={styles.input}
                         onChangeText = {(gName) => this.setState({beneficiary_fullname: gName})}
+                        defaultValue = {item ? item.beneficiary_name: null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>NRIC/Passport</Label>
                       <Input style={styles.input}
                         onChangeText = {(gNric) => this.setState({beneficiary_nricno: gNric})}
+                        defaultValue = {item ? item.beneficiary_ic_no: null}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Phone No</Label>
                       <Input style={styles.input}
                         onChangeText = {(bphone) => this.setState({beneficiary_phoneno: bphone})}
+                        defaultValue = {item ? item.beneficiary_phone_no: null}
                         keyboardType = 'number-pad'
                       />
                     </Item>
@@ -943,6 +1333,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Relationship</Label>
                       <Input style={styles.input}
                         onChangeText = {(relationship) => this.setState({beneficiary_relationship: relationship})}
+                        defaultValue = {item ? item.beneficiary_relationship: null}
                       />
                     </Item>
                   </Form>
@@ -953,12 +1344,14 @@ export default class App extends Component {
                     <Label style={styles.label}>Address 1</Label>
                     <Input style={styles.input}
                         onChangeText = {(addr1) => this.setState({beneficiary_address: addr1})}
+                        defaultValue = {item ? item.beneficiary_address: null}
                       />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Address 2</Label>
                     <Input style={styles.input}
                         onChangeText = {(addr2) => this.setState({beneficiary_address2: addr2})}
+                        defaultValue = {item ? item.beneficiary_address2: null}
                       />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -973,7 +1366,7 @@ export default class App extends Component {
                       {
                         countryOptions.map((item,index) => {
                           return (
-                            <Picker.Item label={item.value} value={item.value}/>
+                            <Picker.Item label={item.value} value={item.id}/>
                           )
                         })
                       }
@@ -985,7 +1378,7 @@ export default class App extends Component {
                       mode="dropdown"
                       // iosIcon={<Icon name="ios-arrow-down-outline" />}
                       style={{ width: undefined }}
-                      selectedValue={state}
+                      selectedValue={this.state.beneficiary_state}
                       onValueChange={(value) => this.setState({beneficiary_state: value})}
                     >
                       {
@@ -1001,6 +1394,7 @@ export default class App extends Component {
                     <Label style={styles.label}>City</Label>
                     <Input style={styles.input}
                         onChangeText = {(city) => this.setState({beneficiary_city: city})}
+                        defaultValue = {item ? item.beneficiary_city: null}
                       />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -1008,74 +1402,211 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(postcode) => this.setState({beneficiary_postcode: postcode})}
                       keyboardType = 'number-pad'
+                      defaultValue = {item ? item.beneficiary_zip: null}
                     />
                   </Item>
                 </Section>
                 <Section>
                   <SectionName>Upload Photos/Documents</SectionName>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Guarantor's Photo</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_profile_image')}
+                  >
+                  {
+                    beneficiary_profile_image == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Guarantor's Photo</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Guarantor's Photo</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>NRIC Photo 1</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_nric_doc_image1')}
+                  >
+                  {
+                    beneficiary_nric_doc_image1 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>NRIC Photo 1</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>NRIC Photo 1</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>NRIC Photo 2</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_nric_doc_image2')}
+                  >
+                  {
+                    beneficiary_nric_doc_image2 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>NRIC Photo 2</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>NRIC Photo 2</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 1</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_doc_image1')}
+                  >
+                  {
+                    beneficiary_doc_image1 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 1</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 1</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 2</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_doc_image2')}
+                  >
+                  {
+                    beneficiary_doc_image2 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 2</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 2</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 3</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_doc_image3')}
+                  >
+                  {
+                    beneficiary_doc_image3 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 3</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 3</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 4</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_doc_image4')}
+                  >
+                  {
+                    beneficiary_doc_image4 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 4</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 4</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
-                  <ImageContainer>
-                    <Icon
-                      name = 'image'
-                      type = 'font-awesome'
-                      color = '#000'
-                    />
-                    <ImageLabel>Document 5</ImageLabel>
+                  <ImageContainer
+                    onPress = {() => this._upload('beneficiary_doc_image5')}
+                  >
+                  {
+                    beneficiary_doc_image5 == null ? (
+                    <View>
+                      <Icon
+                        name = 'image'
+                        type = 'font-awesome'
+                        color = '#000'
+                      />
+                      <ImageLabel>Document 5</ImageLabel>
+                    </View>
+                    ) : (
+                    <View>
+                      <Icon
+                        name = 'check-circle'
+                        type = 'font-awesome'
+                        color = '#4eff4e'
+                      />
+                      <ImageLabel>Document 5</ImageLabel>
+                    </View>
+                    )
+                  }
                   </ImageContainer>
                 </Section>
               </View> : null
@@ -1097,14 +1628,14 @@ export default class App extends Component {
                   <Button
                     title = 'Back'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                    onPress = {() => this.setState({currentPage: 1})}
+                    onPress = {() => this.setState({currentPage: 1, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5})}
                   />
                 </View>
                 <View style={{flex:1}}>
                   <Button
                     title = 'SUBMIT'
                     buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
-                    onPress = {() => this._submit()}
+                    onPress = {() => this._checkRequiredField()}
                   />
                 </View>
               </ButtonsContainer>
@@ -1113,7 +1644,7 @@ export default class App extends Component {
                 <Button
                   title = 'UPDATE'
                   buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                  onPress = {() => this.setState({currentPage: 2})}
+                  onPress = {() => this._checkRequiredField()}
                 />
               </ButtonContainer> 
           }

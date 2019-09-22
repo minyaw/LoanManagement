@@ -21,10 +21,56 @@ import CreateTransactionScreen from './app/components/screens/CreateTransactionS
 import LoginScreen from './app/components/screens/LoginScreen';
 import FilterScreen from './app/components/screens/FilterScreen';
 import ApprovalListScreen from './app/components/screens/ApprovalListScreen';
+import OutstandingListScreen from './app/components/screens/OutstandingListScreen';
+import IncomeListScreen from './app/components/screens/IncomeListScreen';
+import CreateIncomeScreen from './app/components/screens/CreateIncomeScreen';
+import firebase from 'react-native-firebase';
+import AsyncStorage from '@react-native-community/async-storage';
+
 const Container = styled.View`
   flex: 1;
 `
 export default class App extends Component {
+  async componentDidMount() {
+    // TODO: You: Do firebase things
+    // const { user } = await firebase.auth().signInAnonymously();
+    // console.warn('User -> ', user.toJSON());
+
+    // await firebase.analytics().logEvent('foo', { bar: '123'});
+    this._checkPermission();
+  }
+
+  _checkPermission = async () => {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      this._getToken();
+    } else {
+      this._requestPermission()
+    }
+  }
+
+  _getToken = async () => {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+        fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            // user has a device token
+            await AsyncStorage.setItem('fcmToken', fcmToken);
+        }
+      }
+  }
+  
+    //2
+  _requestPermission = async () => {
+    try {
+        await firebase.messaging().requestPermission();
+        // User has authorised
+        this.getToken();
+    } catch (error) {
+        // User has rejected permissions
+        console.log('permission rejected');
+    }
+  }
   render() {
     return (
       <Container>
@@ -48,6 +94,9 @@ export default class App extends Component {
             <Scene key="CreateTransaction" component={CreateTransactionScreen}/>
             <Scene key="Filter" component={FilterScreen}/>
             <Scene key="ApprovalList" component={ApprovalListScreen}/>
+            <Scene key="OutstandingList" component={OutstandingListScreen}/>
+            <Scene key="IncomeList" component={IncomeListScreen}/>
+            <Scene key="CreateIncome" component={CreateIncomeScreen}/>
             <Scene key="Login" component={LoginScreen} initial={true}/>
           </Scene>
         </Router>

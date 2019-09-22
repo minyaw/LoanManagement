@@ -4,26 +4,20 @@ import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { ScrollView, StyleSheet, View, TouchableOpacity, Alert, Text, ImageBackground } from 'react-native';
+import { ScrollView, StyleSheet, View, TouchableOpacity, Alert, Text } from 'react-native';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
-import { Icon } from 'react-native-elements';
+import { Icon, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
 import DataService from '../common/DataService';
 import { Content, Card, CardItem, Body } from 'native-base';
-import Modal from "react-native-modal";
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
 `
 const ButtonContainer = styled.View`
-  paddingRight: 15;
-  paddingBottom: 15;
-  position: absolute;
-  bottom:0;
-  right:0;
 `
 const AddButton = styled.TouchableOpacity`
   width: 80;
@@ -34,14 +28,14 @@ const AddButton = styled.TouchableOpacity`
   alignItems: center;
 `
 const HeaderList = [
-  'Submit Date',
+  'Trans ID',
   'Agent',
+  'Submit Date',
   'Trans Date',
-  'Expenses Type',
+  'Trans Type',
+  'Item',
   'Trans Amount',
-  'Remark',
-  'Status',
-  'Receipt'
+  'Remark'
 ]
 
 const Loadmore = styled.Text`
@@ -69,15 +63,12 @@ export default class App extends Component {
       widthArr: [130, 130, 130, 130, 130, 130, 130, 130],
       loadPage: 1,
       loading: false,
-      agentList:{},
-      imageList:[],
-      isVisible: false,
-      imageIndex: null
+      agentList:{}
     }
   }
 
   componentDidMount = () => {
-    this._getExpensesList();
+    this._getOtherIncomeList();
   }
 
   componentWillReceiveProps = () => {
@@ -85,13 +76,13 @@ export default class App extends Component {
       contentList:[],
       loadPage:1
     })
-    this._getExpensesList();
+    this._getOtherIncomeList();
   }
 
-  _getExpensesList = () => {
+  _getOtherIncomeList = () => {
     const { loadPage } = this.state;
     const body = {
-      act: 'getExpensesList',
+      act: 'getOtherIncomeList',
       page_no: loadPage
     }
     this.setState({ loading: true})
@@ -102,36 +93,30 @@ export default class App extends Component {
         if (this.state.item) {
           for (const content of res.data.response.records) {
             this.state.contentList.push([
-              content.submit_date,
+              content.id,
               content.agent,
+              content.submit_date,
               content.trans_date,
-              content.expenses_type,
-              `${content.currency}${content.trans_amount}`,
-              content.remark,
-              content.status,
-              content.receipt_file !== '' ? 'View Receipt': null
+              content.trans_type,
+              content.item,
+              content.trans_amount,
+              content.remark
             ])
-            this.state.imageList.push(
-              content.receipt_file === '' ? 'none' : content.receipt_file
-            )
           }
           this.setState({contentList: this.state.contentList})
         } else {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
               this.state.contentList.push([
-                content.submit_date,
+                content.id,
                 content.agent,
+                content.submit_date,
                 content.trans_date,
-                content.expenses_type,
-                `${content.currency}${content.trans_amount}`,
-                content.remark,
-                content.status,
-                content.receipt_file !== '' ? 'View Receipt': null
+                content.trans_type,
+                content.item,
+                content.trans_amount,
+                content.remark
               ])
-              this.state.imageList.push(
-                content.receipt_file === '' ? 'none' : content.receipt_file
-              )
             }
             this.setState({contentList: this.state.contentList})
           })
@@ -178,17 +163,9 @@ export default class App extends Component {
           for (const content of res.data.response.records) {
             this.state.contentList.push([
               content.submit_date,
-              content.agent,
-              content.trans_date,
               content.expenses_type,
-              `${content.currency}${content.trans_amount}`,
-              content.remark,
-              content.status,
-              content.receipt_file !== '' ? 'View Receipt': null
+              `${content.currency}${content.trans_amount}`
             ])
-            this.state.imageList.push(
-              content.receipt_file === '' ? 'none' : content.receipt_file
-            )
           }
           this.setState({contentList: this.state.contentList})
         } else {
@@ -196,17 +173,9 @@ export default class App extends Component {
             for (const content of this.state.item.records) {
               this.state.contentList.push([
                 content.submit_date,
-                content.agent,
-                content.trans_date,
                 content.expenses_type,
-                `${content.currency}${content.trans_amount}`,
-                content.remark,
-                content.status,
-                content.receipt_file !== '' ? 'View Receipt': null
+                `${content.currency}${content.trans_amount}`
               ])
-              this.state.imageList.push(
-                content.receipt_file === '' ? 'none' : content.receipt_file
-              )
             }
             this.setState({contentList: this.state.contentList})
           })
@@ -217,14 +186,8 @@ export default class App extends Component {
     })
   }
 
-  _showReceipt = (index) => {
-    if (this.state.imageList[index] !== 'none') {
-      this.setState({isVisible: true, imageIndex: index})
-    }
-  }
-
   render () {
-    const { menuOpen, widthArr, loading, item, contentList, filter, isVisible, imageList, imageIndex } = this.state;
+    const { menuOpen, widthArr, loading, item, contentList, filter } = this.state;
       return(
         <Drawer
           ref={(ref) => this._drawer = ref}
@@ -239,9 +202,9 @@ export default class App extends Component {
           <Container>
             <Loader loading={loading}/>
               <CustomHeader
-                title = 'Expenses'
+                title = 'Other Income'
                 openMenu  = {this.openMenu.bind(this)}
-                showSearch = {true}
+                // showSearch = {true}
                 showMenu = {true}
                 filter = {()=> this._filter.bind(this)}
                 _in = {this}
@@ -257,9 +220,7 @@ export default class App extends Component {
                           {
                             this.state.contentList.map((rowData, index) => {
                               return(
-                                <TouchableOpacity
-                                  onPress={() => this._showReceipt(index)}
-                                >
+                                <TouchableOpacity>
                                   <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
                                     {
                                       rowData.map((cellData, cellIndex) => {
@@ -305,36 +266,12 @@ export default class App extends Component {
                   </Content>
                 )
               }
-              <View>
-                <Modal
-                  isVisible = {isVisible}
-                  onBackdropPress = {() => this.setState({isVisible: false})}
-                  onBackButtonPress = {() => this.setState({isVisible: false})}
-                >
-                  <View
-                    style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
-                  >
-                    <ImageBackground
-                      style = {{width: '90%', height: '90%', backgroundColor: '#EEE'}}
-                    >
-                      <ImageBackground
-                        source = {{uri: imageList[imageIndex]}}
-                        style = {{width: '100%', height: '100%', backgroundColor: '#EEE'}}
-                        imageStyle = {{resizeMode: 'contain'}}
-                      ></ImageBackground>
-                    </ImageBackground>
-                  </View>
-                </Modal>
-              </View>
               <ButtonContainer>
-                <AddButton onPress={() => this._redirect()}>
-                  {/* <Text style={{color: '#FFF', fontSize:42}}>+</Text> */}
-                  <Icon
-                    name = 'plus'
-                    type = 'font-awesome'
-                    color = '#FFF'
-                  />
-                </AddButton>
+                <Button
+                  title = 'CREATE OTHER INCOME'
+                  buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                  onPress = {() => Actions.CreateIncome()}
+                />
               </ButtonContainer>
           </Container>
         </Drawer>

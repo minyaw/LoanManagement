@@ -6,8 +6,8 @@ import Drawer from 'react-native-drawer';
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import CustomHeader from '../common/CustomHeader';
-import { Form } from 'native-base';
-import { Avatar, Button } from 'react-native-elements';
+import { Form, Button, Content } from 'native-base';
+import { Avatar } from 'react-native-elements';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
 
@@ -81,22 +81,20 @@ export default class App extends Component {
     super(props);
     this.state = {
       menuOpen: false,
-      gender: ''
+      gender: '',
+      role: null
     }
   }
 
   componentDidMount = () => {
-    const { custId, salesId } = this.props;
+    this.setState({ role: ApiService.getRole()})
+    const { custId } = this.props;
 
     const body = {
       act: 'getCustomerProfile',
+      cust_id: custId
     }
 
-    if (custId) {
-      body.cust_id = custId
-    } else if (salesId) {
-      body.sales_id = salesId
-    }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
@@ -118,7 +116,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { menuOpen, gender, item } = this.state;
+    const { menuOpen, gender, item, role } = this.state;
     if (item) {
       return (
         <Container>
@@ -145,44 +143,69 @@ export default class App extends Component {
                 <UserDetail>{item.register_date}</UserDetail>
               </UsernameContainer>
             </AvatarContainer>
-            <Form>
-              <DetailContainer>
-                <DetailTitle>Total Sales Application</DetailTitle>
-                <TouchableOpacity
-                  onPress={() => Actions.SalesDetailList({cust_id: item.cust_id})}
-                >
-                  <DetailValue>{item.total_sales_application} ></DetailValue>
-                </TouchableOpacity>
-              </DetailContainer>
-              <DetailContainer>
-                <DetailTitle>Total Sales Amount</DetailTitle>
-                <DetailValue>{item.total_sales_amount}</DetailValue>
-              </DetailContainer>
-              <DetailContainer>
-                <DetailTitle>Total Outstanding Amount</DetailTitle>
-                <DetailValue>{item.total_outstanding_amount}</DetailValue>
-              </DetailContainer>
-              <DetailContainer>
-                <DetailTitle>Max Sales Amt Application</DetailTitle>
-                <DetailValue>{item.total_sales_application}</DetailValue>
-              </DetailContainer>
-              <DetailContainer>
-                <DetailTitle>Gain / Loss</DetailTitle>
-                <DetailValue>{item.gain_loss_amount}</DetailValue>
-              </DetailContainer>
-              <DetailContainer>
-                <DetailTitle>Pending Sales Application</DetailTitle>
-                <DetailValue>{item.total_loan_count_pending}</DetailValue>
-              </DetailContainer>
-            </Form>
+            {
+              role === 'Admin' ? (
+                <Form>
+                  <DetailContainer>
+                    <DetailTitle>Total Sales Application</DetailTitle>
+                    <TouchableOpacity
+                      onPress={() => Actions.SalesDetailList({cust_id: item.cust_id})}
+                    >
+                      <DetailValue>{item.total_sales_application} ></DetailValue>
+                    </TouchableOpacity>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Total Sales Amount</DetailTitle>
+                    <DetailValue>{item.total_sales_amount}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Total Outstanding Amount</DetailTitle>
+                    <DetailValue>{item.total_outstanding_amount}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Max Sales Amt Application</DetailTitle>
+                    <DetailValue>{item.total_sales_application}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Gain / Loss</DetailTitle>
+                    <DetailValue>{item.gain_loss_amount}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Pending Sales Application</DetailTitle>
+                    <DetailValue>{item.total_loan_count_pending}</DetailValue>
+                  </DetailContainer>
+                </Form>
+              ) : (
+                <Content style={{ paddingHorizontal: 20 }}>
+                  <Button
+                    block
+                    style={{backgroundColor: colors.primary}}
+                    onPress={() => Actions.SalesDetailList({cust_id: item.cust_id})}
+                  >
+                    <Text style={{ color: '#FFF', fontWeight: 'bold'}}>VIEW SALES DETAILS</Text>
+                  </Button>
+                  <Button 
+                    block
+                    style={{backgroundColor: colors.primary, marginTop: 20}}
+                    onPress = {() => Actions.CreateSales({item: item})}
+                  >
+                    <Text style={{ color: '#FFF', fontWeight: 'bold'}}>CREATE NEW SALES</Text>
+                  </Button>
+                </Content>
+              )
+            }
           </ScrollView>
-          <ButtonContainer>
-            <Button
-              title = 'CREATE NEW SALES'
-              buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-              onPress = {() => Actions.CreateSales({item: item})}
-            />
-          </ButtonContainer>
+          {
+            role === 'item' ? (
+              <Button
+                block
+                onPress = {() => Actions.CreateSales({item: item})}
+                style={{backgroundColor: colors.primary}}
+              >
+                <Text style={{color: '#FFF', fontWeight:'bold'}}>CREATE NEW SALES</Text>
+              </Button>
+            ) : null
+          }
         </Container>
       )
     } else {

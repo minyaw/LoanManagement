@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   },
   button: {
     color: `${colors.primary}`,
+    paddingHorizontal: 20
   }
 })
 export default class App extends Component {
@@ -49,7 +50,7 @@ export default class App extends Component {
     this.setState({loading: true});
     setTimeout(() => {
       this.setState({loading: false})
-    }, 2000)
+    }, 1000)
     ApiService.post(ApiService.getUrl(), body, true);
   }
 
@@ -60,11 +61,12 @@ export default class App extends Component {
         <Loader loading={loading}/>
         <Content>
           <Form style={styles.content}>
-            <Item stackedLabel>
+            <Item stackedLabel last>
               <Label>Username</Label>
               <Input
                 value = {username}
                 onChangeText = {(username) => this.setState({username})}
+                autoCapitalize = "none"
               />
             </Item>
             <Item stackedLabel last>
@@ -72,13 +74,15 @@ export default class App extends Component {
               <Input 
                 value = {password}
                 onChangeText = {(password) => this.setState({password})}
+                autoCapitalize = "none"
+                secureTextEntry = {true}
               />
             </Item>
           </Form>
           <Button full style={styles.button} onPress={() => this._login()}>
             <Text>Login</Text>
           </Button>
-          <VersionNo>v1.0.8</VersionNo>
+          <VersionNo>v1.0.23</VersionNo>
         </Content>  
       </Container>
     )
