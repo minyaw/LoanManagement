@@ -16,6 +16,7 @@ let brokerId = null;
 let phone = null;
 let agentGroupId = null;
 let password = null;
+let custId = null;
 
 class DataService {
   setGroup = (item) => {
@@ -172,6 +173,14 @@ class DataService {
 
   getPassword = () => {
     return password;
+  }
+
+  setCustId = (value) => {
+    custId = value;
+  }
+
+  getCustId = () => {
+    return custId;
   }
 }
 

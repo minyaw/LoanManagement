@@ -10,6 +10,7 @@ import { Form, Button, Content } from 'native-base';
 import { Avatar } from 'react-native-elements';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
+import DataService from '../common/DataService';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -87,8 +88,33 @@ export default class App extends Component {
   }
 
   componentDidMount = () => {
+    this._getCustomerProfile();
+  }
+
+  componentWillReceiveProps = () => {
+    this.setState({ role: ApiService.getRole()})
+
+    const body = {
+      act: 'getCustomerProfile',
+      cust_id: DataService.getCustId()
+    }
+
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({loading: false})
+      if (res.status === 200) {
+        this.setState({item: res.data.response})
+      } else {
+        Alert.alert('Error', res.data.errMsg)
+      }
+      console.log(res);
+    })
+  }
+
+  _getCustomerProfile = () => {
     this.setState({ role: ApiService.getRole()})
     const { custId } = this.props;
+    DataService.setCustId(custId);
 
     const body = {
       act: 'getCustomerProfile',

@@ -106,7 +106,8 @@ export default class App extends Component {
       sVisible: false,
       isVisible: false,
       attachment: null,
-      source: null
+      source: null,
+      id: null
     },
     this.setDate = this.setDate.bind(this)
   }
@@ -115,12 +116,27 @@ export default class App extends Component {
     this._getBank();
     this._getCurrency();
     this._getExpensesType();
+    if (this.props.content) {
+      const { content } = this.props;
+      console.log(content);
+      this.setState({
+        trans_amount: content.trans_amount,
+        trans_date: content.trans_date,
+        bank_acct_id: content.bank_acct_id,
+        expense_type: content.expenses_type,
+        id: content.expenses_id,
+        remark: content.remark,
+        attachment: content.receipt_file,
+        ref_no: content.ref_no,
+        currency: content.currency
+      })
+    }
   }
   
   _getBank = () => {
     const body = {
       act: "getMasterDataList",
-      type: "Bank"
+      type: "BankAccount"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
@@ -136,6 +152,7 @@ export default class App extends Component {
       type: "ExpensesType"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
+      console.log(res);
       if (res.status === 200) {
         this.setState({
           expensesOptions: res.data.response.records,
@@ -158,7 +175,8 @@ export default class App extends Component {
   }
 
   _submit = () => {
-    let { expensesOptions, currencyOptions, bankOptions, trans_date, trans_amount, expense_type, currency, bank_acct_id, ref_no, remark, attachment } = this.state;
+    let { expensesOptions, currencyOptions, bankOptions, trans_date, trans_amount, expense_type, currency, bank_acct_id, ref_no, remark, attachment, id } = this.state;
+    const { pgView } = this.props;
 
     if (expense_type === null) {
       expense_type = expensesOptions[0].id;
@@ -166,22 +184,41 @@ export default class App extends Component {
     if (currency === null) {
       currency = currencyOptions[0].id;
     }
-    if (bank_acct_id === null) {
+    if (bank_acct_id === null || bank_acct_id === undefined) {
       bank_acct_id = bankOptions[0].id;
     }
 
-    const body = {
-      act: 'createExpenses',
-      sec_pass: DataService.getPassword(),
-      bank_acct_id,
-      trans_date,
-      trans_amount,
-      currency,
-      expense_type,
-      ref_no,
-      remark,
-      attachment
+    let body;
+
+    if (pgView === 'edit') {
+      body = {
+        act: 'updateExpenses',
+        sec_pass: DataService.getPassword(),
+        bank_acct_id,
+        trans_date,
+        trans_amount,
+        currency,
+        expense_type,
+        ref_no,
+        remark,
+        attachment,
+        id
+      }
+    } else {
+      body = {
+        act: 'createExpenses',
+        sec_pass: DataService.getPassword(),
+        bank_acct_id,
+        trans_date,
+        trans_amount,
+        currency,
+        expense_type,
+        ref_no,
+        remark,
+        attachment
+      }
     }
+
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
@@ -287,14 +324,16 @@ export default class App extends Component {
   }
 
   render() {
-    const { expensesOptions, currencyOptions, bankOptions, loading, sVisible, isVisible, source, attachment } = this.state;
+    const { expensesOptions, currencyOptions, bankOptions, loading, sVisible, isVisible, source, attachment, trans_amount, remark, ref_no } = this.state;
+    const { pgView, content } = this.props;
+
     if (expensesOptions.length > 0 && currencyOptions.length > 0 && bankOptions.length > 0) {
       return(
         <Container>
           <Loader loading={loading}/>
           <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
-              title = 'Create Expenses'
+              title = { pgView === 'edit' ? 'Edit Expenses' : 'Create Expenses'}
               showBack = {true}
               showMenu = {false}
             />
@@ -321,8 +360,9 @@ export default class App extends Component {
                 closeModal = {() => this.setState({sVisible: false})}
                 submit = {() => this._submit()}
               />
+              
               <Divider>
-                <DividerText>New Expenses</DividerText>
+                <DividerText>{ pgView === 'edit' ? 'Edit Expenses' : 'New Expenses'}</DividerText>
                 {/* <Pagination>
                   <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
                   <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
@@ -331,24 +371,40 @@ export default class App extends Component {
               <Section>
                 {/* <SectionName>Personal Details</SectionName> */}
                 <Form>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Transaction Date*</Label>
-                    <DatePicker
-                      defaultDate={new Date()}
-                      // minimumDate={new Date(2018, 1, 1)}
-                      maximumDate={new Date()}
-                      locale={"en"}
-                      timeZoneOffsetInMinutes={undefined}
-                      modalTransparent={false}
-                      animationType={"fade"}
-                      androidMode={"default"}
-                      placeHolderText="Select date"
-                      textStyle={{ color: "#000" }}
-                      placeHolderTextStyle={{ color: "#d3d3d3" }}
-                      onDateChange={this.setDate}
-                      disabled={false}
-                    />
-                  </Item>
+                  {
+                    pgView === 'edit' ? (
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Submit Date</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          value = {content.submit_date}
+                          disabled = {true}
+                          style = {{textAlign: 'right'}}
+                        />
+                      </Item>
+                    ) : null
+                  }
+                  {
+                    pgView !== 'edit' ? (
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Transaction Date*</Label>
+                        <DatePicker
+                          defaultDate={new Date()}
+                          // minimumDate={new Date(2018, 1, 1)}
+                          // maximumDate={new Date()}
+                          locale={"en"}
+                          timeZoneOffsetInMinutes={undefined}
+                          modalTransparent={false}
+                          animationType={"fade"}
+                          androidMode={"default"}
+                          // placeHolderText="Select date"
+                          textStyle={{ color: "#000" }}
+                          placeHolderTextStyle={{ color: "#d3d3d3" }}
+                          onDateChange={this.setDate}
+                          disabled={false}
+                        />
+                      </Item>
+                    ) : null
+                  }
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Expenses Type*</Label>
                     <Picker
@@ -372,6 +428,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
                       keyboardType = 'number-pad'
+                      value = {trans_amount}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -399,6 +456,7 @@ export default class App extends Component {
                     <Label style={styles.label}>Reference No.</Label>
                     <Input style={styles.input}
                       onChangeText = {(ref_no) => this.setState({ref_no: ref_no})}
+                      value = {ref_no}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -444,6 +502,7 @@ export default class App extends Component {
                     <Label style={styles.label}>Remark</Label>
                     <Input style={styles.input}
                       onChangeText = {(remark) => this.setState({remark: remark})}
+                      value = {remark}
                     />
                   </Item>
                 </Form>

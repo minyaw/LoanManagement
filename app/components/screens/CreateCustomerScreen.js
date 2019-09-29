@@ -259,7 +259,11 @@ export default class App extends Component {
         beneficiary_address2: item.beneficiary_address2,
         beneficiary_city: item.beneficiary_city,
         beneficiary_postcode: item.beneficiary_zip,
-        bank: item.bankid
+        bank: item.bankid,
+        beneficiary_fullname: item.beneficiary_name,
+        beneficiary_nricno: item.beneficiary_ic_no,
+        beneficiary_phoneno: item.beneficiary_phone_no,
+        beneficiary_relationship: item.beneficiary_relationship
       })
     }
   }
@@ -378,12 +382,19 @@ export default class App extends Component {
   }
 
   _copyAddr = () => {
-    const { copyAddr } = this.state;
-    this.setState({copyAddr: !copyAddr})
+    const { copyAddr, address, address2, country, state, city, postcode } = this.state;
+    this.setState({copyAddr: !copyAddr}, () => {
+      if (this.state.copyAddr) {
+        this.setState({ mail_address: address, mail_address2: address2, mail_city: city, mail_country: country, mail_postcode: postcode, mail_state: state }, ()=> {console.log(this.state.mail_state);})
+      } else {
+        this.setState({ mail_address: null, mail_address2: null, mail_city: null, mail_country: 'MY', mail_postcode: null, mail_state: null })
+      }
+    })
+    
   }
 
   _checkRequiredField = () => {
-    const { customer_name, ic_no, phoneno, phoneno2} = this.state;
+    const { customer_name, ic_no, phoneno} = this.state;
     if (customer_name === null) {
       Alert.alert('Error', 'Please fill in Customer Name.')
       return;
@@ -396,60 +407,83 @@ export default class App extends Component {
       Alert.alert('Error', 'Please fill in Phone No.')
       return;
     }
-    if (phoneno2 === null) {
-      Alert.alert('Error', 'Please fill in Phone No.')
-      return;
-    }
     this.setState({sVisible: true})
   }
   _submit = () => {
-    let { customer_name, ic_no, phoneno, phoneno2, email, gender, dob, salutation, nationality, address, address2, city, postcode, state, country, mail_address, mail_address2, mail_city, mail_country, mail_postcode, mail_state, bankid, bank_holder_name, bank_accountno, company_name, jobtitle, company_phoneno, company_address, company_address2, company_city, company_postcode, company_state, company_country, beneficiary_address, beneficiary_address2, beneficiary_city, beneficiary_country, beneficiary_fullname, beneficiary_phoneno, beneficiary_postcode, beneficiary_relationship, beneficiary_nricno, beneficiary_state, genderOptions, salutationOptions, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5, beneficiary_profile_image, beneficiary_nric_doc_image1, beneficiary_nric_doc_image2, beneficiary_doc_image1, beneficiary_doc_image2, beneficiary_doc_image3, beneficiary_doc_image4, beneficiary_doc_image5 } = this.state;
+    let { customer_name, ic_no, phoneno, phoneno2, email, gender, dob, salutation, nationality, address, address2, city, postcode, state, country, mail_address, mail_address2, mail_city, mail_country, mail_postcode, mail_state, bankid, bank_holder_name, bank_accountno, company_name, jobtitle, company_phoneno, company_address, company_address2, company_city, company_postcode, company_state, company_country, beneficiary_address, beneficiary_address2, beneficiary_city, beneficiary_country, beneficiary_fullname, beneficiary_phoneno, beneficiary_postcode, beneficiary_relationship, beneficiary_nricno, beneficiary_state, genderOptions, salutationOptions, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5, beneficiary_profile_image, beneficiary_nric_doc_image1, beneficiary_nric_doc_image2, beneficiary_doc_image1, beneficiary_doc_image2, beneficiary_doc_image3, beneficiary_doc_image4, beneficiary_doc_image5, currentPage } = this.state;
+    let body;
     if (this.props.item) {
-      const body = {
-        act: 'updateCustomer',
-        sec_pass: DataService.getPassword(),
-        cust_id: this.props.item.cust_id,
-        fullname: customer_name,
-        nricno: ic_no,
-        phoneno,
-        phoneno2,
-        email,
-        dob,
-        nationality,
-        address,
-        address2,
-        city,
-        postcode,
-        state,
-        country,
-        mail_address,
-        mail_address2,
-        mail_city,
-        mail_postcode,
-        mail_state,
-        mail_country,
-        bankid,
-        bank_holder_name,
-        bank_accountno,
-        jobtitle,
-        company_name,
-        company_phoneno,
-        company_address,
-        company_address2,
-        company_city,
-        company_postcode,
-        company_state,
-        company_country,
-        profile_image,
-        nric_doc_image1,
-        nric_doc_image2,
-        doc_image1,
-        doc_image2,
-        doc_image3,
-        doc_image4,
-        doc_image5,
-        salutation: 'Mr.',
-        gender: 'm'
+      if (currentPage === 1) {
+        body = {
+          act: 'updateCustomer',
+          sec_pass: DataService.getPassword(),
+          cust_id: this.props.item.cust_id,
+          fullname: customer_name,
+          nricno: ic_no,
+          phoneno,
+          phoneno2,
+          email,
+          dob,
+          nationality,
+          address,
+          address2,
+          city,
+          postcode,
+          state,
+          country,
+          mail_address,
+          mail_address2,
+          mail_city,
+          mail_postcode,
+          mail_state,
+          mail_country,
+          bankid,
+          bank_holder_name,
+          bank_accountno,
+          jobtitle,
+          company_name,
+          company_phoneno,
+          company_address,
+          company_address2,
+          company_city,
+          company_postcode,
+          company_state,
+          company_country,
+          profile_image,
+          nric_doc_image1,
+          nric_doc_image2,
+          doc_image1,
+          doc_image2,
+          doc_image3,
+          doc_image4,
+          doc_image5,
+          salutation: 'Mr.',
+          gender: 'm'
+        }
+      } else {
+        body = {
+          act: 'updateGuarantor',
+          sec_pass: DataService.getPassword(),
+          cust_id: this.props.item.cust_id,
+          beneficiary_address,
+          beneficiary_address2,
+          beneficiary_city,
+          beneficiary_country,
+          beneficiary_fullname,
+          beneficiary_nricno,
+          beneficiary_phoneno,
+          beneficiary_postcode,
+          beneficiary_relationship,
+          beneficiary_state,
+          beneficiary_profile_image,
+          beneficiary_nric_doc_image1,
+          beneficiary_nric_doc_image2,
+          beneficiary_doc_image1,
+          beneficiary_doc_image2,
+          beneficiary_doc_image3,
+          beneficiary_doc_image4,
+          beneficiary_doc_image5
+        }
       }
       this.setState({loading: true})
       ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -459,7 +493,7 @@ export default class App extends Component {
           Alert.alert('Info', res.data.errMsg,[
             {
               text: 'OK',
-              onPress: () => Actions.pop()
+              onPress: () => Actions.pop({ refresh: true })
             }
           ])
         }
@@ -528,11 +562,13 @@ export default class App extends Component {
         salutation: 'Mr.',
         gender: 'm'
       }
+
       this.setState({loading: true})
       ApiService.post(ApiService.getUrl(), body).then((res) => {
         this.setState({loading: false})
         console.log(res);
         if (res.status === 200) {
+          this.setState({ cust_id: res.data.response.cust_id});
           Alert.alert('Info', res.data.errMsg,[
             {
               text: 'Done',
@@ -628,6 +664,7 @@ export default class App extends Component {
               title = {pgView === 'add' ? 'Create Customer' : 'Edit'}
               showBack = {currentPage === 1 && pgView === 'add' ? true : currentPage === 2 && pgView === 'add' ? false : true}
               showMenu = {false}
+              refresh = {true}
             />
             <View>
               <Modal
@@ -696,14 +733,14 @@ export default class App extends Component {
                       <Form>
                         <Item fixedLabel style={styles.inputContainer}>
                           <Label style={styles.label}>Register Date</Label>
-                          <Input style={styles.input}
+                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
                             value = {item.register_date.substring(0,10)}
                             editable = {false}
                           />
                         </Item>
                         <Item fixedLabel style={styles.inputContainer}>
                           <Label style={styles.label}>Customer ID</Label>
-                          <Input style={styles.input}
+                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
                             value = {item.customer_code}
                             editable = {false}
                           />
@@ -715,6 +752,8 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(cusName) => this.setState({customer_name: cusName})}
                         defaultValue = {pgView === 'add' ? customer_name : item.customer_name}
+                        autoCorrect = {false}
+                        autoCapitalize = {'characters'}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -733,7 +772,7 @@ export default class App extends Component {
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Phone No.2*</Label>
+                      <Label style={styles.label}>Phone No.2</Label>
                       <Input style={styles.input}
                         onChangeText = {(phoneNo2) => this.setState({phoneno2: phoneNo2})}
                         keyboardType = 'number-pad'
@@ -897,14 +936,14 @@ export default class App extends Component {
                     <Label style={styles.label}>Address 1</Label>
                     <Input style={styles.input}
                         onChangeText = {(addr1) => this.setState({mail_address: addr1})}
-                        defaultValue = {item ? item.mail_address: null}
+                        defaultValue = {item ? item.mail_address: mail_address}
                       />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Address 2</Label>
                     <Input style={styles.input}
                         onChangeText = {(addr2) => this.setState({mail_address2: addr2})}
-                        defaultValue = {item ? item.mail_address2: null}
+                        defaultValue = {item ? item.mail_address2: mail_address2}
                       />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -937,7 +976,7 @@ export default class App extends Component {
                       {
                         stateOptions.map((item,index) => {
                           return (
-                            <Picker.Item label={item.value} value={item.value}/>
+                            <Picker.Item label={item.value} value={item.id}/>
                           )
                         })
                       }
@@ -947,7 +986,7 @@ export default class App extends Component {
                     <Label style={styles.label}>City</Label>
                     <Input style={styles.input}
                         onChangeText = {(city) => this.setState({mail_city: city})}
-                        defaultValue = {item ? item.mail_city: null}
+                        defaultValue = {item ? item.mail_city: mail_city}
                       />
                   </Item>
   
@@ -956,7 +995,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(postcode) => this.setState({mail_postcode: postcode})}
                       keyboardType = 'number-pad'
-                      defaultValue = {item ? item.mail_postcode: null}
+                      defaultValue = {item ? item.mail_postcode: mail_postcode}
                     />
                   </Item>
                   </Form>
@@ -1642,7 +1681,7 @@ export default class App extends Component {
               : 
               <ButtonContainer>
                 <Button
-                  title = 'UPDATE'
+                  title = {currentPage === 1 ? 'UPDATE CUSTOMER' : 'UPDATE GUARANTOR'}
                   buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                   onPress = {() => this._checkRequiredField()}
                 />

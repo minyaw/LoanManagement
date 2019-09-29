@@ -8,6 +8,7 @@ let token = '';
 let role = '';
 let username = '';
 let fullname = '';
+let code = '';
 
 class ApiService {
   getToken = () => {
@@ -30,6 +31,9 @@ class ApiService {
     return fullname;
   }
 
+  getUsercode = () => {
+    return code;
+  }
   post = (url, body, login = false) => {
     const reqOpts = {
       headers: {
@@ -64,6 +68,7 @@ class ApiService {
           role = res.data.result.role_name;
           username = res.data.result.username;
           fullname = res.data.result.fullname;
+          code = res.data.result.user_code;
           DataService.setPassword(body.pass)
           if (res.data.result.group_name === 'Kgroup') {
             DataService.setSelectedGroup("2");

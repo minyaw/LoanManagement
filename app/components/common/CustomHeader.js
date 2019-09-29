@@ -27,7 +27,7 @@ class CustomHeader extends Component {
   }
 
   render() {
-    const { title, openMenu, showSearch, showBack, showMenu, showDone, showEdit, edit, filter } = this.props;
+    const { title, openMenu, showSearch, showBack, showMenu, showDone, showEdit, edit, filter, refresh } = this.props;
     const { menuOpen } = this.state;
     return (
       // <Drawer

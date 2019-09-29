@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   input : {
     borderWidth: 0.5,
-    borderColor: '#ccc'
+    borderColor: '#ccc',
   },
   listItem: {
     borderBottomWidth: 0,
@@ -122,7 +122,6 @@ export default class App extends Component {
   }
 
   componentDidMount = () => {
-    console.log(this.props.transInfo);
     const next_default_date = new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))
 
     this.setState({ next_default_date: new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))})
@@ -208,7 +207,7 @@ export default class App extends Component {
     if (month.length < 2) month = '0' + month;
     if (day.length < 2) day = '0' + day;
 
-    this.setState({ display_next_due_date: [day, month, year].join('/') });
+    this.setState({ next_due_date: [day, month, year].join('-') });
   }
 
   _submit = () => {
@@ -232,6 +231,7 @@ export default class App extends Component {
       refund_amount,
       ref_no
     }
+
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
@@ -436,14 +436,15 @@ export default class App extends Component {
                   <Form>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Customer Name</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         // onChangeText = {(salutation) => this.setState({fullname: salutation})}
                         value = {item.customer}
+                        disabled = {true}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>NRIC/Passport</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         onChangeText = {(cusName) => this.setState({nricno: cusName})}
                         value = {item.ic_no}
                         disabled = {true}
@@ -451,14 +452,14 @@ export default class App extends Component {
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Phone No</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         value = {item.pheno_no}
                         disabled = {true}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Outstanding Amount</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         value = {item.outstanding_amount}
                         disabled = {true}
                       />
@@ -483,9 +484,10 @@ export default class App extends Component {
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Repayment Value</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         placeholder = "0"
-                        value = {trans_amount === null ? "0" : (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
+                        // value = {trans_amount === null ? "0" : (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
+                        value = {item.installment_amount}
                         disabled = {true}
                       />
                     </Item>
@@ -512,7 +514,7 @@ export default class App extends Component {
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Currency Rate*</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, this.state.currency === 'MYR' ? { backgroundColor: '#eee'} : null]}
                         defaultValue = {currency_rate}
                         disabled = {this.state.currency === "MYR"}
                         onChangeText = {(value) => this.setState({ currency_rate: value })}
@@ -536,7 +538,7 @@ export default class App extends Component {
                         onDateChange={this.setDate}
                         disabled={false}
                       /> */}
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         value = {display_trans_date}
                         disabled = {true}
                         style = {{textAlign: 'right'}}
@@ -571,8 +573,8 @@ export default class App extends Component {
                       trans_type === 'Renew' ? (
                         <Item fixedLabel style={styles.inputContainer}>
                           <Label style={styles.label}>Next Pay Amount</Label>
-                          <Input style={styles.input}
-                            value = {(parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
+                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                            value = {trans_amount ? (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString() : '0'}
                             disabled = {true}
                           />
                         </Item>
@@ -583,14 +585,13 @@ export default class App extends Component {
                         <Item fixedLabel style={styles.inputContainer}>
                           <Label style={styles.label}>Next Due Date*</Label>
                           <DatePicker
-                            defaultDate={next_default_date}
+                            defaultDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + parseInt(this.props.transInfo.days))}
                             // minimumDate={new Date(2018, 1, 1)}
                             locale={"en"}
                             timeZoneOffsetInMinutes={undefined}
                             modalTransparent={false}
                             animationType={"fade"}
                             androidMode={"default"}
-                            placeHolderText= {display_next_due_date}
                             textStyle={{ color: "#000" }}
                             placeHolderTextStyle={{ color: "#d3d3d3" }}
                             onDateChange={this.setNexyPayDate}

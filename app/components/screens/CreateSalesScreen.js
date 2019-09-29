@@ -111,6 +111,7 @@ export default class App extends Component {
   componentDidMount = () => {
     this._getCurrency();
     this._getBank();
+    this.setDate(new Date());
   }
 
   _getCurrency = () => {
@@ -153,6 +154,8 @@ export default class App extends Component {
   }
 
   setDate(newDate) {
+    console.log(newDate);
+    console.log(new Date());
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -167,13 +170,48 @@ export default class App extends Component {
     let { apply_date, sales_amount, currency, interest_amount, deposit_amount, fee_amount, payment, days, bank_acct_id, bank_acct_id2, bank_acct_id3, remark, currencyOptions, bankOptions } = this.state;
     const { item } = this.props;
 
-    if (currency === null) {
-      currency = currencyOptions[0].id
+    
+    const body = {
+      act: 'createSales',
+      sec_pass: DataService.getPassword(),
+      cust_id: item.cust_id,
+      apply_date,
+      sales_amount,
+      currency,
+      interest_amount,
+      deposit_amount,
+      fee_amount,
+      payment,
+      days,
+      bank_acct_id,
+      bank_acct_id2,
+      bank_acct_id3,
+      remark
     }
 
-    if (bank_acct_id === "0") {
-      Alert.alert('Error', 'Please select bank account')
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({loading: false})
+      console.log(res);
+      if (res.status === 200) {
+        Alert.alert('Info', res.data.errMsg,[
+          {
+            text: 'OK',
+            onPress:() => Actions.Home()
+          }
+        ])
+      }
+    })
+  }
+
+  _checkRequiredField = () => {
+    let { apply_date, sales_amount, currency, interest_amount, deposit_amount, fee_amount, payment, days, bank_acct_id, bank_acct_id2, bank_acct_id3, remark, currencyOptions, bankOptions } = this.state;
+    const { item } = this.props;
+
+    if (currency === null) {
+      this.setState({currency: currencyOptions[0].id});
     }
+    
     if (bank_acct_id2 === null) {
       bank_acct_id2 = 0;
     }
@@ -209,42 +247,17 @@ export default class App extends Component {
       return;
     }
 
-    const body = {
-      act: 'createSales',
-      sec_pass: DataService.getPassword(),
-      cust_id: item.cust_id,
-      apply_date,
-      sales_amount,
-      currency,
-      interest_amount,
-      deposit_amount,
-      fee_amount,
-      payment,
-      days,
-      bank_acct_id,
-      bank_acct_id2,
-      bank_acct_id3,
-      remark
+    if (bank_acct_id === null) {
+      Alert.alert('Error', 'Please select bank account');
+      return;
     }
-    this.setState({loading: true})
-    ApiService.post(ApiService.getUrl(), body).then((res) => {
-      this.setState({loading: false})
-      console.log(res);
-      if (res.status === 200) {
-        Alert.alert('Info', res.data.errMsg,[
-          {
-            text: 'OK',
-            onPress:() => Actions.pop()
-          }
-        ])
-      }
-    })
+    this.setState({ sVisible: true })
   }
-
   render() {
-    const { currentPage, gender, race, nationality, country, state, copyAddr, currencyOptions, bankOptions, loading, sales_amount, deposit_amount, fee_amount, interest_amount, payment, sVisible } = this.state;
+    const { currentPage, gender, race, nationality, country, state, copyAddr, currencyOptions, bankOptions, loading, sales_amount, deposit_amount, fee_amount, interest_amount, payment, sVisible, apply_date } = this.state;
     const { item } = this.props;
-    if (currencyOptions.length > 0 && bankOptions.length > 0) {
+    if (currencyOptions.length > 0 && bankOptions.length > 0 && apply_date) {
+      console.log('apply', apply_date);
       return(
         <Container>
           <Loader loading={loading}/>
@@ -272,7 +285,7 @@ export default class App extends Component {
                   <Form>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Customer Name</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         onChangeText = {(cusName) => this.setState({fullname: cusName})}
                         defaultValue = {item ? item.customer_name : null}
                         editable = {false}
@@ -280,7 +293,7 @@ export default class App extends Component {
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>NRIC/Passport</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         onChangeText = {(nric) => this.setState({nricno: nric})}
                         defaultValue = {item ? item.ic_no : null}
                         editable = {false}
@@ -297,7 +310,7 @@ export default class App extends Component {
                         modalTransparent={false}
                         animationType={"fade"}
                         androidMode={"default"}
-                        placeHolderText="Select date"
+                        // placeHolderText={apply_date ? apply_date : 'Select Date'}
                         textStyle={{ color: "#000" }}
                         placeHolderTextStyle={{ color: "#d3d3d3" }}
                         onDateChange={this.setDate}
@@ -369,22 +382,22 @@ export default class App extends Component {
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Loan Final Amt</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         editable = {false}
                         value = {sales_amount}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Credit</Label>
-                      <Input style={styles.input}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
                         value= { (sales_amount - interest_amount - deposit_amount - fee_amount).toString()}
                         editable = {false}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Installment Amt</Label>
-                      <Input style={styles.input}
-                        value= {(sales_amount / payment).toString()}
+                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                        value= {(sales_amount === null || payment === null) ? "0" : (sales_amount / payment).toString()}
                         editable = {false}
                       />
                     </Item>
@@ -456,7 +469,7 @@ export default class App extends Component {
             <Button
               title = 'NEXT'
               buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-              onPress = {() => this.setState({ sVisible: true })}
+              onPress = {() => this._checkRequiredField()}
             />
           </ButtonContainer> 
         </Container>

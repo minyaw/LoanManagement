@@ -6,12 +6,12 @@ import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
 import { ScrollView, StyleSheet, View, TouchableOpacity, Alert, Text, ImageBackground } from 'react-native';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
-import { Icon } from 'react-native-elements';
+import { Icon, Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
 import DataService from '../common/DataService';
-import { Content, Card, CardItem, Body } from 'native-base';
+import { Content, Card, CardItem, Body, CheckBox } from 'native-base';
 import Modal from "react-native-modal";
 
 const Container = styled.View`
@@ -25,6 +25,13 @@ const ButtonContainer = styled.View`
   bottom:0;
   right:0;
 `
+const EditButtonContainer = styled.View`
+  paddingLeft: 15;
+  paddingBottom: 15;
+  position: absolute;
+  bottom:0;
+  left:0;
+`
 const AddButton = styled.TouchableOpacity`
   width: 80;
   height: 80;
@@ -34,6 +41,7 @@ const AddButton = styled.TouchableOpacity`
   alignItems: center;
 `
 const HeaderList = [
+  '',
   'Submit Date',
   'Agent',
   'Trans Date',
@@ -45,18 +53,23 @@ const HeaderList = [
 ]
 
 const Loadmore = styled.Text`
-  textAlign: center;
+  textAlign: left;
   color: ${colors.primary};
   fontSize: 16px;
   paddingVertical: 15px;
+  paddingLeft: 20px;
+`
+
+const ButtonsContainer = styled.View`
+  flexDirection: row;
 `
 
 const styles = StyleSheet.create({
   header: { height: 50 },
   text: { textAlign: 'center', fontWeight: '100' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
-  btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
-  btnText: { textAlign: 'center', color: '#fff', padding: 5 },
+  // btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
+  btnText: { textAlign: 'center', color: '#000', padding: 5, textDecorationLine:'underline' },
   cellText: { margin: 6, textAlign: 'center'}
 });
 
@@ -66,13 +79,18 @@ export default class App extends Component {
     this.state = {
       menuOpen: false,
       contentList : [],
-      widthArr: [130, 130, 130, 130, 130, 130, 130, 130],
+      widthArr: [110, 130, 130, 130, 130, 130, 130, 130, 130],
       loadPage: 1,
       loading: false,
       agentList:{},
       imageList:[],
       isVisible: false,
-      imageIndex: null
+      imageIndex: null,
+      role: ApiService.getRole(),
+      list: [],
+      userCode: ApiService.getUsercode(),
+      expensesIdList: [],
+      selectedList: []
     }
   }
 
@@ -89,7 +107,7 @@ export default class App extends Component {
   }
 
   _getExpensesList = () => {
-    const { loadPage } = this.state;
+    const { loadPage, role } = this.state;
     const body = {
       act: 'getExpensesList',
       page_no: loadPage
@@ -99,9 +117,11 @@ export default class App extends Component {
       console.log(res);
       this.setState({loading: false})
       if (res.status === 200) {
+        this.setState({ list: res.data.response.records })
         if (this.state.item) {
           for (const content of res.data.response.records) {
             this.state.contentList.push([
+              '',
               content.submit_date,
               content.agent,
               content.trans_date,
@@ -114,12 +134,14 @@ export default class App extends Component {
             this.state.imageList.push(
               content.receipt_file === '' ? 'none' : content.receipt_file
             )
+            this.state.expensesIdList.push({ id: content.expenses_id})
           }
           this.setState({contentList: this.state.contentList})
         } else {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
               this.state.contentList.push([
+                '',
                 content.submit_date,
                 content.agent,
                 content.trans_date,
@@ -132,6 +154,7 @@ export default class App extends Component {
               this.state.imageList.push(
                 content.receipt_file === '' ? 'none' : content.receipt_file
               )
+              this.state.expensesIdList.push({ id: content.expenses_id})
             }
             this.setState({contentList: this.state.contentList})
           })
@@ -172,11 +195,13 @@ export default class App extends Component {
     this.setState({ loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       console.log(res);
-      this.setState({loading: false})
+      this.setState({ loading: false })
       if (res.status === 200) {
+        this.setState({ list: res.data.response.records })
         if (loadPage !== 1) {
           for (const content of res.data.response.records) {
             this.state.contentList.push([
+              '',
               content.submit_date,
               content.agent,
               content.trans_date,
@@ -189,12 +214,14 @@ export default class App extends Component {
             this.state.imageList.push(
               content.receipt_file === '' ? 'none' : content.receipt_file
             )
+            this.state.expensesIdList.push({ id: content.expenses_id})
           }
           this.setState({contentList: this.state.contentList})
         } else {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
               this.state.contentList.push([
+                '',
                 content.submit_date,
                 content.agent,
                 content.trans_date,
@@ -207,6 +234,7 @@ export default class App extends Component {
               this.state.imageList.push(
                 content.receipt_file === '' ? 'none' : content.receipt_file
               )
+              this.state.expensesIdList.push({ id: content.expenses_id})
             }
             this.setState({contentList: this.state.contentList})
           })
@@ -223,8 +251,76 @@ export default class App extends Component {
     }
   }
 
+  _checkRole = (index, status, code) => {
+    const { role, list, userCode } = this.state;
+      if (role === 'Admin' && status === 'Pending') {
+        Actions.CreateExpenses({ pgView: 'edit', content: list[index] })
+      } else {
+        if (status === 'Pending' && code === userCode ) {
+          Actions.CreateExpenses({ pgView: 'edit', content: list[index] })
+        }
+      }
+  }
+
+  _select = (id) => {
+    console.log(id);
+    if (this.state[id]) {
+      this.setState({ [id]: false });
+      for (let i = 0; i < this.state.selectedList.length; i++) {
+        if (this.state.selectedList[i].id === id) {
+          this.state.selectedList.splice(i, 1)
+        }
+      }
+    } else {
+      this.setState({[id]: true})
+      this.state.selectedList.push({id})
+    }
+
+    console.log(this.state.selectedList);
+  }
+
   render () {
-    const { menuOpen, widthArr, loading, item, contentList, filter, isVisible, imageList, imageIndex } = this.state;
+    const { menuOpen, widthArr, loading, item, contentList, filter, isVisible, imageList, imageIndex, role } = this.state;
+    const element = (index) => (
+      <TouchableOpacity onPress={() => this._showReceipt(index)}>
+        <View style={styles.btn}>
+          <Text style={styles.btnText}>{ this.state.imageList[index] !== 'none' ? 'View Receipt' : null}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+    
+    const edit = (index) => (
+      <View style={[styles.btn, {alignItems: 'center', flexDirection: 'row'}]}>
+        {
+          this.state.role === 'Admin' ? (
+            <TouchableOpacity
+              onPress={() => this._select(this.state.expensesIdList[index].id)}
+              style={{flex:1, alignItems: 'flex-start'}}
+            >
+              <CheckBox 
+                checked={this.state[this.state.expensesIdList[index].id]}
+                onPress={() => this._select(this.state.expensesIdList[index].id)}
+              />
+            </TouchableOpacity>
+          ) : null
+        }
+        {
+          ((this.state.role === 'Admin' && this.state.contentList[index][7] === 'Pending') || (this.state.userCode === this.state.contentList[index][2] && this.state.contentList[index][7] === 'Pending')) ? (
+            <TouchableOpacity
+              onPress= {() => this._checkRole(index, this.state.contentList[index][7], this.state.contentList[index][2])}
+              style={{flex:1, alignItems: role === 'Admin' ? 'flex-end' : 'center'}}
+            >
+              <Icon
+                name = 'md-create'
+                type = 'ionicon'
+                color = '#3e59a6'
+                onPress= {() => this._checkRole(index, this.state.contentList[index][7], this.state.contentList[index][2])}
+              />
+            </TouchableOpacity>
+          ) : null
+        }
+      </View>
+    );
       return(
         <Drawer
           ref={(ref) => this._drawer = ref}
@@ -238,14 +334,14 @@ export default class App extends Component {
         >
           <Container>
             <Loader loading={loading}/>
-              <CustomHeader
-                title = 'Expenses'
-                openMenu  = {this.openMenu.bind(this)}
-                showSearch = {true}
-                showMenu = {true}
-                filter = {()=> this._filter.bind(this)}
-                _in = {this}
-                />
+            <CustomHeader
+              title = 'Expenses'
+              openMenu  = {this.openMenu.bind(this)}
+              showSearch = {true}
+              showMenu = {true}
+              filter = {()=> this._filter.bind(this)}
+              _in = {this}
+            />
               {
                 contentList.length > 0 || filter ? (
                   <ScrollView horizontal={true}>
@@ -257,23 +353,23 @@ export default class App extends Component {
                           {
                             this.state.contentList.map((rowData, index) => {
                               return(
-                                <TouchableOpacity
-                                  onPress={() => this._showReceipt(index)}
-                                >
+                                // <TouchableOpacity
+                                //   onPress={() => this._checkRole(index, rowData[7], rowData[2])}
+                                // >
                                   <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
                                     {
                                       rowData.map((cellData, cellIndex) => {
                                         return(
                                           <Cell
                                             key={cellIndex}
-                                            data={cellData} textStyle={styles.cellText}
-                                            style={[{width:130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                            data={cellIndex === 8 ? element(index) : cellIndex === 0 ? edit(index) : cellData} textStyle={styles.cellText}
+                                            style={[{width:cellIndex === 0 ? 110: 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                           />
                                         )
                                       })
                                     }
                                   </TableWrapper>
-                                </TouchableOpacity>
+                                // </TouchableOpacity>
                               )
                             })
                           }
@@ -326,16 +422,40 @@ export default class App extends Component {
                   </View>
                 </Modal>
               </View>
-              <ButtonContainer>
-                <AddButton onPress={() => this._redirect()}>
-                  {/* <Text style={{color: '#FFF', fontSize:42}}>+</Text> */}
-                  <Icon
-                    name = 'plus'
-                    type = 'font-awesome'
-                    color = '#FFF'
-                  />
-                </AddButton>
-              </ButtonContainer>
+              {
+                this.state.selectedList.length < 1 ? (
+                  <ButtonContainer>
+                    <AddButton onPress={() => this._redirect()}>
+                      {/* <Text style={{color: '#FFF', fontSize:42}}>+</Text> */}
+                      <Icon
+                        name = 'plus'
+                        type = 'font-awesome'
+                        color = '#FFF'
+                      />
+                    </AddButton>
+                  </ButtonContainer>
+                ) : null
+              }
+              {
+                this.state.selectedList.length > 0 ? (
+                  <ButtonsContainer>
+                    <View style={{flex:1}}>
+                      <Button
+                        title = 'REJECT'
+                        buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                        onPress = {() => this._reject()}
+                      />
+                    </View>
+                    <View style={{flex:1}}>
+                      <Button
+                        title = 'APPROVE'
+                        buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                        onPress = {() => this._approve()}
+                      />
+                    </View>
+                  </ButtonsContainer>
+                ) : null
+              }
           </Container>
         </Drawer>
       )

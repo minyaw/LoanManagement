@@ -102,6 +102,41 @@ const list = [
     navigate: 'Home',
   }
 ]
+
+const masterList = [
+  {
+    title: 'HOME',
+    navigate: 'Home',
+  },
+  {
+    title: 'CUSTOMER',
+    navigate: 'Customer',
+  },
+  {
+    title:'TRANSACTION',
+    navigate: 'Transaction',
+  },
+  {
+    title:'OTHER INCOME',
+    navigate: 'IncomeList',
+  },
+  {
+    title: 'SALES',
+    navigate: 'SalesList',
+  },
+  {
+    title: 'DUE DATE LIST',
+    navigate: 'DueList',
+  },
+  {
+    title: 'EXPENSES',
+    navigate: 'ExpensesList',
+  },
+  {
+    title: 'LOGOUT',
+    navigate: 'Home',
+  }
+]
 const styles = StyleSheet.create({
   avatar: {
     backgroundColor: colors.iconBackground,
@@ -113,9 +148,10 @@ class Scene extends Component {
     super(props);
     this.state = {
       username:null,
-      changedPassword: null
-      ,userAvatar: null,
-      loading: false
+      changedPassword: null,
+      userAvatar: null,
+      loading: false,
+      role: ApiService.getRole()
     }
   }
 
@@ -138,7 +174,7 @@ class Scene extends Component {
     }
   }
   render() {
-    const {loading} = this.state;
+    const { loading, role } = this.state;
       return (
         <Container>
           <Loader loading={loading}/>
@@ -168,39 +204,75 @@ class Scene extends Component {
           <ScrollView>
             <ListContainer>
               {
-                list.map((item,index)=> {
-                  let path = '';
-                  if (item.title === 'HOME') {
-                    path = require("../../../assets/icons/ic_home_24px.png")
-                  } else if (item.title === 'CUSTOMER SEARCH') {
-                    path = require("../../../assets/icons/ic_search_24px.png")
-                  } else if (item.title === 'CUSTOMER') {
-                    path = require("../../../assets/icons/ic_assignment_ind_24px.png")
-                  } else if (item.title === 'TRANSACTION') {
-                    path = require("../../../assets/icons/ic_swap_vert_24px.png")
-                  } else if (item.title === 'SALES') {
-                    path = require("../../../assets/icons/ic_next_week_24px.png")
-                  } else if (item.title === 'DUE DATE LIST') {
-                    path = require("../../../assets/icons/ic_query_builder_24px.png")
-                  } else if (item.title === 'EXPENSES') {
-                    path = require("../../../assets/icons/ic_attach_money_24px.png")
-                  } else if (item.title === 'LOGOUT') {
-                    path = require("../../../assets/icons/ic_exit_to_app_24px.png")
-                  } else {
-                    path = null
-                  }
-                  return(
-                    <ListItem
-                      key            = {index}
-                      title          = {item.title}
-                      titleStyle     = {{color: '#FFF', fontSize: 16}}
-                      onPress        = {() => this._onItemPress(item)}
-                      containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
-                      component      = {TouchableOpacity}
-                      leftIcon = {<LeftIcon path={path}/>}
-                    />
-                  )
-                })
+                role === 'Admin' ? (
+                  list.map((item,index)=> {
+                    let path = '';
+                    if (item.title === 'HOME') {
+                      path = require("../../../assets/icons/ic_home_24px.png")
+                    } else if (item.title === 'CUSTOMER SEARCH') {
+                      path = require("../../../assets/icons/ic_search_24px.png")
+                    } else if (item.title === 'CUSTOMER') {
+                      path = require("../../../assets/icons/ic_assignment_ind_24px.png")
+                    } else if (item.title === 'TRANSACTION') {
+                      path = require("../../../assets/icons/ic_swap_vert_24px.png")
+                    } else if (item.title === 'SALES') {
+                      path = require("../../../assets/icons/ic_next_week_24px.png")
+                    } else if (item.title === 'DUE DATE LIST') {
+                      path = require("../../../assets/icons/ic_query_builder_24px.png")
+                    } else if (item.title === 'EXPENSES') {
+                      path = require("../../../assets/icons/ic_attach_money_24px.png")
+                    } else if (item.title === 'LOGOUT') {
+                      path = require("../../../assets/icons/ic_exit_to_app_24px.png")
+                    } else {
+                      path = null
+                    }
+                    return(
+                      <ListItem
+                        key            = {index}
+                        title          = {item.title}
+                        titleStyle     = {{color: '#FFF', fontSize: 16}}
+                        onPress        = {() => this._onItemPress(item)}
+                        containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
+                        component      = {TouchableOpacity}
+                        leftIcon = {<LeftIcon path={path}/>}
+                      />
+                    )
+                  })
+                ) : (
+                  masterList.map((item,index)=> {
+                    let path = '';
+                    if (item.title === 'HOME') {
+                      path = require("../../../assets/icons/ic_home_24px.png")
+                    } else if (item.title === 'CUSTOMER SEARCH') {
+                      path = require("../../../assets/icons/ic_search_24px.png")
+                    } else if (item.title === 'CUSTOMER') {
+                      path = require("../../../assets/icons/ic_assignment_ind_24px.png")
+                    } else if (item.title === 'TRANSACTION') {
+                      path = require("../../../assets/icons/ic_swap_vert_24px.png")
+                    } else if (item.title === 'SALES') {
+                      path = require("../../../assets/icons/ic_next_week_24px.png")
+                    } else if (item.title === 'DUE DATE LIST') {
+                      path = require("../../../assets/icons/ic_query_builder_24px.png")
+                    } else if (item.title === 'EXPENSES') {
+                      path = require("../../../assets/icons/ic_attach_money_24px.png")
+                    } else if (item.title === 'LOGOUT') {
+                      path = require("../../../assets/icons/ic_exit_to_app_24px.png")
+                    } else {
+                      path = null
+                    }
+                    return(
+                      <ListItem
+                        key            = {index}
+                        title          = {item.title}
+                        titleStyle     = {{color: '#FFF', fontSize: 16}}
+                        onPress        = {() => this._onItemPress(item)}
+                        containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
+                        component      = {TouchableOpacity}
+                        leftIcon = {<LeftIcon path={path}/>}
+                      />
+                    )
+                  })
+                )
               }
             </ListContainer>
             {/* <View>

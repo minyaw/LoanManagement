@@ -34,8 +34,8 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'admin',
-      password: 'v123456',
+      username: 'OWS',
+      password: 'OWS111',
       loading: false
     }
   }
@@ -82,7 +82,7 @@ export default class App extends Component {
           <Button full style={styles.button} onPress={() => this._login()}>
             <Text>Login</Text>
           </Button>
-          <VersionNo>v1.0.23</VersionNo>
+          <VersionNo>v1.0.25</VersionNo>
         </Content>  
       </Container>
     )

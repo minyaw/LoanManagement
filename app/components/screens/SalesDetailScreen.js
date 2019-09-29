@@ -294,7 +294,7 @@ export default class App extends Component {
               <FormContainer>
                 <DetailContainer>
                   <DetailTitle>Sales ID</DetailTitle>
-                  <DetailValue>{item.sales_id}</DetailValue>
+                  <DetailValue>{item.sales_no}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Agent</DetailTitle>
