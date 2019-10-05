@@ -136,6 +136,7 @@ export default class App extends Component {
             )
             this.state.expensesIdList.push({ id: content.expenses_id})
           }
+          this.state.item.records = this.state.item.records.concat(res.data.response.records);
           this.setState({contentList: this.state.contentList})
         } else {
           this.setState({item: res.data.response}, () => {
@@ -199,27 +200,8 @@ export default class App extends Component {
       if (res.status === 200) {
         this.setState({ list: res.data.response.records })
         if (loadPage !== 1) {
-          for (const content of res.data.response.records) {
-            this.state.contentList.push([
-              '',
-              content.submit_date,
-              content.agent,
-              content.trans_date,
-              content.expenses_type,
-              `${content.currency}${content.trans_amount}`,
-              content.remark,
-              content.status,
-              content.receipt_file !== '' ? 'View Receipt': null
-            ])
-            this.state.imageList.push(
-              content.receipt_file === '' ? 'none' : content.receipt_file
-            )
-            this.state.expensesIdList.push({ id: content.expenses_id})
-          }
-          this.setState({contentList: this.state.contentList})
-        } else {
-          this.setState({item: res.data.response}, () => {
-            for (const content of this.state.item.records) {
+          this.setState({ item: res.data.response}, () => {
+            for (const content of res.data.response.records) {
               this.state.contentList.push([
                 '',
                 content.submit_date,
@@ -238,6 +220,26 @@ export default class App extends Component {
             }
             this.setState({contentList: this.state.contentList})
           })
+        } else {
+          for (const content of this.state.item.records) {
+            this.state.contentList.push([
+              '',
+              content.submit_date,
+              content.agent,
+              content.trans_date,
+              content.expenses_type,
+              `${content.currency}${content.trans_amount}`,
+              content.remark,
+              content.status,
+              content.receipt_file !== '' ? 'View Receipt': null
+            ])
+            this.state.imageList.push(
+              content.receipt_file === '' ? 'none' : content.receipt_file
+            )
+            this.state.expensesIdList.push({ id: content.expenses_id})
+          }
+          this.state.item.records = this.state.item.records.concat(res.data.response.records);
+          this.setState({contentList: this.state.contentList})
         }
       } else {
         Alert.alert('Error', res.data.errMsg);
@@ -279,6 +281,48 @@ export default class App extends Component {
     console.log(this.state.selectedList);
   }
 
+  _approve = () => {
+    const { selectedList } = this.state;
+    const body = {
+      act: 'processExpensesApproval',
+      records: selectedList
+    }
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({loading: false})
+      console.log(res);
+      if (res.status === 200) {
+        Alert.alert('Info', res.data.errMsg,[
+          {
+            text: 'OK',
+            onPress: () => Actions.pop()
+          }
+        ])
+      }
+    })
+  }
+
+  _reject = () => {
+    const { selectedList } = this.state;
+    const body = {
+      act: 'processExpensesReject',
+      records: selectedList
+    }
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({loading: false})
+      console.log(res);
+      if (res.status === 200) {
+        Alert.alert('Info', res.data.errMsg,[
+          {
+            text: 'OK',
+            onPress: () => Actions.pop()
+          }
+        ])
+      }
+    })
+  }
+
   render () {
     const { menuOpen, widthArr, loading, item, contentList, filter, isVisible, imageList, imageIndex, role } = this.state;
     const element = (index) => (
@@ -292,7 +336,7 @@ export default class App extends Component {
     const edit = (index) => (
       <View style={[styles.btn, {alignItems: 'center', flexDirection: 'row'}]}>
         {
-          this.state.role === 'Admin' ? (
+          this.state.role === 'Admin' && this.state.contentList[index][7] === 'Pending' ? (
             <TouchableOpacity
               onPress={() => this._select(this.state.expensesIdList[index].id)}
               style={{flex:1, alignItems: 'flex-start'}}

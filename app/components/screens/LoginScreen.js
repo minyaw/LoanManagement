@@ -82,7 +82,7 @@ export default class App extends Component {
           <Button full style={styles.button} onPress={() => this._login()}>
             <Text>Login</Text>
           </Button>
-          <VersionNo>v1.0.25</VersionNo>
+          <VersionNo>v1.0.26</VersionNo>
         </Content>  
       </Container>
     )

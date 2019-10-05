@@ -32,6 +32,35 @@ const FormContainer = styled.View`
 const ButtonContainer = styled.View`
 
 `
+const PasswordButtonContainer = styled.View`
+  alignItems: flex-end;
+`
+const CustomerTab = styled.TouchableOpacity`
+  flex:1;
+  justifyContent: center;
+  paddingVertical: 10px;
+  borderColor: #ccc;
+`
+const GuarantorTab = styled.TouchableOpacity`
+  paddingVertical: 10px;
+  flex:1;
+  justifyContent: center;
+  borderColor: #ccc;
+`
+const Tab = styled.View`
+  flexDirection: row;
+  flex:1;
+`
+const Customer = styled.Text`
+  fontSize: 16px;
+  textAlign: center;
+  fontWeight: 500;
+`
+const Guarantor = styled.Text`
+  fontSize: 16px;
+  textAlign: center;
+  fontWeight: 500;
+`
 const styles = StyleSheet.create({
   label: {
     color: '#8a8f9f',
@@ -85,7 +114,14 @@ export default class App extends Component {
       nationalityOptions: [],
       stateOptions:[],
       countryOptions: [],
-      role: null
+      role: null,
+      currentPage: ApiService.getRole() === 'Admin' ? 1 : 2,
+      new_password: null,
+      current_password: null,
+      confirmed_password: null,
+      new_sec_password: null,
+      current_sec_password: null,
+      confirmed_sec_password: null
     }
     this.setDate = this.setDate.bind(this)
   }
@@ -230,29 +266,30 @@ export default class App extends Component {
   }
 
   _update = () => {
-    const { fullname, nricno, phoneno, email, gender, dob, nationality, address, address2, city, postcode, state,country,  mail_address, mail_address2, mail_city, mail_postcode, mail_state, mail_country } = this.state
-    const body = {
-      act: 'updateProfile',
-      sec_pass: DataService.getPassword(),
-      fullname,
-      nricno,
-      phoneno,
-      email,
-      gender,
-      dob,
-      nationality,
-      address,
-      address2,
-      city,
-      postcode,
-      state,
-      mail_address,
-      mail_address2,
-      mail_city,
-      mail_postcode,
-      mail_state,
-      mail_country
-    }
+    const { fullname, nricno, phoneno, email, gender, dob, nationality, address, address2, city, postcode, state,country,  mail_address, mail_address2, mail_city, mail_postcode, mail_state, mail_country, new_password, confirmed_password, current_password, currentPage } = this.state
+      const body = {
+        act: 'updateProfile',
+        sec_pass: DataService.getPassword(),
+        fullname,
+        nricno,
+        phoneno,
+        email,
+        gender,
+        dob,
+        nationality,
+        address,
+        address2,
+        city,
+        postcode,
+        state,
+        mail_address,
+        mail_address2,
+        mail_city,
+        mail_postcode,
+        mail_state,
+        mail_country
+      }
+      
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
@@ -262,8 +299,82 @@ export default class App extends Component {
     })
   }
 
+  _updatePassword = () => {
+    const { current_password, new_password, confirmed_password } = this.state;
+    if (current_password === null || current_password === '') {
+      Alert.alert('Error', 'Please fill in current password.')
+      return;
+    }
+    if (new_password === null || new_password === '') {
+      Alert.alert('Error', 'Please fill in new password.')
+      return;
+    }
+    if (confirmed_password === null || confirmed_password === '') {
+      Alert.alert('Error', 'Please fill in confirm password.')
+      return;
+    }
+
+    const body = {
+      act: 'updatePassword',
+      sec_pass: DataService.getPassword(),
+      current_password,
+      new_password,
+      confirmed_password
+    }
+
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      console.log(res);
+      this.setState({loading: false})
+      if (res.status === 200) {
+        if (res.data.ErrCode !== 200) {
+          Alert.alert(res.data.ErrMsg);
+        } else if (res.data.ErrCode === 200) {
+          Alert.alert(res.data.response.succMsg);
+        }
+      }
+    })
+  }
+
+  _updateSecPassword = () => {
+    const { current_sec_password, new_sec_password, confirmed_sec_password } = this.state;
+    if (current_sec_password === null || current_sec_password === '') {
+      Alert.alert('Error', 'Please fill in current security password.')
+      return;
+    }
+    if (new_sec_password === null || new_sec_password === '') {
+      Alert.alert('Error', 'Please fill in new security password.')
+      return;
+    }
+    if (confirmed_sec_password === null || confirmed_sec_password === '') {
+      Alert.alert('Error', 'Please fill in confirm security password.')
+      return;
+    }
+
+    const body = {
+      act: 'updateSecPassword',
+      sec_pass: DataService.getPassword(),
+      current_sec_password,
+      new_sec_password,
+      confirmed_sec_password
+    }
+
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      console.log(res);
+      this.setState({loading: false})
+      if (res.status === 200) {
+        if (res.data.ErrCode !== 200) {
+          Alert.alert(res.data.ErrMsg);
+        } else if (res.data.ErrCode === 200) {
+          Alert.alert(res.data.response.succMsg);
+        }
+      }
+    })
+  }
+
   render() {
-    const {menuOpen, copyAddr, item, loading, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, role} = this.state;
+    const {menuOpen, copyAddr, item, loading, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, role, currentPage } = this.state;
     if (item && genderOptions && raceOptions && countryOptions && nationalityOptions && stateOptions) {
       return (
         <Drawer
@@ -286,7 +397,7 @@ export default class App extends Component {
         >
           <Container>
             <Loader loading={loading}/>
-            <ScrollView>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
               {/* <Header
                 leftComponent        = {
                   <Icon
@@ -308,6 +419,24 @@ export default class App extends Component {
               />
               {
                 role === 'Admin' ? (
+                  <Tab>
+                    <CustomerTab
+                      style = {{borderBottomColor: currentPage === 1 ? '#999' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
+                      onPress = {() => this.setState({currentPage: 1})}
+                    >
+                      <Customer>Details</Customer>
+                    </CustomerTab>
+                    <GuarantorTab
+                      style = {{borderBottomColor: currentPage === 2 ? '#999' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
+                      onPress = {() => this.setState({currentPage: 2})}
+                    >
+                      <Guarantor>Password</Guarantor>
+                    </GuarantorTab>
+                  </Tab>
+                ) : null
+              }
+              {
+                role === 'Admin' && currentPage === 1 ? (
                 <View>
                   <Divider>
                     <DividerText>Personal Details</DividerText>
@@ -572,44 +701,111 @@ export default class App extends Component {
                     </Form>
                   </FormContainer>
                 </View>
-                ) : (
-                  <View>
-                    <FormContainer>
-                      <Form>
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Current Password*</Label>
-                          <Input style={styles.input}
-                            onChangeText = {(city) => this.setState({currentPass: city})}
-                            // defaultValue = {item.mail_postcode}
+                ) : null
+              }
+              {
+                currentPage === 2 ? (
+                  (
+                    <View>
+                      <Divider>
+                        <DividerText>Password</DividerText>
+                      </Divider>
+                      <FormContainer>
+                        <Form>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Current Password*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(value) => this.setState({current_password: value})}
+                              autoCapitalize = "none"
+                              secureTextEntry = {true}
+                              // defaultValue = {item.mail_postcode}
+                            />
+                          </Item>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>New Password*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(value) => this.setState({new_password: value})}
+                              autoCapitalize = "none"
+                              secureTextEntry = {true}
+                              // defaultValue = {item.mail_postcode}
+                            />
+                          </Item>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Confirm Password*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(value) => this.setState({confirmed_password: value})}
+                              autoCapitalize = "none"
+                              secureTextEntry = {true}
+                              // defaultValue = {item.mail_postcode}
+                            />
+                          </Item>
+                        </Form>
+                        <PasswordButtonContainer>
+                          <Button
+                            title = {'UPDATE'}
+                            buttonStyle = {{backgroundColor: colors.primary, paddingHorizontal: 10}}
+                            onPress = {() => this._updatePassword()}
                           />
-                        </Item>
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>New Password*</Label>
-                          <Input style={styles.input}
-                            onChangeText = {(city) => this.setState({newPass: city})}
-                            // defaultValue = {item.mail_postcode}
+                        </PasswordButtonContainer>
+                      </FormContainer>
+
+                      <Divider>
+                        <DividerText>Secondary Password</DividerText>
+                      </Divider>
+                      <FormContainer>
+                        <Form>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Current Security Password*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(value) => this.setState({current_sec_password: value})}
+                              autoCapitalize = "none"
+                              secureTextEntry = {true}
+                              // defaultValue = {item.mail_postcode}
+                            />
+                          </Item>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>New Security Password*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(value) => this.setState({new_sec_password: value})}
+                              autoCapitalize = "none"
+                              secureTextEntry = {true}
+                              // defaultValue = {item.mail_postcode}
+                            />
+                          </Item>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Confirm Security Password*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(value) => this.setState({confirmed_sec_password: value})}
+                              autoCapitalize = "none"
+                              secureTextEntry = {true}
+                              // defaultValue = {item.mail_postcode}
+                            />
+                          </Item>
+                        </Form>
+                        <PasswordButtonContainer>
+                          <Button
+                            title = {'UPDATE'}
+                            buttonStyle = {{backgroundColor: colors.primary, paddingHorizontal: 10}}
+                            onPress = {() => this._updateSecPassword()}
                           />
-                        </Item>
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Confirm Password*</Label>
-                          <Input style={styles.input}
-                            onChangeText = {(city) => this.setState({confirmPass: city})}
-                            // defaultValue = {item.mail_postcode}
-                          />
-                        </Item>
-                      </Form>
-                    </FormContainer>
-                  </View>
-                )
+                        </PasswordButtonContainer>
+                      </FormContainer>
+                    </View>
+                  )
+                ) : null
               }
             </ScrollView>
-            <ButtonContainer>
-              <Button
-                title = 'UPDATE'
-                buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                onPress = {() => this._update()}
-              />
-            </ButtonContainer>
+            {
+              currentPage === 1 ? (
+                <ButtonContainer>
+                  <Button
+                    title = {'UPDATE'}
+                    buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                    onPress = {() => this._update()}
+                  />
+                </ButtonContainer>
+              ) : null
+            }
           </Container>
         </Drawer>
       )
