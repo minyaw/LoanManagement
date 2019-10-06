@@ -118,6 +118,7 @@ export default class App extends Component {
     this._getExpensesType();
     if (this.props.content) {
       const { content } = this.props;
+      content.trans_amount = content.trans_amount.replace(/\,/g,'')
       console.log(content);
       this.setState({
         trans_amount: content.trans_amount,
