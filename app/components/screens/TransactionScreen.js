@@ -34,22 +34,27 @@ const RemarksCol = styled.View`
   alignItems: flex-end;
 `
 const Username = styled.Text`
-  color: #3e59a6;
-  fontSize: 18px;
-  fontWeight: 600;
+  color: #3F5AA6;
+  fontSize: 16px;
+  fontFamily: 'Montserrat-Bold';
 `
 const DueDateDetail = styled.Text`
-  color: #888fa8;
+  color: #192A59;
   lineHeight: 20px;
+  fontSize: 10px;
+  fontFamily: 'Montserrat-SemiBold';
 `
 const Remark = styled.Text`
-  color: #b25656;
+  color: #3F5AA6;
+  fontSize: 10px;
+  fontFamily: 'Montserrat-Regular';
 `
 const Loadmore = styled.Text`
   textAlign: center;
   color: ${colors.primary};
   fontSize: 16px;
   paddingVertical: 15px;
+  fontFamily: 'Montserrat-Bold';
 `
 
 export default class App extends Component {

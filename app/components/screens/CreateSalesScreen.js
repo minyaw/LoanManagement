@@ -23,9 +23,9 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontWeight: 600;
   fontSize: 16px;
   flex:1;
+  fontFamily: 'AvenirLTStd-Black'
 `
 const Pagination = styled.View`
   flex:1;
@@ -67,8 +67,9 @@ const ButtonsContainer = styled.View`
 `
 const styles = StyleSheet.create({
   label: {
-    color: '#8a8f9f',
-    fontWeight: "600"
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   },
   inputContainer: {
     paddingVertical: 10,
@@ -76,7 +77,10 @@ const styles = StyleSheet.create({
   },
   input : {
     borderWidth: 0.5,
-    borderColor: '#ccc'
+    borderColor: '#ccc',
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
   },
   listItem: {
     borderBottomWidth: 0,
@@ -567,6 +571,7 @@ export default class App extends Component {
               title = 'NEXT'
               buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
               onPress = {() => this._checkRequiredField()}
+              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
             />
           </ButtonContainer> 
         </Container>

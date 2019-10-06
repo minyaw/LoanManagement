@@ -20,6 +20,7 @@ const VersionNo = styled.Text`
   textAlign: center;
   fontSize: 14px;
   paddingTop: 20px;
+  fontFamily: Montserrat-Bold;
 `
 const styles = StyleSheet.create({
   content: {
@@ -28,6 +29,19 @@ const styles = StyleSheet.create({
   button: {
     color: `${colors.primary}`,
     paddingHorizontal: 20
+  },
+  loginText: {
+    fontFamily: 'AvenirLTStd-Roman'
+  },
+  input : {
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
+  },
+  label: {
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   }
 })
 export default class App extends Component {
@@ -62,16 +76,18 @@ export default class App extends Component {
         <Content>
           <Form style={styles.content}>
             <Item stackedLabel last>
-              <Label>Username</Label>
+              <Label style={styles.label}>Username</Label>
               <Input
+                style={styles.input}
                 value = {username}
                 onChangeText = {(username) => this.setState({username})}
                 autoCapitalize = "none"
               />
             </Item>
             <Item stackedLabel last>
-              <Label>Password</Label>
-              <Input 
+              <Label style={styles.label}>Password</Label>
+              <Input
+                style={styles.input} 
                 value = {password}
                 onChangeText = {(password) => this.setState({password})}
                 autoCapitalize = "none"
@@ -80,9 +96,9 @@ export default class App extends Component {
             </Item>
           </Form>
           <Button full style={styles.button} onPress={() => this._login()}>
-            <Text>Login</Text>
+          <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 16}}>LOGIN</Text>
           </Button>
-          <VersionNo>v1.0.27</VersionNo>
+          <VersionNo>v1.0.28</VersionNo>
         </Content>  
       </Container>
     )

@@ -30,10 +30,13 @@ const Username = styled.Text`
   fontSize: 20px;
   color: ${colors.primary};
   textAlign: center;
+  fontFamily: 'Montserrat-Bold';
 `
 const UserDetail = styled.Text`
-  color: #999;
+  color: #828899;
   paddingTop: 3px;
+  fontFamily: 'Montserrat-Regular';
+  fontSize: 12px;
 `
 const DetailContainer = styled.View`
   flexDirection: row;
@@ -44,13 +47,18 @@ const DetailContainer = styled.View`
   flex:1;
 `
 const DetailTitle = styled.Text`
-  color: #acb0bb;
-  fontSize: 16px;
+  color: #828899;
+  fontSize: 12px;
   textAlign: left;
-  flex:2
+  flex:1;
+  justifyContent: center;
+  alignItems: center;
+  alignSelf: center;
+  fontFamily: 'Montserrat-SemiBold';
 `
 const DetailValue = styled.Text`
   color: ${colors.primary};
+  fontFamily: 'Montserrat-SemiBold';
   fontSize: 16px;
   textAlign: right;
   flex:1;
@@ -60,8 +68,9 @@ const ButtonContainer = styled.TouchableOpacity`
 `
 const styles = StyleSheet.create({
   label: {
-    color: '#8a8f9f',
-    fontWeight: "600"
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   },
   inputContainer: {
     paddingVertical: 10,
@@ -69,7 +78,10 @@ const styles = StyleSheet.create({
   },
   input : {
     borderWidth: 0.5,
-    borderColor: '#ccc'
+    borderColor: '#ccc',
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
   },
   listItem: {
     borderBottomWidth: 0,
@@ -208,14 +220,14 @@ export default class App extends Component {
                     style={{backgroundColor: colors.primary}}
                     onPress={() => Actions.SalesDetailList({cust_id: item.cust_id})}
                   >
-                    <Text style={{ color: '#FFF', fontWeight: 'bold'}}>VIEW SALES DETAILS</Text>
+                    <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 16}}>VIEW SALES DETAILS</Text>
                   </Button>
                   <Button 
                     block
                     style={{backgroundColor: colors.primary, marginTop: 20}}
                     onPress = {() => Actions.CreateSales({item: item})}
                   >
-                    <Text style={{ color: '#FFF', fontWeight: 'bold'}}>CREATE NEW SALES</Text>
+                    <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 16}}>CREATE NEW SALES</Text>
                   </Button>
                 </Content>
               )

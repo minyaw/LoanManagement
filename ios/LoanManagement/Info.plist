@@ -59,6 +59,7 @@
 		<string>Roboto_medium.ttf</string>
 		<string>Roboto.ttf</string>
 		<string>rubicon-icon-font.ttf</string>
+		<string>AvenirLTStd-Roman.otf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

@@ -56,13 +56,14 @@ const ListContainer = styled.View`
   borderTopColor: #FFF;
 `
 const Username = styled.Text`
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 14px;
   color: #FFFFFF;
+  fontFamily: 'Montserrat-Bold';
 `
 const Role = styled.Text`
-  font-size: 16px;
+  font-size: 12px;
   color: #FFFFFF;
+  fontFamily: 'Montserrat-Bold';
 `
 const list = [
   {
@@ -230,7 +231,7 @@ class Scene extends Component {
                       <ListItem
                         key            = {index}
                         title          = {item.title}
-                        titleStyle     = {{color: '#FFF', fontSize: 16}}
+                        titleStyle     = {{color: '#FFF', fontSize: 14, fontFamily: 'Montserrat-Bold'}}
                         onPress        = {() => this._onItemPress(item)}
                         containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
                         component      = {TouchableOpacity}
@@ -264,7 +265,7 @@ class Scene extends Component {
                       <ListItem
                         key            = {index}
                         title          = {item.title}
-                        titleStyle     = {{color: '#FFF', fontSize: 16}}
+                        titleStyle     = {{color: '#FFF', fontSize: 14, fontFamily: 'Montserrat-Bold'}}
                         onPress        = {() => this._onItemPress(item)}
                         containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
                         component      = {TouchableOpacity}

@@ -37,16 +37,18 @@ const DetailContainer = styled.View`
   flex:1;
 `
 const DetailTitle = styled.Text`
-  color: #acb0bb;
-  fontSize: 16px;
+  color: #828899;
+  fontSize: 12px;
   textAlign: left;
   flex:1;
   justifyContent: center;
   alignItems: center;
   alignSelf: center;
+  fontFamily: 'Montserrat-SemiBold';
 `
 const DetailValue = styled.Text`
   color: ${colors.primary};
+  fontFamily: 'Montserrat-SemiBold';
   fontSize: 16px;
   textAlign: right;
   flex:1;
@@ -56,9 +58,10 @@ const Divider = styled.View`
   paddingVertical: 10px;
 `
 const DividerText = styled.Text`
-  color: ${colors.primary};
-  fontWeight: 600;
+  color: #192a58;
   fontSize: 16px;
+  flex:1;
+  fontFamily: 'AvenirLTStd-Black'
 `
 const HeaderList = [
   'Action',
@@ -90,12 +93,15 @@ const TransactionListContainer = styled.View`
   paddingVertical: 15px;
 `
 const TransactionListTitle = styled.Text`
-  fontWeight: 600
+  fontFamily: AvenirLTStd-Black;
+  fontSize: 16px;
+  color: ${colors.primary};
 `
 const styles = StyleSheet.create({
   label: {
-    color: '#8a8f9f',
-    fontWeight: "600"
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   },
   inputContainer: {
     paddingVertical: 10,
@@ -103,18 +109,21 @@ const styles = StyleSheet.create({
   },
   input : {
     borderWidth: 0.5,
-    borderColor: '#ccc'
+    borderColor: '#ccc',
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
   },
   listItem: {
     borderBottomWidth: 0,
     marginLeft :0
   },
   header: { height: 50 },
-  text: { textAlign: 'center', fontWeight: '100' },
+  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: '#828899' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   // btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
-  btnText: { textAlign: 'center', color: '#000', padding: 5, textDecorationLine:'underline' },
-  cellText: { margin: 6, textAlign: 'center'}
+  btnText: { textAlign: 'center', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`},
+  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`}
 })
 
 export default class App extends Component {
@@ -477,6 +486,7 @@ export default class App extends Component {
                     title = 'Create Trans'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
                     onPress= {() => Actions.CreateTransaction({cust_id, sales_id, transInfo: item})}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                   />
                 </ButtonContainer>
               </FormContainer>

@@ -16,8 +16,9 @@ const FormContainer = styled.View`
 `
 const styles = StyleSheet.create({
   label: {
-    color: '#8a8f9f',
-    fontWeight: "600"
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   },
   inputContainer: {
     paddingVertical: 10,
@@ -26,6 +27,9 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
   },
   listItem: {
     borderBottomWidth: 0,

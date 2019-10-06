@@ -71,7 +71,7 @@ class CustomHeader extends Component {
                 />
               </TouchableOpacity> : null
             }
-            centerComponent = {{ text: title, style: { color: '#192a59', fontWeight: "600", fontSize: 20} }}
+            centerComponent = {{ text: title, style: { color: '#192a59', fontSize: 22, fontFamily: 'AvenirLTStd-Black'} }}
             rightComponent = { showSearch ? (
               <TouchableOpacity
                 onPress = {() => this._onSearchPress()}

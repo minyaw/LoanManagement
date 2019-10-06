@@ -27,9 +27,9 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontWeight: 600;
   fontSize: 16px;
   flex:1;
+  fontFamily: 'AvenirLTStd-Black'
 `
 const Pagination = styled.View`
   flex:1;
@@ -45,9 +45,10 @@ const Section = styled.View`
 `
 const SectionName = styled.Text`
   fontSize: 16px;
-  color: #9fa4b1;
+  color: #828899;
   lineHeight: 24;
   paddingBottom: 10px;
+  fontFamily: Montserrat-Regular;
 `
 const ImageContainer = styled.TouchableOpacity`
   borderWidth: 0.5;
@@ -58,10 +59,10 @@ const ImageContainer = styled.TouchableOpacity`
   marginBottom: 10px;
 `
 const ImageLabel = styled.Text`
-  color: #000;
+  color: #192A59;
   textAlign: center;
-  fontSize: 16px;
-  fontWeight: 600;
+  fontSize: 14px;
+  fontFamily: Montserrat-SemiBold;
 `
 const ButtonContainer = styled.View`
 
@@ -88,17 +89,20 @@ const Tab = styled.View`
 const Customer = styled.Text`
   fontSize: 16px;
   textAlign: center;
-  fontWeight: 500;
+  fontFamily: AvenirLTStd-Black;
+  color: #192a59;
 `
 const Guarantor = styled.Text`
   fontSize: 16px;
   textAlign: center;
-  fontWeight: 500;
+  fontFamily: AvenirLTStd-Black;
+  color: #192a59;
 `
 const styles = StyleSheet.create({
   label: {
-    color: '#8a8f9f',
-    fontWeight: "600"
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   },
   inputContainer: {
     paddingVertical: 10,
@@ -106,7 +110,10 @@ const styles = StyleSheet.create({
   },
   input : {
     borderWidth: 0.5,
-    borderColor: '#ccc'
+    borderColor: '#ccc',
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
   },
   listItem: {
     borderBottomWidth: 0,
@@ -708,13 +715,13 @@ export default class App extends Component {
                 : 
                 <Tab>
                   <CustomerTab
-                    style = {{borderBottomColor: currentPage === 1 ? '#999' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
+                    style = {{borderBottomColor: currentPage === 1 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
                     onPress = {() => this.setState({currentPage: 1})}
                   >
                     <Customer>Customer</Customer>
                   </CustomerTab>
                   <GuarantorTab
-                    style = {{borderBottomColor: currentPage === 2 ? '#999' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
+                    style = {{borderBottomColor: currentPage === 2 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
                     onPress = {() => this.setState({currentPage: 2})}
                   >
                     <Guarantor>Guarantor</Guarantor>
@@ -1659,6 +1666,7 @@ export default class App extends Component {
                   title = 'NEXT'
                   buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                   onPress = {() => this.setState({currentPage: 2})}
+                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                 />
               </ButtonContainer> 
               : currentPage === 2 && pgView === 'add' ?
@@ -1668,6 +1676,7 @@ export default class App extends Component {
                     title = 'Back'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                     onPress = {() => this.setState({currentPage: 1, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5})}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                   />
                 </View>
                 <View style={{flex:1}}>
@@ -1675,6 +1684,7 @@ export default class App extends Component {
                     title = 'SUBMIT'
                     buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
                     onPress = {() => this._checkRequiredField()}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                   />
                 </View>
               </ButtonsContainer>
@@ -1684,6 +1694,7 @@ export default class App extends Component {
                   title = {currentPage === 1 ? 'UPDATE CUSTOMER' : 'UPDATE GUARANTOR'}
                   buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                   onPress = {() => this._checkRequiredField()}
+                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                 />
               </ButtonContainer> 
           }

@@ -34,8 +34,9 @@ const DetailsContainer = styled.View`
   flex: 3;
 `
 const Detail = styled.Text`
-  fontWeight: 600;
-  color: #000;
+  fontFamily: 'Montserrat-Bold';
+  fontSize: 13px;
+  color: #192A59;
 `
 const ActionContainer = styled.View`
   backgroundColor: #ebeef7;
@@ -45,7 +46,9 @@ const ActionContainer = styled.View`
   borderRadius: 5px;
 `
 const ActionText = styled.Text`
-  color: #4b577e;
+  color: #192A59;
+  fontFamily: 'Montserrat-Regular';
+  fontSize: 12px;
 `
 const Link = styled.Text`
   color: #192a58;
@@ -69,12 +72,14 @@ const ButtonContainer = styled.TouchableOpacity`
   justifyContent: flex-end;
 `
 const DueDateTitle = styled.Text`
-  fontWeight: 600;
+  fontFamily: AvenirLTStd-Black;
   color: #192a58;
+  fontSize: 16px;
 `
 const ViewAllButton = styled.Text`
-  fontWeight: 600;
+  fontFamily: AvenirLTStd-Black;
   color: #192a58;
+  fontSize: 12px;
 `
 const Card = styled.TouchableOpacity`
   marginHorizontal: 15px;
@@ -94,16 +99,20 @@ const RemarksCol = styled.View`
   alignItems: flex-end;
 `
 const Username = styled.Text`
-  color: #3e59a6;
-  fontSize: 18px;
-  fontWeight: 600;
+  color: #3F5AA6;
+  fontSize: 16px;
+  fontFamily: 'Montserrat-Bold';
 `
 const DueDateDetail = styled.Text`
-  color: #888fa8;
+  color: #192A59;
   lineHeight: 20px;
+  fontSize: 10px;
+  fontFamily: 'Montserrat-SemiBold';
 `
 const Remark = styled.Text`
-  color: #576eb1;
+  color: #3F5AA6;
+  fontSize: 10px;
+  fontFamily: 'Montserrat-Regular';
 `
 const BlankContainer = styled.View`
   paddingHorizontal: 20px;
@@ -131,8 +140,9 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   label: {
-    color: '#8a8f9f',
-    fontWeight: "600"
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   },
   inputContainer: {
     paddingVertical: 10,
@@ -141,7 +151,10 @@ const styles = StyleSheet.create({
   },
   input : {
     borderWidth: 0.5,
-    borderColor: '#ccc'
+    borderColor: '#ccc',
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
   },
   listItem: {
     borderBottomWidth: 0,

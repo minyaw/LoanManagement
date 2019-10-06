@@ -22,8 +22,9 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontWeight: 600;
   fontSize: 16px;
+  flex:1;
+  fontFamily: 'AvenirLTStd-Black'
 `
 const FormContainer = styled.View`
   paddingHorizontal: 15px;
@@ -54,17 +55,20 @@ const Tab = styled.View`
 const Customer = styled.Text`
   fontSize: 16px;
   textAlign: center;
-  fontWeight: 500;
+  fontFamily: AvenirLTStd-Black;
+  color: #192a59;
 `
 const Guarantor = styled.Text`
   fontSize: 16px;
   textAlign: center;
-  fontWeight: 500;
+  fontFamily: AvenirLTStd-Black;
+  color: #192a59;
 `
 const styles = StyleSheet.create({
   label: {
-    color: '#8a8f9f',
-    fontWeight: "600"
+    color: '#828899',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 14
   },
   inputContainer: {
     paddingVertical: 10,
@@ -72,7 +76,10 @@ const styles = StyleSheet.create({
   },
   input : {
     borderWidth: 0.5,
-    borderColor: '#ccc'
+    borderColor: '#ccc',
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#192a59'
   },
   listItem: {
     borderBottomWidth: 0,
@@ -421,13 +428,13 @@ export default class App extends Component {
                 role === 'Admin' ? (
                   <Tab>
                     <CustomerTab
-                      style = {{borderBottomColor: currentPage === 1 ? '#999' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
+                      style = {{borderBottomColor: currentPage === 1 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
                       onPress = {() => this.setState({currentPage: 1})}
                     >
                       <Customer>Details</Customer>
                     </CustomerTab>
                     <GuarantorTab
-                      style = {{borderBottomColor: currentPage === 2 ? '#999' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
+                      style = {{borderBottomColor: currentPage === 2 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
                       onPress = {() => this.setState({currentPage: 2})}
                     >
                       <Guarantor>Password</Guarantor>
@@ -745,6 +752,7 @@ export default class App extends Component {
                             title = {'UPDATE'}
                             buttonStyle = {{backgroundColor: colors.primary, paddingHorizontal: 10}}
                             onPress = {() => this._updatePassword()}
+                            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                           />
                         </PasswordButtonContainer>
                       </FormContainer>
@@ -787,6 +795,7 @@ export default class App extends Component {
                             title = {'UPDATE'}
                             buttonStyle = {{backgroundColor: colors.primary, paddingHorizontal: 10}}
                             onPress = {() => this._updateSecPassword()}
+                            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                           />
                         </PasswordButtonContainer>
                       </FormContainer>
@@ -802,6 +811,7 @@ export default class App extends Component {
                     title = {'UPDATE'}
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                     onPress = {() => this._update()}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
                   />
                 </ButtonContainer>
               ) : null
