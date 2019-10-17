@@ -401,7 +401,7 @@ export default class App extends Component {
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Sales Date</DetailTitle>
-                  <DetailValue></DetailValue>
+                  <DetailValue>{item.sales_date.substring(0, 10)}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Sales Amount</DetailTitle>
