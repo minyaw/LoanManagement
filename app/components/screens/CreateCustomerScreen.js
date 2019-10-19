@@ -27,7 +27,7 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontSize: 16px;
+  fontSize: 14px;
   flex:1;
   fontFamily: 'AvenirLTStd-Black'
 `
@@ -44,7 +44,7 @@ const Section = styled.View`
   paddingTop: 10px;
 `
 const SectionName = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   color: #828899;
   lineHeight: 24;
   paddingBottom: 10px;
@@ -61,7 +61,7 @@ const ImageContainer = styled.TouchableOpacity`
 const ImageLabel = styled.Text`
   color: #192A59;
   textAlign: center;
-  fontSize: 14px;
+  fontSize: 12px;
   fontFamily: Montserrat-SemiBold;
 `
 const ButtonContainer = styled.View`
@@ -87,13 +87,13 @@ const Tab = styled.View`
   flex:1;
 `
 const Customer = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   textAlign: center;
   fontFamily: AvenirLTStd-Black;
   color: #192a59;
 `
 const Guarantor = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   textAlign: center;
   fontFamily: AvenirLTStd-Black;
   color: #192a59;
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -211,6 +211,7 @@ export default class App extends Component {
     this._getBroker();
     // this._getSalutation();
     if (this.props.item) {
+      console.log('item', this.props.item);
       const {item} = this.props;
       this.setState({
         profile_image: item.user_profile_image ? item.user_profile_image : null,
@@ -266,7 +267,7 @@ export default class App extends Component {
         beneficiary_address2: item.beneficiary_address2,
         beneficiary_city: item.beneficiary_city,
         beneficiary_postcode: item.beneficiary_zip,
-        bank: item.bankid,
+        bankid: item.bank_id,
         beneficiary_fullname: item.beneficiary_name,
         beneficiary_nricno: item.beneficiary_ic_no,
         beneficiary_phoneno: item.beneficiary_phone_no,
@@ -660,7 +661,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { currentPage, gender, race, nationality, country, state, copyAddr, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, bankOptions, brokerOptions, salutationOptions, loading, customer_name, ic_no, phoneno, phoneno2, email, remark, address, address2, city, postcode, mail_address, mail_address2, mail_city, mail_postcode, bank_holder_name, bank_accountno, company_name, jobtitle, company_phoneno, company_address, company_address2, company_city, company_postcode, company_country, company_state, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5, beneficiary_profile_image, beneficiary_doc_image1, beneficiary_doc_image2, beneficiary_doc_image3, beneficiary_doc_image4, beneficiary_doc_image5, beneficiary_nric_doc_image1, beneficiary_nric_doc_image2, isVisible, source, sVisible } = this.state;
+    const { currentPage, gender, race, nationality, country, state, copyAddr, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, bankOptions, brokerOptions, salutationOptions, loading, customer_name, ic_no, phoneno, phoneno2, email, remark, address, address2, city, postcode, mail_address, mail_address2, mail_city, mail_postcode, bank_holder_name, bank_accountno, company_name, jobtitle, company_phoneno, company_address, company_address2, company_city, company_postcode, company_country, company_state, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5, beneficiary_profile_image, beneficiary_doc_image1, beneficiary_doc_image2, beneficiary_doc_image3, beneficiary_doc_image4, beneficiary_doc_image5, beneficiary_nric_doc_image1, beneficiary_nric_doc_image2, isVisible, source, sVisible, bankid } = this.state;
     const { pgView, item } = this.props;
     if (raceOptions.length > 0 && countryOptions.length > 0 && nationalityOptions.length > 0 && stateOptions.length > 0 && bankOptions.length > 0 && brokerOptions.length > 0) {
       return(
@@ -1016,7 +1017,7 @@ export default class App extends Component {
                         mode="dropdown"
                         // iosIcon={<Icon name="ios-arrow-down-outline" />}
                         style={{ width: undefined }}
-                        selectedValue={this.state.bank}
+                        selectedValue={bankid}
                         onValueChange={(bankName) => this.setState({bankid: bankName})}
                       >
                         {
@@ -1666,7 +1667,7 @@ export default class App extends Component {
                   title = 'NEXT'
                   buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                   onPress = {() => this.setState({currentPage: 2})}
-                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                 />
               </ButtonContainer> 
               : currentPage === 2 && pgView === 'add' ?
@@ -1676,7 +1677,7 @@ export default class App extends Component {
                     title = 'Back'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                     onPress = {() => this.setState({currentPage: 1, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5})}
-                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                   />
                 </View>
                 <View style={{flex:1}}>
@@ -1684,7 +1685,7 @@ export default class App extends Component {
                     title = 'SUBMIT'
                     buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
                     onPress = {() => this._checkRequiredField()}
-                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                   />
                 </View>
               </ButtonsContainer>
@@ -1694,7 +1695,7 @@ export default class App extends Component {
                   title = {currentPage === 1 ? 'UPDATE CUSTOMER' : 'UPDATE GUARANTOR'}
                   buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                   onPress = {() => this._checkRequiredField()}
-                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                 />
               </ButtonContainer> 
           }

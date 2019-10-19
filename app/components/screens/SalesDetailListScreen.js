@@ -25,17 +25,17 @@ const HeaderList = [
 const Loadmore = styled.Text`
   textAlign: center;
   color: ${colors.primary};
-  fontSize: 16px;
+  fontSize: 14px;
   paddingVertical: 15px;
   fontFamily: 'Montserrat-Bold';
 `
 const styles = StyleSheet.create({
   header: { height: 50 },
-  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: '#828899' },
+  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
   btnText: { textAlign: 'center', color: '#fff', padding: 5 },
-  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`}
+  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
 });
 
 export default class App extends Component {
@@ -84,7 +84,7 @@ export default class App extends Component {
               content.sales_no,
               // content.sales_date,
               // content.apply_date,
-              `${content.currency}${content.installment_amount}`,
+              content.installment_amount,
               content.next_due_date
               // content.credit,
               // content.int,
@@ -118,7 +118,7 @@ export default class App extends Component {
                 content.sales_no,
                 // content.sales_date,
                 // content.apply_date,
-                `${content.currency}${content.installment_amount}`,
+                content.installment_amount,
                 content.next_due_date
                 // content.credit,
                 // content.int,

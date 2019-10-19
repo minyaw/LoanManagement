@@ -36,7 +36,7 @@ class SecurityModal extends Component {
           >
             <Form style={{ paddingBottom: 20 }}>
               <Item stackedLabel>
-                <Label style={{color: '#828899', fontFamily: 'Montserrat-Bold', fontSize: 14}}>Please enter security password</Label>
+                <Label style={{color: '#828899', fontFamily: 'Montserrat-Bold', fontSize: 12}}>Please enter security password</Label>
                 <Input
                   placeholder = '******'
                   secureTextEntry = {true}
@@ -44,14 +44,14 @@ class SecurityModal extends Component {
                   autoCapitalize = "none"
                   autoFocus = {true}
                   style = {{
-                    fontSize: 14,
+                    fontSize: 12,
                     fontFamily: 'Montserrat-SemiBold',
                     color: '#192a59'}}
                 />
               </Item>
             </Form>
             <Button full style={{color: colors.primary}} onPress={() => this._checkPassword()}>
-              <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 16}}>SUBMIT</Text>
+              <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>SUBMIT</Text>
             </Button>
           </View>
         </Modal>

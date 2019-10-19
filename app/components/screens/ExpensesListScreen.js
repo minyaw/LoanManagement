@@ -42,11 +42,10 @@ const AddButton = styled.TouchableOpacity`
 `
 const HeaderList = [
   '',
-  'Submit Date',
   'Agent',
   'Trans Date',
   'Expenses Type',
-  'Trans Amount',
+  'Trans Amt',
   'Remark',
   'Status',
   'Receipt'
@@ -55,7 +54,7 @@ const HeaderList = [
 const Loadmore = styled.Text`
   textAlign: left;
   color: ${colors.primary};
-  fontSize: 16px;
+  fontSize: 14px;
   paddingVertical: 15px;
   paddingLeft: 20px;
   fontFamily: 'Montserrat-Bold';
@@ -67,11 +66,11 @@ const ButtonsContainer = styled.View`
 
 const styles = StyleSheet.create({
   header: { height: 50 },
-  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: '#828899' },
+  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   // btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
-  btnText: { textAlign: 'center', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`},
-  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`}
+  btnText: { textAlign: 'center', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`},
+  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
 });
 
 export default class App extends Component {
@@ -80,7 +79,7 @@ export default class App extends Component {
     this.state = {
       menuOpen: false,
       contentList : [],
-      widthArr: [110, 130, 130, 130, 130, 130, 130, 130, 130],
+      widthArr: [110, 130, 130, 130, 130, 130, 130, 130],
       loadPage: 1,
       loading: false,
       agentList:{},
@@ -102,6 +101,9 @@ export default class App extends Component {
   componentWillReceiveProps = () => {
     this.setState({
       contentList:[],
+      imageList: [],
+      list: [],
+      expensesIdList: [],
       loadPage:1
     })
     this._getExpensesList();
@@ -123,11 +125,10 @@ export default class App extends Component {
           for (const content of res.data.response.records) {
             this.state.contentList.push([
               '',
-              content.submit_date,
               content.agent,
               content.trans_date,
               content.expenses_type,
-              `${content.currency}${content.trans_amount}`,
+              content.trans_amount,
               content.remark,
               content.status,
               content.receipt_file !== '' ? 'View Receipt': null
@@ -144,11 +145,10 @@ export default class App extends Component {
             for (const content of this.state.item.records) {
               this.state.contentList.push([
                 '',
-                content.submit_date,
                 content.agent,
                 content.trans_date,
                 content.expenses_type,
-                `${content.currency}${content.trans_amount}`,
+                content.trans_amount,
                 content.remark,
                 content.status,
                 content.receipt_file !== '' ? 'View Receipt': null
@@ -205,11 +205,10 @@ export default class App extends Component {
             for (const content of res.data.response.records) {
               this.state.contentList.push([
                 '',
-                content.submit_date,
                 content.agent,
                 content.trans_date,
                 content.expenses_type,
-                `${content.currency}${content.trans_amount}`,
+                content.trans_amount,
                 content.remark,
                 content.status,
                 content.receipt_file !== '' ? 'View Receipt': null
@@ -222,14 +221,13 @@ export default class App extends Component {
             this.setState({contentList: this.state.contentList})
           })
         } else {
-          for (const content of this.state.item.records) {
+          for (const content of res.data.response.records) {
             this.state.contentList.push([
               '',
-              content.submit_date,
               content.agent,
               content.trans_date,
               content.expenses_type,
-              `${content.currency}${content.trans_amount}`,
+              content.trans_amount,
               content.remark,
               content.status,
               content.receipt_file !== '' ? 'View Receipt': null
@@ -337,7 +335,7 @@ export default class App extends Component {
     const edit = (index) => (
       <View style={[styles.btn, {alignItems: 'center', flexDirection: 'row'}]}>
         {
-          this.state.role === 'Admin' && this.state.contentList[index][7] === 'Pending' ? (
+          this.state.role === 'Admin' && this.state.contentList[index][6] === 'Pending' ? (
             <TouchableOpacity
               onPress={() => this._select(this.state.expensesIdList[index].id)}
               style={{flex:1, alignItems: 'flex-start'}}
@@ -350,16 +348,16 @@ export default class App extends Component {
           ) : null
         }
         {
-          ((this.state.role === 'Admin' && this.state.contentList[index][7] === 'Pending') || (this.state.userCode === this.state.contentList[index][2] && this.state.contentList[index][7] === 'Pending')) ? (
+          ((this.state.role === 'Admin' && this.state.contentList[index][6] === 'Pending') || (this.state.userCode === this.state.contentList[index][1] && this.state.contentList[index][6] === 'Pending')) ? (
             <TouchableOpacity
-              onPress= {() => this._checkRole(index, this.state.contentList[index][7], this.state.contentList[index][2])}
+              onPress= {() => this._checkRole(index, this.state.contentList[index][6], this.state.contentList[index][1])}
               style={{flex:1, alignItems: role === 'Admin' ? 'flex-end' : 'center'}}
             >
               <Icon
                 name = 'md-create'
                 type = 'ionicon'
                 color = '#3e59a6'
-                onPress= {() => this._checkRole(index, this.state.contentList[index][7], this.state.contentList[index][2])}
+                onPress= {() => this._checkRole(index, this.state.contentList[index][6], this.state.contentList[index][1])}
               />
             </TouchableOpacity>
           ) : null
@@ -399,7 +397,7 @@ export default class App extends Component {
                             this.state.contentList.map((rowData, index) => {
                               return(
                                 // <TouchableOpacity
-                                //   onPress={() => this._checkRole(index, rowData[7], rowData[2])}
+                                //   onPress={() => this._checkRole(index, rowData[6], rowData[1])}
                                 // >
                                   <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
                                     {
@@ -407,7 +405,7 @@ export default class App extends Component {
                                         return(
                                           <Cell
                                             key={cellIndex}
-                                            data={cellIndex === 8 ? element(index) : cellIndex === 0 ? edit(index) : cellData} textStyle={styles.cellText}
+                                            data={cellIndex === 7 ? element(index) : cellIndex === 0 ? edit(index) : cellData} textStyle={styles.cellText}
                                             style={[{width:cellIndex === 0 ? 110: 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                           />
                                         )

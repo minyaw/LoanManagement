@@ -18,29 +18,29 @@ const Container = styled.View`
 `
 
 const HeaderList = [
-'Agent Name',
-'Customer Name',
-'Sales ID',
-'Sales',
-'Next Due'
+  'Agent',
+  'Cust Name',
+  'Sales ID',
+  'Sales',
+  'Next Due'
 ]
 
 const Loadmore = styled.Text`
   textAlign: left;
   paddingLeft: 20px;
   color: ${colors.primary};
-  fontSize: 16px;
+  fontSize: 14px;
   paddingVertical: 15px;
   fontFamily: 'Montserrat-Bold';
 `
 
 const styles = StyleSheet.create({
   header: { height: 50 },
-  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: '#828899' },
+  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
   btnText: { textAlign: 'center', color: '#fff', padding: 5 },
-  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`}
+  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
 });
 
 export default class App extends Component {
@@ -100,7 +100,7 @@ export default class App extends Component {
               content.agent,
               content.customer_name,
               content.sales_no,
-              `${content.currency}${content.installment_amount}`,
+              content.installment_amount,
               content.next_due_date
             ])
             this.state.salesIdList.push(content.sales_id);
@@ -115,7 +115,7 @@ export default class App extends Component {
                 content.agent,
                 content.customer_name,
                 content.sales_no,
-                `${content.currency}${content.installment_amount}`,
+                content.installment_amount,
                 content.next_due_date
               ])
               this.state.salesIdList.push(content.sales_id);
@@ -165,7 +165,7 @@ export default class App extends Component {
                 content.agent,
                 content.customer_name,
                 content.sales_no,
-                `${content.currency}${content.installment_amount}`,
+                content.installment_amount,
                 content.next_due_date
               ])
               this.state.salesIdList.push(content.sales_id);
@@ -179,7 +179,7 @@ export default class App extends Component {
                 content.agent,
                 content.customer_name,
                 content.sales_no,
-                `${content.currency}${content.installment_amount}`,
+                content.installment_amount,
                 content.next_due_date
               ])
               this.state.salesIdList.push(content.sales_id);

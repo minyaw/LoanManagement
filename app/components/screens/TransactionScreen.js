@@ -35,24 +35,24 @@ const RemarksCol = styled.View`
 `
 const Username = styled.Text`
   color: #3F5AA6;
-  fontSize: 16px;
+  fontSize: 14px;
   fontFamily: 'Montserrat-Bold';
 `
 const DueDateDetail = styled.Text`
   color: #192A59;
   lineHeight: 20px;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-SemiBold';
 `
 const Remark = styled.Text`
   color: #3F5AA6;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
 const Loadmore = styled.Text`
   textAlign: center;
   color: ${colors.primary};
-  fontSize: 16px;
+  fontSize: 14px;
   paddingVertical: 15px;
   fontFamily: 'Montserrat-Bold';
 `
@@ -178,9 +178,9 @@ export default class App extends Component {
                     <ItemCard onPress={()=> Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })} key={index}>
                       <DetailsCol>
                         <Username>{content.customer_name}</Username>
-                        <DueDateDetail>Repayment No: {content.repay_no}</DueDateDetail>
+                        <DueDateDetail>Sales ID: {content.repay_no}</DueDateDetail>
                         <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
-                        <DueDateDetail>Trans Amt: {content.trans_amount}</DueDateDetail>
+                        <DueDateDetail>Trans Amount: {content.trans_amount}</DueDateDetail>
                         <DueDateDetail>Agent: {content.agent}</DueDateDetail>
                       </DetailsCol>
                       <RemarksCol>

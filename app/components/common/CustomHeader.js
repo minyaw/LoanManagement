@@ -19,8 +19,18 @@ class CustomHeader extends Component {
 
   _search = () => {
     const {filter, agent, status, cust_name, e_due, s_due, _in} = this.props;
-    _in.setState({loadPage: 1, contentList: [], filter: true})
-    filter();
+    _in.setState({
+      loadPage: 1,
+      contentList: [],
+      filter: true,
+      imageList: [],
+      list: [],
+      expensesIdList: [],
+      custIdList:[],
+      salesIdList: [],
+     }, () => {
+      filter();
+    })
     Actions.pop();
     // setTimeout(() => {
     // }, 500)
@@ -71,7 +81,7 @@ class CustomHeader extends Component {
                 />
               </TouchableOpacity> : null
             }
-            centerComponent = {{ text: title, style: { color: '#192a59', fontSize: 22, fontFamily: 'AvenirLTStd-Black'} }}
+            centerComponent = {{ text: title, style: { color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black'} }}
             rightComponent = { showSearch ? (
               <TouchableOpacity
                 onPress = {() => this._onSearchPress()}

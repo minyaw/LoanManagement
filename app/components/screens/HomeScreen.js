@@ -35,7 +35,7 @@ const DetailsContainer = styled.View`
 `
 const Detail = styled.Text`
   fontFamily: 'Montserrat-Bold';
-  fontSize: 13px;
+  fontSize: 11px;
   color: #192A59;
 `
 const ActionContainer = styled.View`
@@ -48,7 +48,7 @@ const ActionContainer = styled.View`
 const ActionText = styled.Text`
   color: #192A59;
   fontFamily: 'Montserrat-Regular';
-  fontSize: 12px;
+  fontSize: 10px;
 `
 const Link = styled.Text`
   color: #192a58;
@@ -74,12 +74,12 @@ const ButtonContainer = styled.TouchableOpacity`
 const DueDateTitle = styled.Text`
   fontFamily: AvenirLTStd-Black;
   color: #192a58;
-  fontSize: 16px;
+  fontSize: 14px;
 `
 const ViewAllButton = styled.Text`
   fontFamily: AvenirLTStd-Black;
   color: #192a58;
-  fontSize: 12px;
+  fontSize: 10px;
 `
 const Card = styled.TouchableOpacity`
   marginHorizontal: 15px;
@@ -100,18 +100,18 @@ const RemarksCol = styled.View`
 `
 const Username = styled.Text`
   color: #3F5AA6;
-  fontSize: 16px;
+  fontSize: 14px;
   fontFamily: 'Montserrat-Bold';
 `
 const DueDateDetail = styled.Text`
   color: #192A59;
   lineHeight: 20px;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-SemiBold';
 `
 const Remark = styled.Text`
   color: #3F5AA6;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
 const BlankContainer = styled.View`
@@ -123,7 +123,7 @@ const EmptyCard = styled.View`
 `
 const EmptyText = styled.Text`
   textAlign: center;
-  fontSize: 16px;
+  fontSize: 14px;
   paddingVertical: 20px;
 ` 
 const GroupContainer = styled.View`
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -395,7 +395,7 @@ export default class App extends Component {
                       <DetailsCol>
                         <Username>{content.customer_name}</Username>
                         <DueDateDetail>Due Date: {content.due_date}</DueDateDetail>
-                        <DueDateDetail>Repayment No: {content.repayment_no}</DueDateDetail>
+                        <DueDateDetail>Sales ID: {content.repayment_no}</DueDateDetail>
                         <DueDateDetail>Due Amt: {content.repayment_amount}</DueDateDetail>
                       </DetailsCol>
                       <RemarksCol>

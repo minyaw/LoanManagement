@@ -231,7 +231,7 @@ class Scene extends Component {
                       <ListItem
                         key            = {index}
                         title          = {item.title}
-                        titleStyle     = {{color: '#FFF', fontSize: 14, fontFamily: 'Montserrat-Bold'}}
+                        titleStyle     = {{color: '#FFF', fontSize: 12, fontFamily: 'Montserrat-Bold'}}
                         onPress        = {() => this._onItemPress(item)}
                         containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
                         component      = {TouchableOpacity}
@@ -265,7 +265,7 @@ class Scene extends Component {
                       <ListItem
                         key            = {index}
                         title          = {item.title}
-                        titleStyle     = {{color: '#FFF', fontSize: 14, fontFamily: 'Montserrat-Bold'}}
+                        titleStyle     = {{color: '#FFF', fontSize: 12, fontFamily: 'Montserrat-Bold'}}
                         onPress        = {() => this._onItemPress(item)}
                         containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
                         component      = {TouchableOpacity}

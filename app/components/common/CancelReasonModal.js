@@ -37,13 +37,13 @@ class CancelReasonModal extends Component {
           >
             <Form style={{ paddingBottom: 20 }}>
               <Item stackedLabel>
-                <Label style={{color: '#828899', fontFamily: 'Montserrat-Bold', fontSize: 14}}>Please enter cancel reason</Label>
+                <Label style={{color: '#828899', fontFamily: 'Montserrat-Bold', fontSize: 12}}>Please enter cancel reason</Label>
                 <Input
                   onChangeText = {(value)=> this.setState({reason: value})}
                   autoCapitalize = "none"
                   autoFocus = {true}
                   style = {{
-                    fontSize: 14,
+                    fontSize: 12,
                     fontFamily: 'Montserrat-SemiBold',
                     color: '#192a59'}}
                 />
@@ -53,7 +53,7 @@ class CancelReasonModal extends Component {
               closeModal();
               deleteSales(id, this.state.reason);
             }}>
-              <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 16}}>SUBMIT</Text>
+              <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>SUBMIT</Text>
             </Button>
           </View>
         </Modal>

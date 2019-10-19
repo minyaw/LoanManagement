@@ -22,7 +22,7 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontSize: 16px;
+  fontSize: 14px;
   flex:1;
   fontFamily: 'AvenirLTStd-Black'
 `
@@ -53,13 +53,13 @@ const Tab = styled.View`
   flex:1;
 `
 const Customer = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   textAlign: center;
   fontFamily: AvenirLTStd-Black;
   color: #192a59;
 `
 const Guarantor = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   textAlign: center;
   fontFamily: AvenirLTStd-Black;
   color: #192a59;
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -752,7 +752,7 @@ export default class App extends Component {
                             title = {'UPDATE'}
                             buttonStyle = {{backgroundColor: colors.primary, paddingHorizontal: 10}}
                             onPress = {() => this._updatePassword()}
-                            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                           />
                         </PasswordButtonContainer>
                       </FormContainer>
@@ -795,7 +795,7 @@ export default class App extends Component {
                             title = {'UPDATE'}
                             buttonStyle = {{backgroundColor: colors.primary, paddingHorizontal: 10}}
                             onPress = {() => this._updateSecPassword()}
-                            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                           />
                         </PasswordButtonContainer>
                       </FormContainer>
@@ -811,7 +811,7 @@ export default class App extends Component {
                     title = {'UPDATE'}
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                     onPress = {() => this._update()}
-                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                   />
                 </ButtonContainer>
               ) : null

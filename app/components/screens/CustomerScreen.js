@@ -35,18 +35,18 @@ const RemarksCol = styled.View`
 `
 const Username = styled.Text`
   color: #3F5AA6;
-  fontSize: 16px;
+  fontSize: 14px;
   fontFamily: 'Montserrat-Bold';
 `
 const DueDateDetail = styled.Text`
   color: #192A59;
   lineHeight: 20px;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-SemiBold';
 `
 const Remark = styled.Text`
   color: #3F5AA6;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
 const ButtonContainer = styled.View`
@@ -67,7 +67,7 @@ const AddButton = styled.TouchableOpacity`
 const Loadmore = styled.Text`
   textAlign: center;
   color: ${colors.primary};
-  fontSize: 16px;
+  fontSize: 14px;
   paddingVertical: 15px;
   fontFamily: 'Montserrat-Bold';
 `

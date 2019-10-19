@@ -39,18 +39,18 @@ const SelectCol = styled.View`
 `
 const Username = styled.Text`
   color: #3F5AA6;
-  fontSize: 16px;
+  fontSize: 14px;
   fontFamily: 'Montserrat-Bold';
 `
 const DueDateDetail = styled.Text`
   color: #192A59;
   lineHeight: 20px;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-SemiBold';
 `
 const Remark = styled.Text`
   color: #3F5AA6;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
 const IconContainer = styled.View`
@@ -241,7 +241,7 @@ export default class App extends Component {
                               title = 'View'
                               buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0}}
                               onPress = {() => Actions.CustomerDetail({custId: content.cust_id})}
-                              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                             />
                           </RemarksCol>
                         </Card>
@@ -259,7 +259,7 @@ export default class App extends Component {
                 buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                 disabled = {selectedList.length > 0 ? false: true}
                 onPress = {() => this._reject()}
-                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
               />
             </View>
             <View style={{flex:1}}>
@@ -268,7 +268,7 @@ export default class App extends Component {
                 buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
                 disabled = {selectedList.length > 0 ? false: true}
                 onPress = {() => this._approve()}
-                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
               />
             </View>
           </ButtonsContainer>

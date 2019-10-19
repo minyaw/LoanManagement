@@ -18,7 +18,7 @@ const Content = styled.View`
 `
 const VersionNo = styled.Text`
   textAlign: center;
-  fontSize: 14px;
+  fontSize: 12px;
   paddingTop: 20px;
   fontFamily: Montserrat-Bold;
 `
@@ -34,14 +34,14 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirLTStd-Roman'
   },
   input : {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   }
 })
 export default class App extends Component {
@@ -96,7 +96,7 @@ export default class App extends Component {
             </Item>
           </Form>
           <Button full style={styles.button} onPress={() => this._login()}>
-          <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 16}}>LOGIN</Text>
+          <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>LOGIN</Text>
           </Button>
           <VersionNo>v1.0.29</VersionNo>
         </Content>  

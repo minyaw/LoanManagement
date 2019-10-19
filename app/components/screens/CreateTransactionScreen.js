@@ -27,7 +27,7 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontSize: 16px;
+  fontSize: 14px;
   flex:1;
   fontFamily: 'AvenirLTStd-Black'
 `
@@ -44,7 +44,7 @@ const Section = styled.View`
   paddingTop: 10px;
 `
 const SectionName = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   color: #9fa4b1;
   lineHeight: 24;
   paddingBottom: 10px;
@@ -60,7 +60,7 @@ const ImageContainer = styled.TouchableOpacity`
 const ImageLabel = styled.Text`
   color: #000;
   textAlign: center;
-  fontSize: 16px;
+  fontSize: 14px;
   fontWeight: 600;
 `
 const ButtonContainer = styled.View`
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -119,7 +119,8 @@ export default class App extends Component {
       next_default_date: null,
       display_trans_date: null,
       display_next_due_date: null,
-      ref_no: null
+      ref_no: null,
+      remark: null
     },
     this.setDate = this.setDate.bind(this),
     this.setNexyPayDate = this.setNexyPayDate.bind(this)
@@ -211,12 +212,12 @@ export default class App extends Component {
     if (month.length < 2) month = '0' + month;
     if (day.length < 2) day = '0' + day;
 
-    this.setState({ next_due_date: [day, month, year].join('-') });
+    this.setState({ next_due_date: [year, month, day].join('-') });
   }
 
   _submit = () => {
     const { cust_id, sales_id } = this.props;
-    let { repayment_no, currency, currency_rate, trans_date, trans_type, trans_amount, bank_acct_id, currencyOptions, bankOptions, transTypeOptions, attachment, next_due_date, refund_amount, repayOptions, ref_no } = this.state;
+    let { repayment_no, currency, currency_rate, trans_date, trans_type, trans_amount, bank_acct_id, currencyOptions, bankOptions, transTypeOptions, attachment, next_due_date, refund_amount, repayOptions, ref_no, remark } = this.state;
 
     const body = {
       act: 'createTransaction',
@@ -233,9 +234,9 @@ export default class App extends Component {
       attachment,
       next_due_date,
       refund_amount,
-      ref_no
+      ref_no,
+      remark
     }
-
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
@@ -469,7 +470,7 @@ export default class App extends Component {
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Repayment No.*</Label>
+                      <Label style={styles.label}>Sales ID*</Label>
                       <Picker
                         mode="dropdown"
                         // iosIcon={<Icon name="ios-arrow-down-outline" />}
@@ -657,7 +658,7 @@ export default class App extends Component {
                             ) : null
                           }
                           iconRight
-                          titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                          titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                         />
                       </View>
                     </Item>
@@ -676,7 +677,7 @@ export default class App extends Component {
                 title = 'NEXT'
                 buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                 onPress = {() => this._checkRequiredField()}
-                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
               />
             </ButtonContainer> 
         </Container>

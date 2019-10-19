@@ -27,7 +27,7 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontSize: 16px;
+  fontSize: 14px;
   flex:1;
   fontFamily: 'AvenirLTStd-Black'
 `
@@ -44,7 +44,7 @@ const Section = styled.View`
   paddingTop: 10px;
 `
 const SectionName = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   color: #9fa4b1;
   lineHeight: 24;
   paddingBottom: 10px;
@@ -60,7 +60,7 @@ const ImageContainer = styled.TouchableOpacity`
 const ImageLabel = styled.Text`
   color: #000;
   textAlign: center;
-  fontSize: 16px;
+  fontSize: 14px;
   fontWeight: 600;
 `
 const ButtonContainer = styled.View`
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -169,8 +169,14 @@ export default class App extends Component {
     const { trans_date, trans_amount, income_item, bankAccountOptions } = this.state;
     this.setState({ bank_acct_id: bankAccountOptions[0].id })
     if (trans_date === null) {
-      Alert.alert('Error', 'Please select Trans Date.');
-      return;
+      let month = '' + (new Date().getMonth() + 1)
+      let day = '' + new Date().getDate()
+      let year = new Date().getFullYear();
+
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
+
+      this.setState({ trans_date: [year, month, day].join('-') });
     }
     if (trans_amount === null || trans_amount === '') {
       Alert.alert('Error', 'Please fill in Trans Amount.');
@@ -239,7 +245,7 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setDate}
@@ -253,7 +259,7 @@ export default class App extends Component {
                   />
                 </Item>
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Transaction Amt*</Label>
+                  <Label style={styles.label}>Trans Amount*</Label>
                   <Input style={styles.input}
                     onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
                     keyboardType = 'number-pad'
@@ -292,7 +298,7 @@ export default class App extends Component {
             title = 'NEXT'
             buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
             onPress = {() => this._checkRequiredField()}
-            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
           />
         </ButtonContainer> 
       </Container>

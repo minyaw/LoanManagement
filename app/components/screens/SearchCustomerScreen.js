@@ -43,24 +43,24 @@ const RemarksCol = styled.View`
 `
 const Username = styled.Text`
   color: #3F5AA6;
-  fontSize: 16px;
+  fontSize: 14px;
   fontFamily: 'Montserrat-Bold';
 `
 const DueDateDetail = styled.Text`
   color: #192A59;
   lineHeight: 20px;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-SemiBold';
 `
 const Remark = styled.Text`
   color: #3F5AA6;
-  fontSize: 10px;
+  fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
 const Loadmore = styled.Text`
   textAlign: center;
   color: ${colors.primary};
-  fontSize: 16px;
+  fontSize: 14px;
   paddingVertical: 15px;
   fontFamily: 'Montserrat-Bold';
 `
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -166,9 +166,14 @@ export default class App extends Component {
       this.setState({ loading: false})
       if (res.status === 200) {
         console.log('res', res);
-        this.setState({
-          item: res.data.response
-        })
+        if (this.state.item) {
+          this.state.item.records = this.state.item.records.concat(res.data.response.records);
+          this.setState({ item: this.state.item})
+        } else {
+          this.setState({
+            item: res.data.response
+          })
+        }
       }
     })
   }
@@ -178,7 +183,8 @@ export default class App extends Component {
   }
 
   _loadmore = () => {
-
+    this.setState({loadPage: this.state.loadPage++})
+    this._search();
   }
 
   _select = (id) => {
@@ -337,7 +343,7 @@ export default class App extends Component {
                     title = 'SEARCH'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
                     onPress = {() => this._search()}
-                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                   />
                 </ButtonContainer>
               </FormContainer>

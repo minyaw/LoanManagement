@@ -23,7 +23,7 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontSize: 16px;
+  fontSize: 14px;
   flex:1;
   fontFamily: 'AvenirLTStd-Black'
 `
@@ -40,7 +40,7 @@ const Section = styled.View`
   paddingTop: 10px;
 `
 const SectionName = styled.Text`
-  fontSize: 16px;
+  fontSize: 14px;
   color: #9fa4b1;
   lineHeight: 24;
   paddingBottom: 10px;
@@ -56,7 +56,7 @@ const ImageContainer = styled.TouchableOpacity`
 const ImageLabel = styled.Text`
   color: #000;
   textAlign: center;
-  fontSize: 16px;
+  fontSize: 14px;
   fontWeight: 600;
 `
 const ButtonContainer = styled.View`
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -162,8 +162,6 @@ export default class App extends Component {
   }
 
   setDate(newDate) {
-    console.log(newDate);
-    console.log(new Date());
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -269,8 +267,14 @@ export default class App extends Component {
       bank_acct_id3 = 0;
     }
     if (apply_date === null) {
-      Alert.alert('Error', 'Please select Apply Date.')
-      return;
+      let month = '' + (newDate.getMonth() + 1)
+      let day = '' + newDate.getDate()
+      let year = newDate.getFullYear();
+
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
+
+      this.setState({ apply_date: [year, month, day].join('-') });
     }
     if (sales_amount === null) {
       Alert.alert('Error', 'Please fill in Sales Amount.')
@@ -520,7 +524,7 @@ export default class App extends Component {
                       pgView === 'edit' ? (
                         <View>
                           <Item fixedLabel style={styles.inputContainer}>
-                            <Label style={styles.label}>Repayment No.*</Label>
+                            <Label style={styles.label}>Sales ID*</Label>
                             <Input style={[styles.input, {backgroundColor: '#eee'}]}
                               // onChangeText = {(nric) => this.setState({nricno: nric})}
                               defaultValue = {item.sales_no.concat(repayInfo.repay_no)}
@@ -571,7 +575,7 @@ export default class App extends Component {
               title = 'NEXT'
               buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
               onPress = {() => this._checkRequiredField()}
-              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
             />
           </ButtonContainer> 
         </Container>

@@ -38,7 +38,7 @@ const DetailContainer = styled.View`
 `
 const DetailTitle = styled.Text`
   color: #828899;
-  fontSize: 12px;
+  fontSize: 10px;
   textAlign: left;
   flex:1;
   justifyContent: center;
@@ -49,7 +49,7 @@ const DetailTitle = styled.Text`
 const DetailValue = styled.Text`
   color: ${colors.primary};
   fontFamily: 'Montserrat-SemiBold';
-  fontSize: 16px;
+  fontSize: 14px;
   textAlign: right;
   flex:1;
 `
@@ -59,7 +59,7 @@ const Divider = styled.View`
 `
 const DividerText = styled.Text`
   color: #192a58;
-  fontSize: 16px;
+  fontSize: 14px;
   flex:1;
   fontFamily: 'AvenirLTStd-Black'
 `
@@ -68,13 +68,13 @@ const HeaderList = [
   // 'No',
   // 'Repayment No',
   'Due Date',
-  'Installment Amount',
+  'Instal Amt',
   // 'Status',
   // 'Submit Date',
   // 'Trans ID',
   'Trans Date',
   'Trans Type',
-  'Trans Amount',
+  'Trans Amt',
   // 'Remark',
   // 'Action By'
 ]
@@ -94,14 +94,14 @@ const TransactionListContainer = styled.View`
 `
 const TransactionListTitle = styled.Text`
   fontFamily: AvenirLTStd-Black;
-  fontSize: 16px;
+  fontSize: 14px;
   color: ${colors.primary};
 `
 const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -119,11 +119,11 @@ const styles = StyleSheet.create({
     marginLeft :0
   },
   header: { height: 50 },
-  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: '#828899' },
+  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   // btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
-  btnText: { textAlign: 'center', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`},
-  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 14, color: `${colors.primary}`}
+  btnText: { textAlign: 'center', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`},
+  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
 })
 
 export default class App extends Component {
@@ -159,7 +159,13 @@ export default class App extends Component {
 
   componentWillReceiveProps = (data) => {
     console.log('data', data);
-    this.setState({ contentList:[] })
+    this.setState({ 
+      contentList:[],
+      salesIdList: [],
+      repayIdList: [],
+      infoList: [],
+      imageList:[]
+     })
     this._getSalesDetail()
   }
   
@@ -486,7 +492,7 @@ export default class App extends Component {
                     title = 'Create Trans'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
                     onPress= {() => Actions.CreateTransaction({cust_id, sales_id, transInfo: item})}
-                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 16 }}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                   />
                 </ButtonContainer>
               </FormContainer>

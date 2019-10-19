@@ -5,6 +5,7 @@ import { colors } from '../../constants/colors';
 import { Form, Label, Input, Picker, DatePicker, CheckBox, Item, ListItem, Body } from 'native-base';
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
 import DataService from '../common/DataService';
+import { Button } from 'react-native-elements';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground};
@@ -14,11 +15,14 @@ const FormContainer = styled.View`
   paddingHorizontal: 15px;
   paddingVertical: 10px;
 `
+const ButtonContainer = styled.View`
+
+`
 const styles = StyleSheet.create({
   label: {
     color: '#828899',
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14
+    fontSize: 12
   },
   inputContainer: {
     paddingVertical: 10,
@@ -27,7 +31,7 @@ const styles = StyleSheet.create({
   input : {
     borderWidth: 0.5,
     borderColor: '#ccc',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Montserrat-SemiBold',
     color: '#192a59'
   },
@@ -177,6 +181,31 @@ export default class App extends Component {
         selectedStatus[i] = 'Rejected'
       }
     }
+  }
+
+  _clear = () => {
+    const { filter_agent, normal, arrears, bad_debt, filter_sales_no, filter_nric_no, filter_broker, filter_cust_name, filter_phone_no, settle, pending, approved, rejected, groupOptions, filter_agent_group } = this.state;
+    this.setState({
+      filter_agent: '',
+      filter_sales_no: '',
+      filter_nric_no: '',
+      filter_cust_name: '',
+      filter_phone_no: '',
+    })
+    DataService.setAgent('');
+    DataService.setCustName('');
+    DataService.setSDue('');
+    DataService.setEDue('');
+    DataService.setSTrans('');
+    DataService.setETrans('');
+    DataService.setSSet('');
+    DataService.setESet('');
+    DataService.setStatus('');
+    DataService.setNric('');
+    DataService.setSalesId('');
+    DataService.setBroker('');
+    DataService.setPhone('');
+    DataService.setAgentGroup('');
   }
 
   render () {
@@ -564,6 +593,14 @@ export default class App extends Component {
             </Form>
           </FormContainer>
         </ScrollView>
+        <ButtonContainer>
+          <Button
+            title = {'CLEAR'}
+            buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+            onPress = {() => this._clear()}
+            titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+          />
+        </ButtonContainer>
       </Container>
     )
   }
