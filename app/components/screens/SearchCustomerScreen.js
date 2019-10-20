@@ -379,7 +379,7 @@ export default class App extends Component {
                               }
                             </SelectCol> : null
                           }
-                          <DetailsCol onPress={() => Actions.CustomerDetail({custId: content.cust_id})}>
+                          <DetailsCol onPress={() => content.can_view ? Actions.CustomerDetail({custId: content.cust_id}) : {} }>
                             <Username>{content.cust_name}</Username>
                             <DueDateDetail>Customer ID: {content.cust_no}</DueDateDetail>
                             <DueDateDetail>NRIC/Passport: {content.cust_icno}</DueDateDetail>

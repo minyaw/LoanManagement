@@ -98,7 +98,7 @@ export default class App extends Component {
           <Button full style={styles.button} onPress={() => this._login()}>
           <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>LOGIN</Text>
           </Button>
-          <VersionNo>v1.0.29</VersionNo>
+          <VersionNo>v1.0.30</VersionNo>
         </Content>  
       </Container>
     )
