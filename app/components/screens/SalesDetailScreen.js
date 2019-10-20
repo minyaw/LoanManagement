@@ -248,7 +248,7 @@ export default class App extends Component {
       repay_id: this.state.repayIdList[ind]
     }
     console.log(body);
-    this.setState({loading: true, infoList: []})
+    this.setState({loading: true, infoList: [], imageList: []})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       console.log(res);
       this.setState({loading: false})
@@ -274,6 +274,8 @@ export default class App extends Component {
   }
 
   _showReceipt = (index) => {
+    console.log('index', index);
+    console.log('imagelist', this.state.imageList);
     if (this.state.imageList[index] !== 'none') {
       this.setState({showImg: true, imageIndex: index})
     }

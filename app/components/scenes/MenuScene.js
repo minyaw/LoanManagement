@@ -205,7 +205,7 @@ class Scene extends Component {
           <ScrollView>
             <ListContainer>
               {
-                role === 'Admin' ? (
+                role === 'Admin' || role === 'MASTER' ? (
                   list.map((item,index)=> {
                     let path = '';
                     if (item.title === 'HOME') {
