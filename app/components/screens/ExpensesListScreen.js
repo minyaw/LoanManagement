@@ -123,6 +123,8 @@ export default class App extends Component {
         this.setState({ list: res.data.response.records })
         if (this.state.item) {
           for (const content of res.data.response.records) {
+            content.trans_date = DataService.changeDateFormat(content.trans_date);
+
             this.state.contentList.push([
               '',
               content.agent,
@@ -143,6 +145,7 @@ export default class App extends Component {
         } else {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
+              content.trans_date = DataService.changeDateFormat(content.trans_date);
               this.state.contentList.push([
                 '',
                 content.agent,
@@ -203,6 +206,7 @@ export default class App extends Component {
         if (loadPage !== 1) {
           this.setState({ item: res.data.response}, () => {
             for (const content of res.data.response.records) {
+              content.trans_date = DataService.changeDateFormat(content.trans_date);
               this.state.contentList.push([
                 '',
                 content.agent,
@@ -222,6 +226,7 @@ export default class App extends Component {
           })
         } else {
           for (const content of res.data.response.records) {
+            content.trans_date = DataService.changeDateFormat(content.trans_date);
             this.state.contentList.push([
               '',
               content.agent,

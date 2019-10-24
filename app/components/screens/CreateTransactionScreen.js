@@ -127,6 +127,7 @@ export default class App extends Component {
   }
 
   componentDidMount = () => {
+    console.log('info', this.props.transInfo);
     const next_default_date = new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))
 
     this.setState({ next_default_date: new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))})

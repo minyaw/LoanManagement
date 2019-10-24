@@ -53,6 +53,13 @@ const DetailValue = styled.Text`
   textAlign: right;
   flex:1;
 `
+const DetailAlert = styled.Text`
+  color: #F44336;
+  fontFamily: 'Montserrat-SemiBold';
+  fontSize: 14px;
+  textAlign: right;
+  flex:1;
+`
 const Divider = styled.View`
   paddingHorizontal: 15px;
   paddingVertical: 10px;
@@ -180,6 +187,8 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({item: res.data.response.sales_detail})
       for (const content of res.data.response.sales_detail.sales_transaction) {
+        content.due_date = DataService.changeDateFormat(content.due_date);
+        content.trans_date = DataService.changeDateFormat(content.trans_date);
         this.state.contentList.push([
           '',
           content.due_date,
@@ -253,9 +262,10 @@ export default class App extends Component {
       console.log(res);
       this.setState({loading: false})
       for (const content of res.data.response.records) {
+        content.submit_date = DataService.changeDateFormat(content.submit_date.substring(0,10));
         this.state.infoList.push([
           '',
-          content.submit_date.substring(0,10),
+          content.submit_date,
           content.receipt_file === '' ? null : 'View Receipt',
           content.remark,
           content.action_by,
@@ -274,8 +284,6 @@ export default class App extends Component {
   }
 
   _showReceipt = (index) => {
-    console.log('index', index);
-    console.log('imagelist', this.state.imageList);
     if (this.state.imageList[index] !== 'none') {
       this.setState({showImg: true, imageIndex: index})
     }
@@ -304,7 +312,16 @@ export default class App extends Component {
         {
           text: 'OK',
           onPress:() => {
-            this.setState({ isVisible: false });
+            this.setState({ 
+              isVisible: false,
+              contentList:[],
+              salesIdList: [],
+              repayIdList: [],
+              infoList: [],
+              imageList:[]
+            }, ()=> {
+              this._getSalesDetail();
+            });
           }
         }
       ])
@@ -345,6 +362,7 @@ export default class App extends Component {
           closeModal = {() => this.setState({ showCancelReason: false })}
           id = {this.state.infoList[index][8]}
           deleteSales = {(id, reason) => this._deleteSalesRepayment(id, reason)}
+          _in = {this}
         />
       </View>
     );
@@ -465,7 +483,14 @@ export default class App extends Component {
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Status</DetailTitle>
-                  <DetailValue>{item.status}</DetailValue>
+                  {
+                    item.status === 'Bad Debt' || item.status === 'Arrears' ? (
+                      <DetailAlert>{item.status}</DetailAlert>
+                    ) : (
+
+                      <DetailValue>{item.status}</DetailValue>
+                    )
+                  }
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Remarks</DetailTitle>

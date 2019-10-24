@@ -79,6 +79,7 @@ export default class App extends Component {
         this.setState({ agentList: res.data.response.agent_list})
         if (this.state.item) {
           for (const content of res.data.response.records) {
+            content.due_date = DataService.changeDateFormat(content.due_date);
             this.state.contentList.push([
               content.customer_name,
               content.due_date,
@@ -94,6 +95,7 @@ export default class App extends Component {
         } else {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
+              content.due_date = DataService.changeDateFormat(content.due_date);
               this.state.contentList.push([
                 content.customer_name,
                 content.due_date,
@@ -152,6 +154,7 @@ export default class App extends Component {
         if (loadPage === 1) {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
+              content.due_date = DataService.changeDateFormat(content.due_date);
               this.state.contentList.push([
                 content.customer_name,
                 content.due_date,
@@ -166,6 +169,7 @@ export default class App extends Component {
           });
         } else {
           for (const content of res.data.response.records) {
+            content.due_date = DataService.changeDateFormat(content.due_date);
             this.state.contentList.push([
               content.customer_name,
               content.due_date,

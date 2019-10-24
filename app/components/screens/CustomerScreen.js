@@ -41,11 +41,22 @@ const Username = styled.Text`
 const DueDateDetail = styled.Text`
   color: #192A59;
   lineHeight: 20px;
-  fontSize: 8px;
+  fontSize: 9px;
   fontFamily: 'Montserrat-SemiBold';
+`
+const SalesAmt = styled.Text`
+  color: #192A59;
+  lineHeight: 20px;
+  fontSize: 9px;
+  fontFamily: 'Montserrat-Bold';
 `
 const Remark = styled.Text`
   color: #3F5AA6;
+  fontSize: 8px;
+  fontFamily: 'Montserrat-Regular';
+`
+const RemarkAlert = styled.Text`
+  color: #F44336;
   fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
@@ -209,10 +220,16 @@ export default class App extends Component {
                       <Username>{content.customer_name}</Username>
                       <DueDateDetail>NRIC/Passport: {content.ic_no}</DueDateDetail>
                       <DueDateDetail>Reg. Date: {content.register_date}</DueDateDetail>
-                      <DueDateDetail>Sales Amt: {content.total_sales_amount} ({content.total_cases})</DueDateDetail>
+                      <SalesAmt>Sales Amt: {content.total_sales_amount} ({content.total_cases})</SalesAmt>
                     </DetailsCol>
                     <RemarksCol>
-                      <Remark>{content.status}</Remark>
+                      {
+                        content.status === 'Bad Debt' || content.status === 'Arrears' ? (
+                          <RemarkAlert>{content.status}</RemarkAlert>
+                        ) : (
+                          <Remark>{content.status}</Remark>
+                        )
+                      }
                     </RemarksCol>
                   </ItemCard>
                 )

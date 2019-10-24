@@ -9,6 +9,7 @@ import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { Actions } from 'react-native-router-flux';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
+import DataService from '../common/DataService';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -77,6 +78,7 @@ export default class App extends Component {
       if (res.status === 200) {
         if (this.state.item) {
           for (const content of res.data.response.records) {
+            content.next_due_date = DataService.changeDateFormat(content.next_due_date);
             this.state.contentList.push([
               content.agent,
               // content.customer_name,
@@ -111,6 +113,7 @@ export default class App extends Component {
         } else {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
+              content.next_due_date = DataService.changeDateFormat(content.next_due_date);
               this.state.contentList.push([
                 content.agent,
                 // content.customer_name,

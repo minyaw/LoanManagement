@@ -57,6 +57,11 @@ const Remark = styled.Text`
   fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
+const RemarkAlert = styled.Text`
+  color: #F44336;
+  fontSize: 8px;
+  fontFamily: 'Montserrat-Regular';
+`
 const Loadmore = styled.Text`
   textAlign: center;
   color: ${colors.primary};
@@ -417,7 +422,13 @@ export default class App extends Component {
                             }
                           </DetailsCol>
                           <RemarksCol>
-                            <Remark>{content.status}</Remark>
+                          {
+                            content.status === 'Bad Debt' || content.status === 'Arrears' ? (
+                              <RemarkAlert>{content.status}</RemarkAlert>
+                            ) : (
+                              <Remark>{content.status}</Remark>
+                            )
+                          }
                           </RemarksCol>
                         </ItemCard>
                       </View>

@@ -182,6 +182,27 @@ class DataService {
   getCustId = () => {
     return custId;
   }
+
+  changeDateFormat(date) {
+    let trans_date = new Date(date);
+    let trans_day = trans_date.getDate();
+    let trans_month = trans_date.getMonth() +1;
+    let trans_year = trans_date.getFullYear().toString().substring(2,4);
+
+    if (trans_day < 10) {
+      trans_day = '0' + trans_day
+    }
+
+    if (trans_month < 10) {
+      trans_month = '0' + trans_month
+    }
+
+    if (isNaN(trans_day) || isNaN(trans_month) || isNaN(trans_year)) {
+      return ''
+    } else {
+      return `${trans_day}-${trans_month}-${trans_year}`;
+    }
+  }
 }
 
 export default new DataService();

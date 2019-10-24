@@ -114,6 +114,11 @@ const Remark = styled.Text`
   fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
+const RemarkAlert = styled.Text`
+  color: #F44336;
+  fontSize: 8px;
+  fontFamily: 'Montserrat-Regular';
+`
 const BlankContainer = styled.View`
   paddingHorizontal: 20px;
 `
@@ -399,7 +404,13 @@ export default class App extends Component {
                         <DueDateDetail>Due Amt: {content.repayment_amount}</DueDateDetail>
                       </DetailsCol>
                       <RemarksCol>
-                        <Remark>{content.status}</Remark>
+                      {
+                        content.status === 'Bad Debt' || content.status === 'Arrears' ? (
+                          <RemarkAlert>{content.status}</RemarkAlert>
+                        ) : (
+                          <Remark>{content.status}</Remark>
+                        )
+                      }
                       </RemarksCol>
                     </Card>
                     )

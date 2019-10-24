@@ -28,6 +28,10 @@ const DetailsCol = styled.View`
   flex:2;
   justifyContent: flex-start;
 `
+const BodyDetailsCol = styled.View`
+  flex:4;
+  justifyContent: flex-start;
+`
 const RemarksCol = styled.View`
   flex:1;
   justifyContent: center;
@@ -50,6 +54,11 @@ const DueDateDetail = styled.Text`
 `
 const Remark = styled.Text`
   color: #3F5AA6;
+  fontSize: 8px;
+  fontFamily: 'Montserrat-Regular';
+`
+const RemarkAlert = styled.Text`
+  color: #F44336;
   fontSize: 8px;
   fontFamily: 'Montserrat-Regular';
 `
@@ -105,9 +114,11 @@ export default class App extends Component {
   }
   _select = (id) => {
     if (this.state[id]) {
+      console.log('splice');
       this.setState({[id]: false})
       for (let i = 0; i < this.state.selectedList.length; i++) {
-        if (this.state.selectedList[i] === id) {
+        if (this.state.selectedList[i].id === id) {
+          console.log('found');
           this.state.selectedList.splice(i, 1)
         }
       }
@@ -205,7 +216,13 @@ export default class App extends Component {
                             <DueDateDetail>Sales Amt: {content.sales}</DueDateDetail>
                           </DetailsCol>
                           <RemarksCol>
-                            <Remark>{content.status}</Remark>
+                            {
+                              content.status === 'Bad Debt' || content.status === 'Arrears' ? (
+                                <RemarkAlert>{content.status}</RemarkAlert>
+                              ) : (
+                                <Remark>{content.status}</Remark>
+                              )
+                            }
                           </RemarksCol>
                           <IconContainer>
                             <Icon
@@ -220,7 +237,12 @@ export default class App extends Component {
                         <Card
                           style={{marginTop: 0}}
                         >
-                          <DetailsCol>
+                          {
+                            edit ?
+                            <SelectCol>
+                            </SelectCol> : null
+                          }
+                          <BodyDetailsCol>
                             <DueDateDetail>Credit: {content.credit}</DueDateDetail>
                             <DueDateDetail>Int: {content.int}</DueDateDetail>
                             <DueDateDetail>Dep: {content.dep}</DueDateDetail>
@@ -233,8 +255,16 @@ export default class App extends Component {
                             <DueDateDetail>Remark: {content.remark}</DueDateDetail>
                             <DueDateDetail>Broker: {content.broker}</DueDateDetail>
                             <DueDateDetail>Agent: {content.agent}</DueDateDetail>
-                          </DetailsCol>
-                          <RemarksCol
+                            <View style={{paddingTop: 10}}>
+                              <Button
+                                title = 'View'
+                                buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0}}
+                                onPress = {() => Actions.CustomerDetail({custId: content.cust_id})}
+                                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                              />
+                            </View>
+                          </BodyDetailsCol>
+                          {/* <RemarksCol
                             style={{justifyContent: 'flex-end'}}
                           >
                             <Button
@@ -244,6 +274,7 @@ export default class App extends Component {
                               titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                             />
                           </RemarksCol>
+                          <IconContainer></IconContainer> */}
                         </Card>
                       </CollapseBody>
                     </Collapse>
