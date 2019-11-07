@@ -32,11 +32,11 @@ const Loadmore = styled.Text`
 `
 const styles = StyleSheet.create({
   header: { height: 50 },
-  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
+  text: { margin: 5, textAlign: 'left', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
-  btnText: { textAlign: 'center', color: '#fff', padding: 5 },
-  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
+  btnText: { textAlign: 'left', color: '#fff', padding: 5 },
+  cellText: { margin: 5, textAlign: 'left', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
 });
 
 export default class App extends Component {

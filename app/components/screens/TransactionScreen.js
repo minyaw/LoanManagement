@@ -3,13 +3,15 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
-import { ScrollView, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, Dimensions, Alert, View } from 'react-native';
 import CustomHeader from '../common/CustomHeader';
 import { Actions } from 'react-native-router-flux';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
 import DataService from '../common/DataService';
 import { Content, Card, CardItem, Body } from 'native-base';
+import { Button, Icon } from 'react-native-elements';
+import CancelReasonModal from "../common/CancelReasonModal";
 
 const { width, height } = Dimensions.get('window');
 const Container = styled.View`
@@ -56,6 +58,9 @@ const Loadmore = styled.Text`
   paddingVertical: 15px;
   fontFamily: 'Montserrat-Bold';
 `
+const ButtonContainer = styled.View`
+  flexDirection: row;
+`
 
 export default class App extends Component {
   constructor(props) {
@@ -65,7 +70,8 @@ export default class App extends Component {
       loading: false,
       loadPage: 1,
       filter: false,
-      agentList:{}
+      agentList:{},
+      isEdit: false
     }
   }
   
@@ -73,6 +79,9 @@ export default class App extends Component {
     this._getTransList();
   }
   
+  componentWillReceiveProps = () => {
+    this.setState({ isEdit: false })
+  }
   _getTransList = () => {
     const { loadPage } = this.state;
       const body = {
@@ -138,8 +147,36 @@ export default class App extends Component {
       })
   }
 
+  _longPress = (id) => {
+    this.setState({ isEdit: true, deleteId: id })
+  }
+
+  _deleteSalesRepayment = (reason) => {
+    const { deleteId } = this.state;
+    const body = {
+      act: 'deleteSalesRepaymentTrans',
+      trans_id: deleteId,
+      reason
+    }
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      Alert.alert('Info', res.data.errMsg,[
+        {
+          text: 'OK',
+          onPress:() => {
+            this.setState({ 
+              loadPage: 1,
+              item: null
+            }, ()=> {
+              this._getTransList();
+            });
+          }
+        }
+      ])
+    })
+  }
+
   render() {
-    const {menuOpen, item, loading} = this.state;
+    const {menuOpen, item, loading, isEdit} = this.state;
     return (
       <Drawer
         ref={(ref) => this._drawer = ref}
@@ -161,7 +198,7 @@ export default class App extends Component {
       >
         <Container>
         <Loader loading={loading}/>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
               title = 'Transaction'
               openMenu = {this.openMenu.bind(this)}
@@ -175,18 +212,48 @@ export default class App extends Component {
                 item.records.map((content, index) => {
                   return(
                     // this._renderList(content, index)
-                    <ItemCard onPress={()=> Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })} key={index}>
-                      <DetailsCol>
-                        <Username>{content.customer_name}</Username>
-                        <DueDateDetail>Sales ID: {content.repay_no}</DueDateDetail>
-                        <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
-                        <DueDateDetail>Trans Amount: {content.trans_amount}</DueDateDetail>
-                        <DueDateDetail>Agent: {content.agent}</DueDateDetail>
-                      </DetailsCol>
-                      <RemarksCol>
-                        <Remark>{content.trans_type}</Remark>
-                      </RemarksCol>
-                    </ItemCard>
+                    // <TouchableHighlight
+                    //   onLongPress = {() => console.log('object')}
+                    //   underlayColor="white"
+                    //   onPress={()=> Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })} key={index}
+                    //   activeOpacity = {0.6}
+                    // >
+                      <ItemCard 
+                        onLongPress = {() => {
+                          if (content.can_delete) {
+                            this._longPress(content.trans_id)
+                          }
+                        }}
+                        onPress={()=> {
+                          this.setState({ isEdit: false})
+                          Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
+                        }} key={index}
+                        activeOpacity = {0.6}
+                      >
+                        <DetailsCol>
+                          <Username>{content.customer_name}</Username>
+                          <DueDateDetail>Sales ID: {content.repay_no}</DueDateDetail>
+                          <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
+                          <DueDateDetail>Trans Amount: {content.trans_amount}</DueDateDetail>
+                          <DueDateDetail>Agent: {content.agent}</DueDateDetail>
+                        </DetailsCol>
+                        <RemarksCol>
+                          <Remark>{content.trans_type}</Remark>
+                          {
+                            content.can_delete ? (
+                              <View style = {{ position: 'absolute', bottom: 0 }}>
+                                <Icon
+                                  name="trash"
+                                  size={15}
+                                  color="#B71C1C"
+                                  type='font-awesome'
+                                />
+                              </View>
+                            ) : null
+                          }
+                        </RemarksCol>
+                      </ItemCard>
+                    // </TouchableHighlight>
                   )
                 })
               ) : (
@@ -216,7 +283,35 @@ export default class App extends Component {
                 )
               ) : null
             }
+            <CancelReasonModal
+              isVisible = {this.state.showCancelReason}
+              closeModal = {() => this.setState({ showCancelReason: false, isEdit: false })}
+              deleteSales = {(reason) => this._deleteSalesRepayment(reason)}
+              _in = {this}
+            />
           </ScrollView>
+          {
+            isEdit ? (
+              <ButtonContainer>
+                <View style = {{ flex: 1 }}>
+                  <Button
+                    title = {'CANCEL'}
+                    buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                    onPress = {() => this.setState({ isEdit: false })}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                  />
+                </View>
+                <View style = {{ flex: 1 }}>
+                  <Button
+                    title = {'DELETE'}
+                    buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                    onPress = {() => this.setState({ showCancelReason: true })}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                  />
+                </View>
+              </ButtonContainer>
+            ) : null
+          }
         </Container>
       </Drawer>
     )

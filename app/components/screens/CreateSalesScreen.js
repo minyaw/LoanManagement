@@ -101,9 +101,9 @@ export default class App extends Component {
       bankOptions: [],
       apply_date: null,
       days: null,
-      deposit_amount: null,
-      fee_amount: null,
-      interest_amount: null,
+      deposit_amount: "0",
+      fee_amount: "0",
+      interest_amount: "0",
       payment: null,
       remark: null,
       sales_amount: null,
@@ -406,6 +406,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({interest_amount: email})}
                               keyboardType = 'number-pad'
+                              value = {interest_amount}
                             />
                           </Item>
                           <Item fixedLabel style={styles.inputContainer}>
@@ -413,6 +414,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({deposit_amount: email})}
                               keyboardType = 'number-pad'
+                              value = {deposit_amount}
                             />
                           </Item>
                           <Item fixedLabel style={styles.inputContainer}>
@@ -420,6 +422,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({fee_amount: email})}
                               keyboardType = 'number-pad'
+                              value = {fee_amount}
                             />
                           </Item>
                           <Item fixedLabel style={styles.inputContainer}>

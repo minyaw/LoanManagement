@@ -126,11 +126,11 @@ const styles = StyleSheet.create({
     marginLeft :0
   },
   header: { height: 50 },
-  text: { textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
+  text: { margin: 5, textAlign: 'left', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#828899' },
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   // btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
-  btnText: { textAlign: 'center', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`},
-  cellText: { margin: 6, textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
+  btnText: { textAlign: 'left', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`},
+  cellText: { margin: 5, textAlign: 'left', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
 })
 
 export default class App extends Component {
@@ -156,7 +156,8 @@ export default class App extends Component {
       selectedBankSlip: null,
       showReceipt: false,
       receiptUri: null,
-      showCancelReason: false
+      showCancelReason: false,
+      deleteId: null
     }
   }
 
@@ -302,9 +303,10 @@ export default class App extends Component {
   }
 
   _deleteSalesRepayment = (id, reason) => {
+    const { deleteId } = this.state;
     const body = {
       act: 'deleteSalesRepaymentTrans',
-      trans_id: id,
+      trans_id: deleteId,
       reason
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -332,6 +334,7 @@ export default class App extends Component {
     const { menuOpen, widthArr, loading, item, isVisible, showImg, imageList, imageIndex, bankReceipt, receiptId, showReceipt, selectedBankSlip, receiptUri, infoWidthArr } = this.state;
     const { cust_id, sales_id } = this.props;
 
+    console.log('info', this.state.infoList)
     const element = (index) => (
       <TouchableOpacity onPress={() => this._showReceipt(index)}>
         <View style={styles.btn}>
@@ -340,13 +343,13 @@ export default class App extends Component {
       </TouchableOpacity>
     );
 
-    const edit = (index) => (
-      <View style={{alignItems: 'center'}}>
+    const edit = (index, id) => (
+      <View style={{alignItems: 'flex-start', paddingLeft: 5}}>
         {
           this.state.infoList[index][7] ? (
             <TouchableOpacity
             // onPress={() => this._deleteSalesRepayment(this.state.infoList[index][8])}
-            onPress = {() => this.setState({ showCancelReason: true})}
+            onPress = {() => this.setState({ showCancelReason: true, deleteId: this.state.infoList[index][8]})}
             >
               <Icon
                 name = 'times'
@@ -356,19 +359,17 @@ export default class App extends Component {
             </TouchableOpacity>
           ) : null
         }
-        
         <CancelReasonModal
           isVisible = {this.state.showCancelReason}
           closeModal = {() => this.setState({ showCancelReason: false })}
-          id = {this.state.infoList[index][8]}
-          deleteSales = {(id, reason) => this._deleteSalesRepayment(id, reason)}
+          deleteSales = {(reason) => this._deleteSalesRepayment(id, reason)}
           _in = {this}
         />
       </View>
     );
 
     const editSales = (index) => (
-      <View style={{alignItems: 'center'}}>
+      <View style={{alignItems: 'flex-start', paddingLeft: 5}}>
         {
           this.state.contentList[index][6] ? (
             <TouchableOpacity
@@ -545,7 +546,7 @@ export default class App extends Component {
                                       <Cell
                                         key={cellIndex}
                                         data={cellIndex === 0 ? editSales(index) : cellData} textStyle={styles.cellText}
-                                        style={[{width: cellIndex === 0 ? 80 : cellIndex > 5 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                        style={[{width: cellIndex === 0 ? 82 : cellIndex > 5 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                       />
                                     )
                                   })
@@ -587,8 +588,8 @@ export default class App extends Component {
                                               return(
                                                 <Cell
                                                   key={cellIndex}
-                                                  data={cellIndex === 2 ? element(index) : cellIndex === 0 ? edit(index) : cellIndex > 6 ? null : cellData} textStyle={styles.cellText}
-                                                  style={[{width: cellIndex === 0 ? 80 : cellIndex > 6 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                                  data={cellIndex === 2 ? element(index) : cellIndex === 0 ? edit(index, rowData[8]) : cellIndex > 6 ? null : cellData} textStyle={styles.cellText}
+                                                  style={[{width: cellIndex === 0 ? 82 : cellIndex > 6 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                                 />
                                               )
                                             })

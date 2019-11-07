@@ -51,7 +51,7 @@ class CancelReasonModal extends Component {
             </Form>
             <Button full style={{color: colors.primary}} onPress={() => {
               closeModal();
-              deleteSales(id, this.state.reason);
+              deleteSales(this.state.reason);
             }}>
               <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>SUBMIT</Text>
             </Button>
