@@ -25,12 +25,12 @@ const ButtonContainer = styled.View`
   paddingTop: 15px;
 `
 const ItemCard = styled.View`
-  marginHorizontal: 15px;
-  marginVertical: 10px;
-  paddingBottom: 10px;
+  paddingHorizontal: 15px;
+  paddingBottom: 20px;
+  paddingTop: 10px;
   flexDirection: row;
   borderBottomWidth: 1px;
-  borderBottomColor: #eee;
+  borderBottomColor: #ccc;
 `
 const DetailsCol = styled.TouchableOpacity`
   flex:2;
@@ -171,7 +171,7 @@ export default class App extends Component {
       this.setState({ loading: false})
       if (res.status === 200) {
         console.log('res', res);
-        if (this.state.item) {
+        if (this.state.item && loadPage !== 1) {
           this.state.item.records = this.state.item.records.concat(res.data.response.records);
           this.setState({ item: this.state.item})
         } else {
@@ -368,7 +368,7 @@ export default class App extends Component {
                   item.records.map((content, index) => {
                     return(
                       <View>
-                        <ItemCard key={index}>
+                        <ItemCard key={index} style = {{ backgroundColor: content.can_view ? '' : '#eee' }}>
                           {
                             edit ?
                             <SelectCol>
@@ -388,8 +388,8 @@ export default class App extends Component {
                             <Username>{content.cust_name}</Username>
                             <DueDateDetail>Customer ID: {content.cust_no}</DueDateDetail>
                             <DueDateDetail>NRIC/Passport: {content.cust_icno}</DueDateDetail>
-                            <DueDateDetail>Phone No: {content.cust_phoneno}</DueDateDetail>
                             <DueDateDetail>Total Loan Amt: {content.total_loan_amount}</DueDateDetail>
+                            <DueDateDetail>Total Loan (s): {content.total_loan_count}</DueDateDetail>
                             <DueDateDetail>Outstanding Amt: {content.total_outstanding}</DueDateDetail>
                             {
                               !content.can_share ? (

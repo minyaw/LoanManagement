@@ -16,6 +16,7 @@ class ApiService {
   }
 
   getUrl = () => {
+    // return 'https://uat.mmc899.com/_moappz_api_v1/app_call.php';
     return 'https://dev.mmc899.com/_moappz_api_v1/app_call.php';
   }
 
@@ -34,6 +35,7 @@ class ApiService {
   getUsercode = () => {
     return code;
   }
+
   post = (url, body, login = false) => {
     const reqOpts = {
       headers: {

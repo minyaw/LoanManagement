@@ -46,9 +46,36 @@ const DetailTitle = styled.Text`
   alignSelf: center;
   fontFamily: 'Montserrat-SemiBold';
 `
+const BoldTitle = styled.Text`
+  color: #777;
+  fontSize: 10px;
+  textAlign: left;
+  flex:1;
+  justifyContent: center;
+  alignItems: center;
+  alignSelf: center;
+  fontFamily: 'Montserrat-Bold';
+`
+const GainLossTitle = styled.Text`
+  color: #F44336;
+  fontSize: 10px;
+  textAlign: left;
+  flex:1;
+  justifyContent: center;
+  alignItems: center;
+  alignSelf: center;
+  fontFamily: 'Montserrat-SemiBold';
+`
 const DetailValue = styled.Text`
   color: ${colors.primary};
   fontFamily: 'Montserrat-SemiBold';
+  fontSize: 14px;
+  textAlign: right;
+  flex:1;
+`
+const BoldText = styled.Text`
+  color: ${colors.primary};
+  fontFamily: 'Montserrat-Bold';
   fontSize: 14px;
   textAlign: right;
   flex:1;
@@ -130,7 +157,8 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row',height:50, backgroundColor: '#ebeef7' },
   // btn: { backgroundColor: '#1a73e8',  borderRadius: 2 },
   btnText: { textAlign: 'left', padding: 5, textDecorationLine:'underline', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`},
-  cellText: { margin: 5, textAlign: 'left', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`}
+  cellText: { margin: 5, textAlign: 'left', fontFamily: 'Montserrat-Medium', fontSize: 12, color: `${colors.primary}`},
+  alertCellText: { margin: 5, textAlign: 'left', fontFamily: 'Montserrat-Medium', fontSize: 12, color: '#F44336'}
 })
 
 export default class App extends Component {
@@ -431,12 +459,12 @@ export default class App extends Component {
                   <DetailValue>{item.sales_date.substring(0, 10)}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
-                  <DetailTitle>Sales Amount</DetailTitle>
-                  <DetailValue>{item.sales_amount}</DetailValue>
+                  <BoldTitle>Sales Amount</BoldTitle>
+                  <BoldText>{item.sales_amount}</BoldText>
                 </DetailContainer>
                 <DetailContainer>
-                  <DetailTitle>Credit</DetailTitle>
-                  <DetailValue>{item.credit_amount}</DetailValue>
+                  <BoldTitle style = {{ color: '#F44336'}}>Credit</BoldTitle>
+                  <BoldText style = {{ color: '#F44336'}}>{item.credit_amount}</BoldText>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Interest</DetailTitle>
@@ -459,12 +487,12 @@ export default class App extends Component {
                   <DetailValue>{item.days}</DetailValue>
                 </DetailContainer>
                 <DetailContainer>
-                  <DetailTitle>Outstanding Amt</DetailTitle>
-                  <DetailValue>{item.outstanding_amount}</DetailValue>
+                  <BoldTitle>Outstanding Amt</BoldTitle>
+                  <BoldText>{item.outstanding_amount}</BoldText>
                 </DetailContainer>
                 <DetailContainer>
-                  <DetailTitle>Gain/Loss</DetailTitle>
-                  <DetailValue>{item.gain_loss_amount}</DetailValue>
+                  <GainLossTitle>Gain/Loss</GainLossTitle>
+                  <DetailAlert>{item.gain_loss_amount}</DetailAlert>
                 </DetailContainer>
                 <DetailContainer>
                   <DetailTitle>Total Principal</DetailTitle>
@@ -545,7 +573,7 @@ export default class App extends Component {
                                     return(
                                       <Cell
                                         key={cellIndex}
-                                        data={cellIndex === 0 ? editSales(index) : cellData} textStyle={styles.cellText}
+                                        data={cellIndex === 0 ? editSales(index) : cellData} textStyle={cellIndex === 2 ? styles.alertCellText : styles.cellText}
                                         style={[{width: cellIndex === 0 ? 82 : cellIndex > 5 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                       />
                                     )

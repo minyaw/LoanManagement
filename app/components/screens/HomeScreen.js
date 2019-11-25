@@ -109,6 +109,12 @@ const DueDateDetail = styled.Text`
   fontSize: 8px;
   fontFamily: 'Montserrat-SemiBold';
 `
+const DueAmt = styled.Text`
+  color: #192A59;
+  lineHeight: 20px;
+  fontSize: 8px;
+  fontFamily: 'Montserrat-Bold';
+`
 const Remark = styled.Text`
   color: #3F5AA6;
   fontSize: 8px;
@@ -401,7 +407,7 @@ export default class App extends Component {
                         <Username>{content.customer_name}</Username>
                         <DueDateDetail>Due Date: {content.due_date}</DueDateDetail>
                         <DueDateDetail>Sales ID: {content.repayment_no}</DueDateDetail>
-                        <DueDateDetail>Due Amt: {content.repayment_amount}</DueDateDetail>
+                        <DueAmt>Due Amt: {content.repayment_amount}</DueAmt>
                       </DetailsCol>
                       <RemarksCol>
                       {
