@@ -185,12 +185,22 @@ export default class App extends Component {
       showReceipt: false,
       receiptUri: null,
       showCancelReason: false,
-      deleteId: null
+      deleteId: null,
+      createTransAccess: false,
+      editTransAccess: false
     }
   }
 
   componentDidMount = () => {
     this._getSalesDetail();
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'customer_transaction') {
+        this.setState({ createTransAccess: item.can_access })
+      }
+      if (item.screen_key === 'customer_transaction_edit') {
+        this.setState({ editTransAccess: item.can_access })
+      }
+    }
   }
 
   componentWillReceiveProps = (data) => {
@@ -216,6 +226,7 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({item: res.data.response.sales_detail})
       for (const content of res.data.response.sales_detail.sales_transaction) {
+        content.ori_due_date = content.due_date;
         content.due_date = DataService.changeDateFormat(content.due_date);
         content.trans_date = DataService.changeDateFormat(content.trans_date);
         this.state.contentList.push([
@@ -374,7 +385,7 @@ export default class App extends Component {
     const edit = (index, id) => (
       <View style={{alignItems: 'flex-start', paddingLeft: 5}}>
         {
-          this.state.infoList[index][7] ? (
+          this.state.infoList[index][7] && this.state.editTransAccess ? (
             <TouchableOpacity
             // onPress={() => this._deleteSalesRepayment(this.state.infoList[index][8])}
             onPress = {() => this.setState({ showCancelReason: true, deleteId: this.state.infoList[index][8]})}
@@ -399,7 +410,7 @@ export default class App extends Component {
     const editSales = (index) => (
       <View style={{alignItems: 'flex-start', paddingLeft: 5}}>
         {
-          this.state.contentList[index][6] ? (
+          this.state.contentList[index][6] && this.state.editTransAccess ? (
             <TouchableOpacity
               onPress = {() => Actions.CreateSales({pgView: 'edit', repayInfo: this.state.item.sales_transaction[index], item: this.state.item, cust_id: this.props.cust_id})}
             >
@@ -543,14 +554,18 @@ export default class App extends Component {
                     </Picker>
                   </View>
                 </DetailContainer>
-                <ButtonContainer>
-                  <Button
-                    title = 'Create Trans'
-                    buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
-                    onPress= {() => Actions.CreateTransaction({cust_id, sales_id, transInfo: item})}
-                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                  />
-                </ButtonContainer>
+                {
+                  this.state.createTransAccess ? (
+                    <ButtonContainer>
+                      <Button
+                        title = 'Create Trans'
+                        buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
+                        onPress= {() => Actions.CreateTransaction({cust_id, sales_id, transInfo: item})}
+                        titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                      />
+                    </ButtonContainer>
+                  ) : null
+                }
               </FormContainer>
               <TransactionListContainer>
                 <TransactionListTitle>Repayment List</TransactionListTitle>

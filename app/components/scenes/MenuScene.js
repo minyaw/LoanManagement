@@ -65,41 +65,9 @@ const Role = styled.Text`
   color: #FFFFFF;
   fontFamily: 'Montserrat-Bold';
 `
-const list = [
+let list = [
   {
     title: 'HOME',
-    navigate: 'Home',
-  },
-  {
-    title: 'CUSTOMER SEARCH',
-    navigate: 'SearchCustomer',
-  },
-  {
-    title: 'CUSTOMER',
-    navigate: 'Customer',
-  },
-  {
-    title:'TRANSACTION',
-    navigate: 'Transaction',
-  },
-  {
-    title:'OTHER INCOME',
-    navigate: 'IncomeList',
-  },
-  {
-    title: 'SALES',
-    navigate: 'SalesList',
-  },
-  {
-    title: 'DUE DATE LIST',
-    navigate: 'DueList',
-  },
-  {
-    title: 'EXPENSES',
-    navigate: 'ExpensesList',
-  },
-  {
-    title: 'LOGOUT',
     navigate: 'Home',
   }
 ]
@@ -156,6 +124,54 @@ class Scene extends Component {
     }
   }
 
+  componentWillMount = () => {
+    list = [{
+      title: 'HOME',
+      navigate: 'Home',
+    }]
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'customer_searching_advanced' && item.can_access) {
+        list.push({
+          title: 'CUSTOMER SEARCH',
+          navigate: 'SearchCustomer',
+        })
+      } else if (item.screen_key === 'customer_listing' && item.can_access) {
+        list.push({
+          title: 'CUSTOMER',
+          navigate: 'Customer',
+        })
+      } else if (item.screen_key === 'trans_today_listing' && item.can_access) {
+        list.push({
+          title:'TRANSACTION',
+          navigate: 'Transaction',
+        })
+      } else if (item.screen_key === 'trans_other_income_listing' && item.can_access) {
+        list.push({
+          title:'OTHER INCOME',
+          navigate: 'IncomeList',
+        })
+      } else if (item.screen_key === 'sales_today_listing' && item.can_access) {
+        list.push({
+          title: 'SALES',
+          navigate: 'SalesList',
+        })
+      } else if (item.screen_key === 'customer_due_listing' && item.can_access) {
+        list.push({
+          title: 'DUE DATE LIST',
+          navigate: 'DueList',
+        })
+      } else if (item.screen_key === 'expenses_listing' && item.can_access) {
+        list.push({
+          title: 'EXPENSES',
+          navigate: 'ExpensesList',
+        })
+      }
+    }
+    list.push({
+      title: 'LOGOUT',
+      navigate: 'Home',
+    })
+  }
   _onItemPress = (item) => {
     const { title, navigate } = item;
     if (title === 'LOGOUT') {
@@ -205,7 +221,7 @@ class Scene extends Component {
           <ScrollView>
             <ListContainer>
               {
-                role === 'Admin' || role === 'MASTER' ? (
+                // role === 'Admin' || role === 'MASTER' ? (
                   list.map((item,index)=> {
                     let path = '';
                     if (item.title === 'HOME') {
@@ -239,41 +255,41 @@ class Scene extends Component {
                       />
                     )
                   })
-                ) : (
-                  masterList.map((item,index)=> {
-                    let path = '';
-                    if (item.title === 'HOME') {
-                      path = require("../../../assets/icons/ic_home_24px.png")
-                    } else if (item.title === 'CUSTOMER SEARCH') {
-                      path = require("../../../assets/icons/ic_search_24px.png")
-                    } else if (item.title === 'CUSTOMER') {
-                      path = require("../../../assets/icons/ic_assignment_ind_24px.png")
-                    } else if (item.title === 'TRANSACTION') {
-                      path = require("../../../assets/icons/ic_swap_vert_24px.png")
-                    } else if (item.title === 'SALES') {
-                      path = require("../../../assets/icons/ic_next_week_24px.png")
-                    } else if (item.title === 'DUE DATE LIST') {
-                      path = require("../../../assets/icons/ic_query_builder_24px.png")
-                    } else if (item.title === 'EXPENSES') {
-                      path = require("../../../assets/icons/ic_attach_money_24px.png")
-                    } else if (item.title === 'LOGOUT') {
-                      path = require("../../../assets/icons/ic_exit_to_app_24px.png")
-                    } else {
-                      path = null
-                    }
-                    return(
-                      <ListItem
-                        key            = {index}
-                        title          = {item.title}
-                        titleStyle     = {{color: '#FFF', fontSize: 12, fontFamily: 'Montserrat-Bold'}}
-                        onPress        = {() => this._onItemPress(item)}
-                        containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
-                        component      = {TouchableOpacity}
-                        leftIcon = {<LeftIcon path={path}/>}
-                      />
-                    )
-                  })
-                )
+                // ) : (
+                  // masterList.map((item,index)=> {
+                  //   let path = '';
+                  //   if (item.title === 'HOME') {
+                  //     path = require("../../../assets/icons/ic_home_24px.png")
+                  //   } else if (item.title === 'CUSTOMER SEARCH') {
+                  //     path = require("../../../assets/icons/ic_search_24px.png")
+                  //   } else if (item.title === 'CUSTOMER') {
+                  //     path = require("../../../assets/icons/ic_assignment_ind_24px.png")
+                  //   } else if (item.title === 'TRANSACTION') {
+                  //     path = require("../../../assets/icons/ic_swap_vert_24px.png")
+                  //   } else if (item.title === 'SALES') {
+                  //     path = require("../../../assets/icons/ic_next_week_24px.png")
+                  //   } else if (item.title === 'DUE DATE LIST') {
+                  //     path = require("../../../assets/icons/ic_query_builder_24px.png")
+                  //   } else if (item.title === 'EXPENSES') {
+                  //     path = require("../../../assets/icons/ic_attach_money_24px.png")
+                  //   } else if (item.title === 'LOGOUT') {
+                  //     path = require("../../../assets/icons/ic_exit_to_app_24px.png")
+                  //   } else {
+                  //     path = null
+                  //   }
+                  //   return(
+                  //     <ListItem
+                  //       key            = {index}
+                  //       title          = {item.title}
+                  //       titleStyle     = {{color: '#FFF', fontSize: 12, fontFamily: 'Montserrat-Bold'}}
+                  //       onPress        = {() => this._onItemPress(item)}
+                  //       containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
+                  //       component      = {TouchableOpacity}
+                  //       leftIcon = {<LeftIcon path={path}/>}
+                  //     />
+                  //   )
+                  // })
+                // )
               }
             </ListContainer>
             {/* <View>

@@ -62,12 +62,18 @@ export default class App extends Component {
       widthArr: [130, 130, 130, 130, 130, 130],
       loadPage: 1,
       loading: false,
-      agentList:{}
+      agentList:{},
+      createIncomeAccess: false
     }
   }
 
   componentDidMount = () => {
     this._getOtherIncomeList();
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'trans_other_income_add') {
+        this.setState({ createIncomeAccess: item.can_access })
+      }
+    }
   }
 
   componentWillReceiveProps = () => {
@@ -265,14 +271,18 @@ export default class App extends Component {
                   </Content>
                 )
               }
-              <ButtonContainer>
-                <Button
-                  title = 'CREATE OTHER INCOME'
-                  buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                  onPress = {() => Actions.CreateIncome()}
-                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                />
-              </ButtonContainer>
+              {
+                this.state.createIncomeAccess ? (
+                  <ButtonContainer>
+                    <Button
+                      title = 'CREATE OTHER INCOME'
+                      buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                      onPress = {() => Actions.CreateIncome()}
+                      titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                    />
+                  </ButtonContainer>
+                ) : null
+              }
           </Container>
         </Drawer>
       )

@@ -41,7 +41,7 @@ const AddButton = styled.TouchableOpacity`
   alignItems: center;
 `
 const HeaderList = [
-  '',
+  'Action',
   'Agent',
   'Trans Date',
   'Expenses Type',
@@ -90,12 +90,22 @@ export default class App extends Component {
       list: [],
       userCode: ApiService.getUsercode(),
       expensesIdList: [],
-      selectedList: []
+      selectedList: [],
+      addExpensesAccess: false,
+      editExpensesAccess: false
     }
   }
 
   componentDidMount = () => {
     this._getExpensesList();
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'expenses_entry') {
+        this.setState({ addExpensesAccess: item.can_access })
+      }
+      if (item.screen_key === 'expenses_entry_edit') {
+        this.setState({ editExpensesAccess: item.can_access })
+      }
+    }
   }
 
   componentWillReceiveProps = () => {
@@ -353,7 +363,7 @@ export default class App extends Component {
           ) : null
         }
         {
-          ((this.state.role === 'Admin' && this.state.contentList[index][6] === 'Pending') || (this.state.userCode === this.state.contentList[index][1] && this.state.contentList[index][6] === 'Pending')) ? (
+          ((this.state.role === 'Admin' && this.state.contentList[index][6] === 'Pending') || (this.state.editExpensesAccess && this.state.contentList[index][6] === 'Pending')) ? (
             <TouchableOpacity
               onPress= {() => this._checkRole(index, this.state.contentList[index][6], this.state.contentList[index][1])}
               style={{flex:1, alignItems: role === 'Admin' ? 'flex-end' : 'center'}}
@@ -471,7 +481,7 @@ export default class App extends Component {
                 </Modal>
               </View>
               {
-                this.state.selectedList.length < 1 ? (
+                this.state.selectedList.length < 1 && this.state.addExpensesAccess ? (
                   <ButtonContainer>
                     <AddButton onPress={() => this._redirect()}>
                       {/* <Text style={{color: '#FFF', fontSize:42}}>+</Text> */}

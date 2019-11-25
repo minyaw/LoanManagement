@@ -95,12 +95,27 @@ export default class App extends Component {
     this.state = {
       menuOpen: false,
       gender: '',
-      role: null
+      role: null,
+      newSalesAccess: false,
+      salesListAccess: false,
+      profileAccess: false
     }
   }
 
   componentDidMount = () => {
     this._getCustomerProfile();
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'customer_new_sales') {
+        this.setState({ newSalesAccess: item.can_access })
+      }
+      if (item.screen_key === 'customer_sales_listing') {
+        this.setState({ salesListAccess: item.can_access })
+      }
+      if (item.screen_key === 'customer_profile') {
+        this.setState({ profileAccess: item.can_access })
+      }
+      
+    }
   }
 
   componentWillReceiveProps = () => {
@@ -173,7 +188,7 @@ export default class App extends Component {
               />
               <UsernameContainer>
                 <TouchableOpacity
-                  onPress = {() => Actions.CreateCustomer({pgView: 'edit', item: item})}
+                  onPress = {() => this.state.profileAccess ? Actions.CreateCustomer({pgView: 'edit', item: item}) : null}
                 >
                   <Username>{item.customer_name} ></Username>
                 </TouchableOpacity>
@@ -215,20 +230,28 @@ export default class App extends Component {
                 </Form>
               ) : (
                 <Content style={{ paddingHorizontal: 20 }}>
-                  <Button
-                    block
-                    style={{backgroundColor: colors.primary}}
-                    onPress={() => Actions.SalesDetailList({cust_id: item.cust_id})}
-                  >
-                    <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>VIEW SALES DETAILS</Text>
-                  </Button>
-                  <Button 
-                    block
-                    style={{backgroundColor: colors.primary, marginTop: 20}}
-                    onPress = {() => Actions.CreateSales({item: item})}
-                  >
-                    <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>CREATE NEW SALES</Text>
-                  </Button>
+                  {
+                    this.state.salesListAccess ? (
+                      <Button
+                        block
+                        style={{backgroundColor: colors.primary}}
+                        onPress={() => Actions.SalesDetailList({cust_id: item.cust_id})}
+                      >
+                        <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>VIEW SALES DETAILS</Text>
+                      </Button>
+                    ) : null
+                  }
+                  {
+                    this.state.newSalesAccess ? (
+                      <Button 
+                        block
+                        style={{backgroundColor: colors.primary, marginTop: 20}}
+                        onPress = {() => Actions.CreateSales({item: item})}
+                      >
+                        <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>CREATE NEW SALES</Text>
+                      </Button>
+                    ) : null
+                  }
                 </Content>
               )
             }

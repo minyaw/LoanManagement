@@ -92,12 +92,18 @@ export default class App extends Component {
       item: null,
       filter: false,
       agentList:{},
-      brokerList:{}
+      brokerList:{},
+      addCustAccess: false
     }
   }
 
   componentDidMount = () => {
     this._getCustomerList();
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'register_customer') {
+        this.setState({ addCustAccess: item.can_access })
+      }
+    }
   }
 
   componentWillReceiveProps = () => {
@@ -263,16 +269,20 @@ export default class App extends Component {
             ) : null
           }
           </ScrollView>
-          <ButtonContainer>
-            <AddButton onPress={() => this._redirect()}>
-              {/* <Text style={{color: '#FFF', fontSize:42}}>+</Text> */}
-              <Icon
-                name = 'plus'
-                type = 'font-awesome'
-                color = '#FFF'
-              />
-            </AddButton>
-          </ButtonContainer>
+          {
+            this.state.addCustAccess ? (
+              <ButtonContainer>
+                <AddButton onPress={() => this._redirect()}>
+                  {/* <Text style={{color: '#FFF', fontSize:42}}>+</Text> */}
+                  <Icon
+                    name = 'plus'
+                    type = 'font-awesome'
+                    color = '#FFF'
+                  />
+                </AddButton>
+              </ButtonContainer>
+            ) : null
+          }
         </Container>
       </Drawer>
     )

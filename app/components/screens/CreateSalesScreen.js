@@ -537,7 +537,7 @@ export default class App extends Component {
                           <Item fixedLabel style={styles.inputContainer}>
                             <Label style={styles.label}>Due Date*</Label>
                             <DatePicker
-                              defaultDate={new Date(new Date(parseInt(repayInfo.due_date.substring(0,4))), new Date(parseInt(repayInfo.due_date.substring(5,7)) -1), new Date(parseInt(repayInfo.due_date.substring(8,10))))}
+                              defaultDate={new Date(new Date(parseInt(repayInfo.ori_due_date.substring(0,4))), new Date(parseInt(repayInfo.ori_due_date.substring(5,7)) -1), new Date(parseInt(repayInfo.ori_due_date.substring(8,10))))}
                               locale={"en"}
                               timeZoneOffsetInMinutes={undefined}
                               modalTransparent={false}

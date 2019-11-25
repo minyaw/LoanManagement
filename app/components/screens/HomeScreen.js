@@ -185,7 +185,8 @@ export default class App extends Component {
       loading: false,
       groupOptions: [],
       role: null,
-      loading: false
+      loading: false,
+      outstandingAccess: false
     }
   }
 
@@ -197,6 +198,11 @@ export default class App extends Component {
     })
     this._getDashBoardData();
     console.log('id', DataService.getSelectedGroup());
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'customer_outstanding_listing') {
+        this.setState({ outstandingAccess: item.can_access })
+      }
+    }
   }
 
   componentWillReceiveProps = () => {
@@ -303,22 +309,26 @@ export default class App extends Component {
                       </DetailsContainer>
                     </LinearGradient>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress = {() => Actions.OutstandingList()}
-                  >
-                    <LinearGradient colors={['#ddf3e2', '#c2f3cc', '#9eecac']} style={styles.linearGradient}>
-                      <IconContainer>
-                        <Icon
-                          name = 'clock'
-                          type = 'material-community'
-                        />
-                      </IconContainer>
-                      <DetailsContainer>
-                        <Detail>Outstanding</Detail>
-                        <Detail>{item.summary.total_outstanding}</Detail>
-                      </DetailsContainer>
-                    </LinearGradient>
-                  </TouchableOpacity>
+                  {
+                    this.state.outstandingAccess ? (
+                      <TouchableOpacity
+                        onPress = {() => Actions.OutstandingList()}
+                      >
+                        <LinearGradient colors={['#ddf3e2', '#c2f3cc', '#9eecac']} style={styles.linearGradient}>
+                          <IconContainer>
+                            <Icon
+                              name = 'clock'
+                              type = 'material-community'
+                            />
+                          </IconContainer>
+                          <DetailsContainer>
+                            <Detail>Outstanding</Detail>
+                            <Detail>{item.summary.total_outstanding}</Detail>
+                          </DetailsContainer>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    ) : null
+                  }
                   <TouchableOpacity
                     onPress = {() => Actions.SalesList({pgView: 'dashboard'})}
                   >

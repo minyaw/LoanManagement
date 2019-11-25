@@ -9,6 +9,7 @@ let role = '';
 let username = '';
 let fullname = '';
 let code = '';
+let accessList = [];
 
 class ApiService {
   getToken = () => {
@@ -16,8 +17,8 @@ class ApiService {
   }
 
   getUrl = () => {
-    // return 'https://uat.mmc899.com/_moappz_api_v1/app_call.php';
-    return 'https://dev.mmc899.com/_moappz_api_v1/app_call.php';
+    return 'https://uat.mmc899.com/_moappz_api_v1/app_call.php';
+    // return 'https://dev.mmc899.com/_moappz_api_v1/app_call.php';
   }
 
   getUsername = () => {
@@ -34,6 +35,10 @@ class ApiService {
 
   getUsercode = () => {
     return code;
+  }
+
+  getAccessList = () => {
+    return accessList;
   }
 
   post = (url, body, login = false) => {
@@ -66,6 +71,7 @@ class ApiService {
             return;
           }
           DataService.setGroup(res.data.result.group_selection);
+          accessList = res.data.result.access_list;
           token = res.data.token;
           role = res.data.result.role_name;
           username = res.data.result.username;

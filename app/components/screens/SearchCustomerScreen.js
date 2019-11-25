@@ -130,6 +130,7 @@ export default class App extends Component {
       act: "getAdvancedSearchAgentList",
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
+      console.log('agentlist', res)
       if (res.status === 200) {
         this.setState({
           agentOptions: res.data.response.records,

@@ -120,7 +120,8 @@ export default class App extends Component {
       display_trans_date: null,
       display_next_due_date: null,
       ref_no: null,
-      remark: null
+      remark: null,
+      uploadAccess: false
     },
     this.setDate = this.setDate.bind(this),
     this.setNexyPayDate = this.setNexyPayDate.bind(this)
@@ -138,6 +139,11 @@ export default class App extends Component {
     this._getCurrency();
     this._getTransactionType();
     this._getSalesRepaymentInfo();
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'customer_upload_bankin_slip') {
+        this.setState({ uploadAccess: item.can_access })
+      }
+    }
   }
 
   _getBank = () => {
@@ -641,28 +647,32 @@ export default class App extends Component {
                         onChangeText = {(value) => this.setState({ref_no: value})}
                       />
                     </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Payment Receipt</Label>
-                      <View style={{ justifyContent: 'center' }}>
-                        <Button
-                          title = 'Select file to upload'
-                          buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
-                          onPress = {()=> this._upload('attachment')}
-                          icon={
-                            attachment ? (
-                              <Icon
-                                name="check-circle"
-                                size={15}
-                                color="#4eff4e"
-                                style={{paddingLeft: 5}}
-                              />
-                            ) : null
-                          }
-                          iconRight
-                          titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                        />
-                      </View>
-                    </Item>
+                    {
+                      this.state.uploadAccess ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Payment Receipt</Label>
+                          <View style={{ justifyContent: 'center' }}>
+                            <Button
+                              title = 'Select file to upload'
+                              buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
+                              onPress = {()=> this._upload('attachment')}
+                              icon={
+                                attachment ? (
+                                  <Icon
+                                    name="check-circle"
+                                    size={15}
+                                    color="#4eff4e"
+                                    style={{paddingLeft: 5}}
+                                  />
+                                ) : null
+                              }
+                              iconRight
+                              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                            />
+                          </View>
+                        </Item>
+                      ) : null
+                    }
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Remark</Label>
                       <Input style={styles.input}

@@ -122,13 +122,16 @@ export default class App extends Component {
       stateOptions:[],
       countryOptions: [],
       role: null,
-      currentPage: ApiService.getRole() === 'Admin' ? 1 : 2,
+      currentPage: 1,
       new_password: null,
       current_password: null,
       confirmed_password: null,
       new_sec_password: null,
       current_sec_password: null,
-      confirmed_sec_password: null
+      confirmed_sec_password: null,
+      accessList: [],
+      profileAccess: false,
+      passwordAccess: false
     }
     this.setDate = this.setDate.bind(this)
   }
@@ -141,6 +144,19 @@ export default class App extends Component {
     this._getState();
     this._getCountry();
     this.setState({ role: ApiService.getRole() })
+    for (const item of ApiService.getAccessList()) {
+      if (item.screen_key === 'my_profile') {
+        this.setState({ profileAccess: item.can_access }, () => {
+          if (!this.state.profileAccess) {
+            this.setState({ currentPage: 2 })
+          }
+        })
+      }
+
+      if (item.screen_key === 'change_password') {
+        this.setState({ passwordAccess: item.can_access })
+      }
+    }
   }
 
   _getGender = () => {
@@ -381,7 +397,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {menuOpen, copyAddr, item, loading, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, role, currentPage } = this.state;
+    const {menuOpen, copyAddr, item, loading, genderOptions, raceOptions, countryOptions, nationalityOptions, stateOptions, role, currentPage, profileAccess, passwordAccess } = this.state;
     if (item && genderOptions && raceOptions && countryOptions && nationalityOptions && stateOptions) {
       return (
         <Drawer
@@ -425,7 +441,7 @@ export default class App extends Component {
                 showMenu = {true}
               />
               {
-                role === 'Admin' ? (
+                profileAccess ? (
                   <Tab>
                     <CustomerTab
                       style = {{borderBottomColor: currentPage === 1 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
@@ -443,7 +459,7 @@ export default class App extends Component {
                 ) : null
               }
               {
-                role === 'Admin' && currentPage === 1 ? (
+                profileAccess && currentPage === 1 ? (
                 <View>
                   <Divider>
                     <DividerText>Personal Details</DividerText>
