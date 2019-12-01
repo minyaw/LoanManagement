@@ -96,6 +96,9 @@ export default class App extends Component {
     Alert.alert(`this is row ${index+1}`);
   }
 
+  _sort = () => {
+    
+  }
   render () {
     const { menuOpen, widthArr, loading } = this.state;
     const { content } = this.props;
@@ -127,7 +130,7 @@ export default class App extends Component {
           <ScrollView horizontal={true}>
             <View>
               <Table borderStyle={{borderColor: 'transparent'}}>
-                <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
               </Table>
               <ScrollView>
                   {

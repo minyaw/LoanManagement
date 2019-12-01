@@ -369,6 +369,10 @@ export default class App extends Component {
     })
   }
 
+  _sort = () => {
+    
+  }
+
   render() {
     const { menuOpen, widthArr, loading, item, isVisible, showImg, imageList, imageIndex, bankReceipt, receiptId, showReceipt, selectedBankSlip, receiptUri, infoWidthArr } = this.state;
     const { cust_id, sales_id } = this.props;
@@ -573,7 +577,7 @@ export default class App extends Component {
               <ScrollView horizontal={true}>
                 <View>
                   <Table borderStyle={{borderColor: 'transparent'}}>
-                    <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                    <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
                   </Table>
                   <ScrollView>
                       {
@@ -619,7 +623,7 @@ export default class App extends Component {
                           <ScrollView horizontal={true}>
                             <View>
                               <Table borderStyle={{borderColor: 'transparent'}}>
-                                <Row data={InfoHeaderList} widthArr={infoWidthArr} style={styles.header} textStyle={styles.text}/>
+                                <Row rowPress={(col)=> this._sort(col)} data={InfoHeaderList} widthArr={infoWidthArr} style={styles.header} textStyle={styles.text}/>
                               </Table>
                               <ScrollView>
                                   {

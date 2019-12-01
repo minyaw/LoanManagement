@@ -326,6 +326,7 @@ export default class App extends Component {
                   <Input style={styles.input}
                     value = {filter_phone_no}
                     onChangeText = {(phoneNo) => this.setState({filter_phone_no: phoneNo})}
+                    autoCorrect = {false}
                   />
                 </Item> : null
               }
@@ -336,6 +337,7 @@ export default class App extends Component {
                   <Input style={styles.input}
                     value = {filter_cust_name}
                     onChangeText = {(phoneNo) => this.setState({filter_cust_name: phoneNo})}
+                    autoCorrect = {false}
                   />
                 </Item> : null
               }
@@ -346,6 +348,7 @@ export default class App extends Component {
                   <Input style={styles.input}
                     value = {filter_nric_no}
                     onChangeText = {(phoneNo) => this.setState({filter_nric_no: phoneNo})}
+                    autoCorrect = {false}
                   />
                 </Item> : null
               }
@@ -356,6 +359,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       value = {filter_sales_no}
                       onChangeText = {(phoneNo) => this.setState({filter_sales_no: phoneNo})}
+                      autoCorrect = {false}
                     />
                   </Item> : null
               }

@@ -28,6 +28,7 @@ class CustomHeader extends Component {
       expensesIdList: [],
       custIdList:[],
       salesIdList: [],
+      val: null
      }, () => {
       filter();
     })

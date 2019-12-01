@@ -78,13 +78,13 @@ class ApiService {
           fullname = res.data.result.fullname;
           code = res.data.result.user_code;
           DataService.setPassword(body.pass)
-          if (res.data.result.group_name === 'Kgroup') {
-            DataService.setSelectedGroup("2");
-          } else if (res.data.result.group_name === 'Agroup') {
-            DataService.setSelectedGroup("3");
-          } else if (res.data.result.group_name === 'Jgroup') {
-            DataService.setSelectedGroup("1");
-          }
+          // if (res.data.result.group_name === 'Kgroup') {
+          //   DataService.setSelectedGroup("2");
+          // } else if (res.data.result.group_name === 'Agroup') {
+          //   DataService.setSelectedGroup("3");
+          // } else if (res.data.result.group_name === 'Jgroup') {
+          //   DataService.setSelectedGroup("1");
+          // }
           Actions.Home();
         } else {
           

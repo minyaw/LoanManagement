@@ -56,7 +56,8 @@ export default class App extends Component {
       widthArr: [130, 130, 130, 130, 130],
       agentList: {},
       filter: false,
-      custIdList:[]
+      custIdList:[],
+      sortAsc: false
     }
   }
 
@@ -65,16 +66,16 @@ export default class App extends Component {
   }
 
   _loadmore = () => {
-    const { filter } = this.state;
+    const { filter, val } = this.state;
     this.state.loadPage++;
     if (filter) {
-      this._filter()
+      this._filter(val)
     } else {
-      this._getSalesList();
+      this._getSalesList(val);
     }
   }
 
-  _getSalesList = () => {
+  _getSalesList = (val) => {
     const { loadPage } = this.state;
     const { pgView } = this.props;
     let body;
@@ -85,9 +86,18 @@ export default class App extends Component {
         filter_status:'Bad Debt'
       }
     } else {
-      body = {
-        act: 'getCustomerSalesList',
-        page_no: loadPage
+      if (val) {
+        body = {
+          act: 'getCustomerSalesList',
+          page_no: loadPage,
+          sort_by: val,
+          sort_order: this.state.sortAsc ? 'asc': 'desc'
+        }
+      } else {
+        body = {
+          act: 'getCustomerSalesList',
+          page_no: loadPage
+        }
       }
     }
     this.setState({loading: true})
@@ -141,20 +151,39 @@ export default class App extends Component {
     Alert.alert(`this is row ${index+1}`);
   }
 
-  _filter = () => {
+  _filter = (val) => {
     const { loadPage } = this.state;
-    const body = {
-      act: 'getCustomerSalesList',
-      page_no: loadPage,
-      filter_agent: DataService.getAgent(),
-      filter_cust_name: DataService.getCustName(),
-      filter_nric_no: DataService.getNric(),
-      filter_sales_no: DataService.getSalesId(),
-      filter_trans_date_from: DataService.getSTrans(),
-      filter_trans_date_to: DataService.getETrans(),
-      filter_settle_date_from: DataService.getSSet(),
-      filter_settle_date_to: DataService.getESet(),
-      filter_status: DataService.getStatus()
+    let body;
+    if (val) {
+      body = {
+        act: 'getCustomerSalesList',
+        page_no: loadPage,
+        filter_agent: DataService.getAgent(),
+        filter_cust_name: DataService.getCustName(),
+        filter_nric_no: DataService.getNric(),
+        filter_sales_no: DataService.getSalesId(),
+        filter_trans_date_from: DataService.getSTrans(),
+        filter_trans_date_to: DataService.getETrans(),
+        filter_settle_date_from: DataService.getSSet(),
+        filter_settle_date_to: DataService.getESet(),
+        filter_status: DataService.getStatus(),
+        sort_by: val,
+        sort_order: this.state.sortAsc ? 'asc' : 'desc'
+      }
+    } else {
+      body = {
+        act: 'getCustomerSalesList',
+        page_no: loadPage,
+        filter_agent: DataService.getAgent(),
+        filter_cust_name: DataService.getCustName(),
+        filter_nric_no: DataService.getNric(),
+        filter_sales_no: DataService.getSalesId(),
+        filter_trans_date_from: DataService.getSTrans(),
+        filter_trans_date_to: DataService.getETrans(),
+        filter_settle_date_from: DataService.getSSet(),
+        filter_settle_date_to: DataService.getESet(),
+        filter_status: DataService.getStatus()
+      }
     }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -199,6 +228,31 @@ export default class App extends Component {
     })
   }
 
+  _sort = (val) => {
+    let sortBy;
+    console.log(val);
+    if (val === 'Agent' || val === 'Next Due') {
+      return;
+    }
+    
+    if (val === 'Cust Name') {
+      sortBy = 'customer_name';
+    } else if (val === 'Sales ID') {
+      sortBy = 'sales_no'
+    } else if (val === 'Sales') {
+      sortBy = 'installment_amount';
+    }
+    this.state.sortAsc = !this.state.sortAsc
+    this.setState({ contentList: [], salesIdList: [], custIdList: [], isSort: true, loadPage: 1, val: sortBy, list: [] }, () => {
+      if (!this.state.filter) {
+        this.setState({ item:null });
+        this._getSalesList(sortBy);
+      } else {
+        this._filter(sortBy);
+      }
+    })
+  }
+
   render () {
     const { menuOpen, widthArr, item, loading, contentList, filter } = this.state;
     return(
@@ -227,7 +281,7 @@ export default class App extends Component {
               <ScrollView horizontal={true}>
                 <View>
                   <Table borderStyle={{borderColor: 'transparent'}}>
-                    <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                    <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
                   </Table>
                   <ScrollView>
                       {

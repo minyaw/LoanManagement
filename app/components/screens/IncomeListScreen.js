@@ -63,7 +63,8 @@ export default class App extends Component {
       loadPage: 1,
       loading: false,
       agentList:{},
-      createIncomeAccess: false
+      createIncomeAccess: false,
+      sortAsc: false
     }
   }
 
@@ -84,11 +85,20 @@ export default class App extends Component {
     this._getOtherIncomeList();
   }
 
-  _getOtherIncomeList = () => {
+  _getOtherIncomeList = (val) => {
     const { loadPage } = this.state;
-    const body = {
-      act: 'getOtherIncomeList',
-      page_no: loadPage
+    if (val) {
+      body = {
+        act: 'getOtherIncomeList',
+        page_no: loadPage,
+        sort_by: val,
+        sort_order: this.state.sortAsc ? 'asc' : 'desc'
+      }
+    } else {
+      body = {
+        act: 'getOtherIncomeList',
+        page_no: loadPage
+      }
     }
     this.setState({ loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -191,6 +201,32 @@ export default class App extends Component {
     })
   }
 
+  _sort = (val) => {
+    let sortBy;
+    console.log(val);
+    if (val === 'Agent') {
+      sortBy = 'agent';
+    } else if (val === 'Trans Date') {
+      sortBy = 'trans_date'
+    } else if (val === 'Trans Type') {
+      sortBy = 'trans_type';
+    } else if (val === 'Item') {
+      sortBy = 'item';
+    } else if (val === 'Trans Amt') {
+      sortBy = 'trans_amount';
+    } else if (val === 'Remark') {
+      sortBy = 'remark'
+    }
+    this.state.sortAsc = !this.state.sortAsc
+    this.setState({ contentList: [], salesIdList: [], custIdList: [], isSort: true, loadPage: 1, val: sortBy, list: [] }, () => {
+      if (!this.state.filter) {
+        this.setState({ item:null });
+        this._getOtherIncomeList(sortBy);
+      } else {
+        this._filter(sortBy);
+      }
+    })
+  }
   render () {
     const { menuOpen, widthArr, loading, item, contentList, filter } = this.state;
       return(
@@ -219,7 +255,7 @@ export default class App extends Component {
                   <ScrollView horizontal={true}>
                     <View>
                       <Table borderStyle={{borderColor: 'transparent'}}>
-                        <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                        <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
                       </Table>
                       <ScrollView>
                           {

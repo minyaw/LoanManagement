@@ -38,7 +38,7 @@ const Detail = styled.Text`
   fontSize: 11px;
   color: #192A59;
 `
-const ActionContainer = styled.View`
+const ActionContainer = styled.TouchableOpacity`
   backgroundColor: #ebeef7;
   marginHorizontal: 15px;
   paddingHorizontal: 10px;
@@ -186,7 +186,9 @@ export default class App extends Component {
       groupOptions: [],
       role: null,
       loading: false,
-      outstandingAccess: false
+      outstandingAccess: false,
+      selectGroupAccess: false,
+      approvalAccess: false
     }
   }
 
@@ -201,6 +203,12 @@ export default class App extends Component {
     for (const item of ApiService.getAccessList()) {
       if (item.screen_key === 'customer_outstanding_listing') {
         this.setState({ outstandingAccess: item.can_access })
+      }
+      if (item.screen_key === 'can_select_group') {
+        this.setState({ selectGroupAccess: item.can_access })
+      }
+      if (item.screen_key === 'can_do_approval') {
+        this.setState({ approvalAccess: item.can_access })
       }
     }
   }
@@ -268,7 +276,7 @@ export default class App extends Component {
                 showMenu = {true}
               />
               {
-                role === 'Admin' ? (
+                this.state.selectGroupAccess ? (
                   <GroupContainer>
                     <Item fixedLabel style={styles.inputContainer}>
                       <Label style={styles.label}>Current Group</Label>
@@ -382,10 +390,12 @@ export default class App extends Component {
                 </Col>
               </InfoContainer>
               {
-                role === 'Admin' ? (
-                  <ActionContainer>
+                this.state.approvalAccess ? (
+                  <ActionContainer
+                    onPress={()=> Actions.ApprovalList()}
+                  >
                     <ActionText>
-                      You have {item.total_approval_count} case(s) of sales waiting for your approval or rejection. Please <Link onPress={()=> Actions.ApprovalList()}>click here</Link> to process
+                      You have {item.total_approval_count} case(s) of sales waiting for your approval or rejection. Please <Link>click here</Link> to process
                     </ActionText>
                   </ActionContainer>
                 ) : null

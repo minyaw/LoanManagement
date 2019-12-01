@@ -208,7 +208,7 @@ class Scene extends Component {
             </AvatarContainer>
           <UsernameContainer>
               <Username>{ApiService.getFullName()}</Username>
-              <Role>{DataService.getSelectedGroup()}</Role>
+              <Role>{ApiService.getUsercode()}</Role>
             </UsernameContainer>
             <IconContainer>
               <Icon

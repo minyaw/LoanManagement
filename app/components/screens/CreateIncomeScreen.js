@@ -166,8 +166,10 @@ export default class App extends Component {
   }
 
   _checkRequiredField = () => {
-    const { trans_date, trans_amount, income_item, bankAccountOptions } = this.state;
-    this.setState({ bank_acct_id: bankAccountOptions[0].id })
+    const { trans_date, trans_amount, income_item, bankAccountOptions,bank_acct_id } = this.state;
+    if ( bank_acct_id === null ) {
+      this.setState({ bank_acct_id: bankAccountOptions[0].id })
+    }
     if (trans_date === null) {
       let month = '' + (new Date().getMonth() + 1)
       let day = '' + new Date().getDate()

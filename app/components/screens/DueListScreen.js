@@ -9,7 +9,6 @@ import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { Actions } from 'react-native-router-flux';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
-import { exportDefaultSpecifier } from '@babel/types';
 import DataService from '../common/DataService';
 import { Content, Card, CardItem, Body } from 'native-base';
 
@@ -57,7 +56,11 @@ export default class App extends Component {
       custIdList: [],
       salesIdList:[],
       filter: false,
-      agentList: {}
+      agentList: {},
+      custAcs: false,
+      dueAcs: false,
+      isSort: false,
+      val: null
     }
   }
 
@@ -65,12 +68,29 @@ export default class App extends Component {
     this._getDueList();
   }
 
-  _getDueList = () => {
+  _getDueList = (val) => {
     const { loadPage } = this.state;
     console.log('loadpage', loadPage);
-    const body = {
-      act: 'getDueDateList',
-      page_no: loadPage
+    let body;
+    if (val === 'Cust Name') {
+      body = {
+        act: 'getDueDateList',
+        page_no: loadPage,
+        sort_by: 'customer_name',
+        sort_order: this.state.custAcs ? 'asc' : 'desc'
+      }
+    } else if (val === 'Due Date') {
+      body = {
+        act: 'getDueDateList',
+        page_no: loadPage,
+        sort_by: 'due_date',
+        sort_order: this.state.dueAcs ? 'asc' : 'desc'
+      }
+    } else {
+      body = {
+        act: 'getDueDateList',
+        page_no: loadPage
+      }
     }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -125,27 +145,64 @@ export default class App extends Component {
   }
 
   _loadmore = () => {
-    const { filter } = this.state;
+    const { filter, isSort, val } = this.state;
     this.state.loadPage++;
     if (filter) {
-      this._filter();
+      if (isSort) {
+        this._filter(val);
+      } else {
+        this._filter();
+      }
     } else {
-      this._getDueList();
+      if (isSort) {
+        this._getDueList(val);
+      } else {
+        this._getDueList();
+      }
     }
   }
 
-  _filter = () => {
+  _filter = (val) => {
     const { loadPage, filter } = this.state;
     console.log(loadPage);
-    const body = {
-      act: 'getDueDateList',
-      page_no: loadPage,
-      filter_agent: DataService.getAgent(),
-      filter_cust_name: DataService.getCustName(),
-      filter_nric_no: DataService.getNric(),
-      filter_due_date_from: DataService.getSDue(),
-      filter_due_date_to: DataService.getEDue(),
-      filter_status: DataService.getStatus()
+    let body;
+    if (val === 'Cust Name') {
+      body = {
+        act: 'getDueDateList',
+        page_no: loadPage,
+        sort_by: 'customer_name',
+        sort_order: this.state.custAcs ? 'asc' : 'desc',
+        filter_agent: DataService.getAgent(),
+        filter_cust_name: DataService.getCustName(),
+        filter_nric_no: DataService.getNric(),
+        filter_due_date_from: DataService.getSDue(),
+        filter_due_date_to: DataService.getEDue(),
+        filter_status: DataService.getStatus()
+      }
+    } else if (val === 'Due Date') {
+      body = {
+        act: 'getDueDateList',
+        page_no: loadPage,
+        sort_by: 'due_date',
+        sort_order: this.state.dueAcs ? 'asc' : 'desc',
+        filter_agent: DataService.getAgent(),
+        filter_cust_name: DataService.getCustName(),
+        filter_nric_no: DataService.getNric(),
+        filter_due_date_from: DataService.getSDue(),
+        filter_due_date_to: DataService.getEDue(),
+        filter_status: DataService.getStatus()
+      }
+    } else {
+      body = {
+        act: 'getDueDateList',
+        page_no: loadPage,
+        filter_agent: DataService.getAgent(),
+        filter_cust_name: DataService.getCustName(),
+        filter_nric_no: DataService.getNric(),
+        filter_due_date_from: DataService.getSDue(),
+        filter_due_date_to: DataService.getEDue(),
+        filter_status: DataService.getStatus()
+      }
     }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -188,6 +245,31 @@ export default class App extends Component {
     })
   }
 
+  _sort = (val) => {
+    if (val !== 'Cust Name' && val !== 'Due Date') {
+      return;
+    }
+    if (!this.state.filter) {
+      this.setState({ val: val, item: null, contentList: [], salesIdList: [], custIdList: [], isSort: true, loadPage: 1 }, () => {
+        if (val === 'Cust Name' ) {
+          this.state.custAcs = !this.state.custAcs;
+        } else if (val === 'Due Date') {
+          this.state.dueAcs = !this.state.dueAcs;
+        }
+        this._getDueList(val);
+      })
+      console.log('val', val);
+    } else {
+      this.setState({ val: val, isSort:true, contentList: [], salesIdList: [], custIdList: [], loadPage: 1  });
+      if (val === 'Cust Name' ) {
+        this.state.custAcs = !this.state.custAcs;
+      } else if (val === 'Due Date') {
+        this.state.dueAcs = !this.state.dueAcs;
+      }
+      this._filter(val);
+    }
+  }
+
   render () {
     const { menuOpen, widthArr, loading, contentList, item, filter } = this.state;
     const element = (data, index) => (
@@ -223,7 +305,7 @@ export default class App extends Component {
               <ScrollView horizontal={true}>
             <View>
               <Table borderStyle={{borderColor: 'transparent'}}>
-                <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
               </Table>
               <ScrollView>
                   {

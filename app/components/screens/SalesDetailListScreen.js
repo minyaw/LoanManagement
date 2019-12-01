@@ -161,6 +161,9 @@ export default class App extends Component {
     Alert.alert(`this is row ${index+1}`);
   }
 
+  _sort = () => {
+    
+  }
 
 
   render () {
@@ -189,7 +192,7 @@ export default class App extends Component {
             <ScrollView horizontal={true}>
               <View>
                 <Table borderStyle={{borderColor: 'transparent'}}>
-                  <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                  <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
                 </Table>
                 <ScrollView>
                     {

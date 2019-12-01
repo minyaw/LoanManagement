@@ -92,7 +92,8 @@ export default class App extends Component {
       expensesIdList: [],
       selectedList: [],
       addExpensesAccess: false,
-      editExpensesAccess: false
+      editExpensesAccess: false,
+      sortAsc: false
     }
   }
 
@@ -119,11 +120,21 @@ export default class App extends Component {
     this._getExpensesList();
   }
 
-  _getExpensesList = () => {
+  _getExpensesList = (val) => {
     const { loadPage, role } = this.state;
-    const body = {
-      act: 'getExpensesList',
-      page_no: loadPage
+    let body;
+    if (val) {
+      body = {
+        act: 'getExpensesList',
+        page_no: loadPage,
+        sort_by: val,
+        sort_order: this.state.sortAsc ? 'asc' : 'desc'
+      }
+    } else {
+      body = {
+        act: 'getExpensesList',
+        page_no: loadPage
+      }
     }
     this.setState({ loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -193,19 +204,38 @@ export default class App extends Component {
   }
 
   _loadmore = () => {
+    const { filter, val } = this.state;
     this.state.loadPage++;
-    this._getExpensesList();
+    if (filter) {
+      this._filter(val)
+    } else {
+      this._getExpensesList(val);
+    }
   }
 
-  _filter = () => {
+  _filter = (val) => {
     const { loadPage } = this.state;
-    const body = {
-      act: 'getExpensesList',
-      page_no: loadPage,
-      sel_group_id: DataService.getAgentGroup(),
-      filter_date_from: DataService.getSTrans(),
-      filter_date_to: DataService.getETrans(),
-      filter_status: DataService.getStatus()
+    let body;
+    if (val) {
+      body = {
+        act: 'getExpensesList',
+        page_no: loadPage,
+        sel_group_id: DataService.getAgentGroup(),
+        filter_date_from: DataService.getSTrans(),
+        filter_date_to: DataService.getETrans(),
+        filter_status: DataService.getStatus(),
+        sort_by: val,
+        sort_order: this.state.sortAsc ? 'asc' : 'desc'
+      }
+    } else {
+      body = {
+        act: 'getExpensesList',
+        page_no: loadPage,
+        sel_group_id: DataService.getAgentGroup(),
+        filter_date_from: DataService.getSTrans(),
+        filter_date_to: DataService.getETrans(),
+        filter_status: DataService.getStatus()
+      }
     }
     this.setState({ loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
@@ -213,7 +243,7 @@ export default class App extends Component {
       this.setState({ loading: false })
       if (res.status === 200) {
         this.setState({ list: res.data.response.records })
-        if (loadPage !== 1) {
+        if (loadPage == 1) {
           this.setState({ item: res.data.response}, () => {
             for (const content of res.data.response.records) {
               content.trans_date = DataService.changeDateFormat(content.trans_date);
@@ -337,6 +367,39 @@ export default class App extends Component {
     })
   }
 
+  _sort = (val) => {
+    let sortBy;
+    console.log(val);
+    if (val === 'Action') {
+      return;
+    }
+    
+    if (val === 'Agent') {
+      sortBy = 'agent';
+    } else if (val === 'Trans Date') {
+      sortBy = 'trans_date';
+    } else if (val === 'Expenses Type') {
+      sortBy = 'expenses_type';
+    } else if (val === 'Trans Amt') {
+      sortBy = 'trans_amount';
+    } else if (val === 'Remark') {
+      sortBy = 'remark';
+    } else if (val === 'Status') {
+      sortBy = 'status';
+    } else if (val === 'Receipt') {
+      sortBy = 'receipt_file';
+    }
+    this.state.sortAsc = !this.state.sortAsc
+    this.setState({ contentList: [], expensesIdList: [], imageList: [], isSort: true, loadPage: 1, val: sortBy, list: [] }, () => {
+      if (!this.state.filter) {
+        this.setState({ item:null });
+        this._getExpensesList(sortBy);
+      } else {
+        this._filter(sortBy);
+      }
+    })
+  }
+
   render () {
     const { menuOpen, widthArr, loading, item, contentList, filter, isVisible, imageList, imageIndex, role } = this.state;
     const element = (index) => (
@@ -405,7 +468,7 @@ export default class App extends Component {
                   <ScrollView horizontal={true}>
                     <View>
                       <Table borderStyle={{borderColor: 'transparent'}}>
-                        <Row data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                        <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
                       </Table>
                       <ScrollView>
                           {
