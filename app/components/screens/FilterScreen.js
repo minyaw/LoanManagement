@@ -364,7 +364,7 @@ export default class App extends Component {
                   </Item> : null
               }
               {
-                pgView === 'Sales' || pgView === 'Transaction' || pgView === 'Expenses' ?
+                pgView === 'Transaction' || pgView === 'Expenses' ?
                 <Item fixedLabel style={styles.inputContainer}>
                   <Label style={styles.label}>Trans Date (From)</Label>
                   <DatePicker
@@ -385,9 +385,51 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Sales' || pgView === 'Transaction' || pgView === 'Expenses' ?
+                pgView === 'Transaction' || pgView === 'Expenses' ?
                 <Item fixedLabel style={styles.inputContainer}>
                   <Label style={styles.label}>Trans Date (To)</Label>
+                  <DatePicker
+                    defaultDate={new Date()}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setTransEndD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Sales Date (From)</Label>
+                  <DatePicker
+                    defaultDate={new Date()}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setTransStartD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Sales Date (To)</Label>
                   <DatePicker
                     defaultDate={new Date()}
                     // minimumDate={new Date(2018, 1, 1)}

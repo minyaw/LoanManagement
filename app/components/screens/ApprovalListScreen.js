@@ -97,6 +97,22 @@ export default class App extends Component {
     })
   }
 
+  componentWillReceiveProps = (data) => {
+    const body = {
+      act: 'getSalesApprovalList',
+    }
+    this.setState({loading: true})
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({loading: false})
+      if (res.status === 200) {
+        this.setState({item: res.data.response})
+      } else {
+        Alert.alert('Error', res.data.errMsg)
+      }
+      console.log(res);
+    })
+  }
+
   _toggle = (cardId) => {
     if (this.state[cardId]) {
       this.setState({[cardId]: false})
@@ -255,13 +271,23 @@ export default class App extends Component {
                             <DueDateDetail>Remark: {content.remark}</DueDateDetail>
                             <DueDateDetail>Broker: {content.broker}</DueDateDetail>
                             <DueDateDetail>Agent: {content.agent}</DueDateDetail>
-                            <View style={{paddingTop: 10}}>
+                            <View style={{paddingTop: 10, flexDirection: 'row'}}>
+                            <View style={{flex: 1, paddingHorizontal: 5}}>
+                              <Button
+                                title = 'Edit'
+                                buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0}}
+                                onPress = {() => Actions.EditApproval({salesDetail: content})}
+                                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                              />
+                            </View>
+                            <View style={{flex: 1, paddingHorizontal: 5}}>
                               <Button
                                 title = 'View'
                                 buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0}}
                                 onPress = {() => Actions.CustomerDetail({custId: content.cust_id})}
                                 titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                               />
+                            </View>
                             </View>
                           </BodyDetailsCol>
                           {/* <RemarksCol

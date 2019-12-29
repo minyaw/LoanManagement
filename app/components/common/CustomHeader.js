@@ -38,7 +38,7 @@ class CustomHeader extends Component {
   }
 
   render() {
-    const { title, openMenu, showSearch, showBack, showMenu, showDone, showEdit, edit, filter, refresh } = this.props;
+    const { title, openMenu, showSearch, showBack, showMenu, showDone, showEdit, edit, filter, refresh, _in } = this.props;
     const { menuOpen } = this.state;
     return (
       // <Drawer
@@ -83,6 +83,13 @@ class CustomHeader extends Component {
               </TouchableOpacity> : null
             }
             centerComponent = {{ text: title, style: { color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black'} }}
+            centerComponent = {
+            <TouchableOpacity
+              onPress = {() => _in._getDefaultList()}
+            >
+              <Text style={{ color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black' }}>{title}</Text>
+            </TouchableOpacity>
+            }
             rightComponent = { showSearch ? (
               <TouchableOpacity
                 onPress = {() => this._onSearchPress()}

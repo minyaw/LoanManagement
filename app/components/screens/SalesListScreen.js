@@ -11,6 +11,7 @@ import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
 import DataService from '../common/DataService';
 import { Content, Card, CardItem, Body } from 'native-base';
+import { Icon } from 'react-native-elements';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -18,6 +19,8 @@ const Container = styled.View`
 `
 
 const HeaderList = [
+  'Action',
+  'Sales Date',
   'Agent',
   'Cust Name',
   'Sales ID',
@@ -53,7 +56,7 @@ export default class App extends Component {
       salesIdList:[],
       contentList : [
       ],
-      widthArr: [130, 130, 130, 130, 130],
+      widthArr: [110, 130, 130, 130, 130, 130, 130],
       agentList: {},
       filter: false,
       custIdList:[],
@@ -62,7 +65,26 @@ export default class App extends Component {
   }
 
   componentDidMount = () => {
-    this._getSalesList();
+    const { today } = this.props;
+    if (today) {
+      DataService.setSTrans(new Date().toISOString().substring(0, 10));
+      DataService.setETrans(new Date().toISOString().substring(0, 10));
+      this._filter();
+    } else {
+      this._getSalesList();
+    }
+  }
+
+  componentWillReceiveProps = (data) => {
+    this.setState({ item: null, contentList: [], salesIdList: [], custIdList: [], loadPage: 1 }, () => {
+      this._getSalesList();
+    })
+  }
+
+  _getDefaultList = () => {
+    this.setState({ contentList: [], salesIdList: [], custIdList: [], loadPage: 1, filter: false }, () => {
+      this._getSalesList();
+    })
   }
 
   _loadmore = () => {
@@ -104,15 +126,21 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
       if (res.status === 200) {
-        if (this.state.item) {
+        this.setState({ agentList: res.data.response.agent_list })
+        if (loadPage !== 1) {
+          console.log('here');
           for (const content of res.data.response.records) {
             content.next_due_date = DataService.changeDateFormat(content.next_due_date);
+            content.sales_date = DataService.changeDateFormat(content.sales_date);
             this.state.contentList.push([
+              '',
+              content.sales_date,
               content.agent,
               content.customer_name,
               content.sales_no,
-              content.installment_amount,
-              content.next_due_date
+              content.sales_amount,
+              content.next_due_date,
+              content.can_edit
             ])
             this.state.salesIdList.push(content.sales_id);
             this.state.custIdList.push(content.cust_id)
@@ -120,15 +148,20 @@ export default class App extends Component {
           this.state.item.records = this.state.item.records.concat(res.data.response.records);
           this.setState({contentList: this.state.contentList, salesIdList: this.state.salesIdList, custIdList: this.state.custIdList})
         } else {
+          console.log('there');
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
               content.next_due_date = DataService.changeDateFormat(content.next_due_date);
+              content.sales_date = DataService.changeDateFormat(content.sales_date);
               this.state.contentList.push([
+                '',
+                content.sales_date,
                 content.agent,
                 content.customer_name,
                 content.sales_no,
-                content.installment_amount,
-                content.next_due_date
+                content.sales_amount,
+                content.next_due_date,
+                content.can_edit
               ])
               this.state.salesIdList.push(content.sales_id);
               this.state.custIdList.push(content.cust_id)
@@ -193,12 +226,16 @@ export default class App extends Component {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
               content.next_due_date = DataService.changeDateFormat(content.next_due_date);
+              content.sales_date = DataService.changeDateFormat(content.sales_date);
               this.state.contentList.push([
+                '',
+                content.sales_date,
                 content.agent,
                 content.customer_name,
                 content.sales_no,
-                content.installment_amount,
-                content.next_due_date
+                content.sales_amount,
+                content.next_due_date,
+                content.can_edit
               ])
               this.state.salesIdList.push(content.sales_id);
               this.state.custIdList.push(content.cust_id)
@@ -208,12 +245,16 @@ export default class App extends Component {
         } else {
             for (const content of res.data.response.records) {
               content.next_due_date = DataService.changeDateFormat(content.next_due_date);
+              content.sales_date = DataService.changeDateFormat(content.sales_date);
               this.state.contentList.push([
+                '',
+                content.sales_date,
                 content.agent,
                 content.customer_name,
                 content.sales_no,
-                content.installment_amount,
-                content.next_due_date
+                content.sales_amount,
+                content.next_due_date,
+                content.can_edit
               ])
               this.state.salesIdList.push(content.sales_id);
               this.state.custIdList.push(content.cust_id)
@@ -231,7 +272,7 @@ export default class App extends Component {
   _sort = (val) => {
     let sortBy;
     console.log(val);
-    if (val === 'Agent' || val === 'Next Due') {
+    if (val === 'Agent' || val === 'Next Due' || val === 'Sales Date') {
       return;
     }
     
@@ -240,7 +281,7 @@ export default class App extends Component {
     } else if (val === 'Sales ID') {
       sortBy = 'sales_no'
     } else if (val === 'Sales') {
-      sortBy = 'installment_amount';
+      sortBy = 'sales_amount';
     }
     this.state.sortAsc = !this.state.sortAsc
     this.setState({ contentList: [], salesIdList: [], custIdList: [], isSort: true, loadPage: 1, val: sortBy, list: [] }, () => {
@@ -254,6 +295,24 @@ export default class App extends Component {
   }
 
   render () {
+    const edit = (index) => (
+      this.state.contentList[index][7] ? (
+        <View style={{ paddingLeft: 5}}>
+          <TouchableOpacity
+            onPress= {() => Actions.EditApproval({ salesDetail: this.state.item.records[index] })}
+            style={{alignItems: 'flex-start'}}
+          >
+            <Icon
+              name = 'md-create'
+              type = 'ionicon'
+              color = '#3e59a6'
+              // onPress= {() => this._checkRole(index, this.state.contentList[index][6], this.state.contentList[index][1])}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : null
+    );
+
     const { menuOpen, widthArr, item, loading, contentList, filter } = this.state;
     return(
       <Drawer
@@ -296,8 +355,8 @@ export default class App extends Component {
                                     return(
                                       <Cell
                                         key={cellIndex}
-                                        data={cellData} textStyle={styles.cellText}
-                                        style={[{width:130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                        data={cellIndex === 0 ? edit(index) : cellData} textStyle={styles.cellText}
+                                        style={[{width: cellIndex === 0 ? 110 : cellIndex < 7 ? 130 : 0}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                       />
                                     )
                                   })

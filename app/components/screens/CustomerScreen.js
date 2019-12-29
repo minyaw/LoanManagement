@@ -114,6 +114,12 @@ export default class App extends Component {
     this._getCustomerList();
   }
 
+  _getDefaultList = () => {
+    this.setState({ item: null, loadPage: 1, filter: false }, () => {
+      this._getCustomerList();
+    })
+  }
+
   openMenu = () => {
     this.setState({menuOpen: true})
   }

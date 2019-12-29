@@ -24,6 +24,7 @@ import ApprovalListScreen from './app/components/screens/ApprovalListScreen';
 import OutstandingListScreen from './app/components/screens/OutstandingListScreen';
 import IncomeListScreen from './app/components/screens/IncomeListScreen';
 import CreateIncomeScreen from './app/components/screens/CreateIncomeScreen';
+import EditApprovalScreen from './app/components/screens/EditApprovalScreen';
 import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -97,6 +98,7 @@ export default class App extends Component {
             <Scene key="OutstandingList" component={OutstandingListScreen}/>
             <Scene key="IncomeList" component={IncomeListScreen}/>
             <Scene key="CreateIncome" component={CreateIncomeScreen}/>
+            <Scene key="EditApproval" component={EditApprovalScreen}/>
             <Scene key="Login" component={LoginScreen} initial={true}/>
           </Scene>
         </Router>

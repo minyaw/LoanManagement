@@ -112,7 +112,7 @@ const DueDateDetail = styled.Text`
 const DueAmt = styled.Text`
   color: #192A59;
   lineHeight: 20px;
-  fontSize: 8px;
+  fontSize: 10px;
   fontFamily: 'Montserrat-Bold';
 `
 const Remark = styled.Text`
@@ -302,7 +302,7 @@ export default class App extends Component {
               <InfoContainer>
                 <Col>
                   <TouchableOpacity
-                    onPress= {() => Actions.SalesList()}
+                    onPress= {() => Actions.SalesList({ today: true })}
                   >
                     <LinearGradient colors={['#f5f7ff', '#d9e1ff', '#becdff']} style={styles.linearGradient}>
                       <IconContainer>
