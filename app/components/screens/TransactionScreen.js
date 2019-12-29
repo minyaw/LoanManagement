@@ -82,6 +82,13 @@ export default class App extends Component {
   componentWillReceiveProps = () => {
     this.setState({ isEdit: false })
   }
+
+  _getDefaultList = () => {
+    this.setState({ loadPage: 1, isEdit: false, item: null, filter: false }, () => {
+      this._getTransList();
+    })
+  }
+
   _getTransList = () => {
     const { loadPage } = this.state;
       const body = {

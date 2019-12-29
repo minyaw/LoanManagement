@@ -115,9 +115,25 @@ export default class App extends Component {
       imageList: [],
       list: [],
       expensesIdList: [],
-      loadPage:1
+      loadPage:1,
+      val: null,
+      filter: false
     })
     this._getExpensesList();
+  }
+
+  _getDefaultList = () => {
+    this.setState({
+      contentList:[],
+      imageList: [],
+      list: [],
+      expensesIdList: [],
+      loadPage:1,
+      val: null,
+      filter: false
+    }, () => {
+      this._getExpensesList();
+    })
   }
 
   _getExpensesList = (val) => {
@@ -142,7 +158,7 @@ export default class App extends Component {
       this.setState({loading: false})
       if (res.status === 200) {
         this.setState({ list: res.data.response.records })
-        if (this.state.item) {
+        if (loadPage !== 1) {
           for (const content of res.data.response.records) {
             content.trans_date = DataService.changeDateFormat(content.trans_date);
 
@@ -165,7 +181,7 @@ export default class App extends Component {
           this.setState({contentList: this.state.contentList})
         } else {
           this.setState({item: res.data.response}, () => {
-            for (const content of this.state.item.records) {
+            for (const content of res.data.response.records) {
               content.trans_date = DataService.changeDateFormat(content.trans_date);
               this.state.contentList.push([
                 '',

@@ -68,6 +68,11 @@ export default class App extends Component {
     this._getDueList();
   }
 
+  _getDefaultList = () => {
+    this.setState({ loadPage: 1, contentList: [], custIdList: [], salesIdList: [], filter: false, custAcs: false, dueAcs: false, isSort: false, val: null })
+    this._getDueList();
+  }
+
   _getDueList = (val) => {
     const { loadPage } = this.state;
     console.log('loadpage', loadPage);

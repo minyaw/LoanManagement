@@ -82,13 +82,17 @@ class CustomHeader extends Component {
                 />
               </TouchableOpacity> : null
             }
-            centerComponent = {{ text: title, style: { color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black'} }}
+            // centerComponent = {{ text: title, style: { color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black'} }}
             centerComponent = {
-            <TouchableOpacity
-              onPress = {() => _in._getDefaultList()}
-            >
-              <Text style={{ color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black' }}>{title}</Text>
-            </TouchableOpacity>
+              title === 'Sales' || title === 'Customer' || title === 'Transaction' || title === 'Due Listing' || title === 'Expenses' ? (
+                <TouchableOpacity
+                  onPress = {() => _in._getDefaultList()}
+                >
+                  <Text style={{ color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black' }}>{title}</Text>
+                </TouchableOpacity>
+              ) : (
+                { text: title, style: { color: '#192a59', fontSize: 20, fontFamily: 'AvenirLTStd-Black'} }
+              )
             }
             rightComponent = { showSearch ? (
               <TouchableOpacity
