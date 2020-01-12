@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
 import { Form, Label, Input, Picker, DatePicker, CheckBox, Item, ListItem, Body } from 'native-base';
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, TouchableOpacity } from 'react-native';
 import DataService from '../common/DataService';
 import { Button } from 'react-native-elements';
 
@@ -55,6 +55,8 @@ export default class App extends Component {
       e_trans_date: null,
       s_set_date: null,
       e_set_date: null,
+      s_app_date: null,
+      e_app_date: null,
       s_due_date: null,
       e_due_date: null,
       normal: false,
@@ -67,7 +69,8 @@ export default class App extends Component {
       selectedStatus: [],
       agentList:{},
       groupOptions: [],
-      filter_agent_group: DataService.getAgentGroup()
+      filter_agent_group: DataService.getAgentGroup(),
+      isClear: false
     },
     this.setTransStartD = this.setTransStartD.bind(this)
     this.setTransEndD = this.setTransEndD.bind(this)
@@ -75,6 +78,8 @@ export default class App extends Component {
     this.setSetEndD = this.setSetEndD.bind(this)
     this.setDueStartD = this.setDueStartD.bind(this)
     this.setDueEndD = this.setDueEndD.bind(this)
+    this.setAppStartD = this.setAppStartD.bind(this)
+    this.setAppEndD = this.setAppEndD.bind(this)
   }
 
   componentDidMount = () => {
@@ -85,6 +90,7 @@ export default class App extends Component {
   }
 
   setTransStartD(newDate) {
+    this.state.isClear = false;
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -93,9 +99,11 @@ export default class App extends Component {
     if (day.length < 2) day = '0' + day;
 
     this.setState({ s_trans_date: [year, month, day].join('-') });
+    DataService.setSTrans(this.state.s_trans_date)
   }
 
   setTransEndD(newDate) {
+    this.state.isClear = false;
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -104,9 +112,11 @@ export default class App extends Component {
     if (day.length < 2) day = '0' + day;
 
     this.setState({ e_trans_date: [year, month, day].join('-') });
+    DataService.setETrans(this.state.e_trans_date);
   }
 
   setSetStartD(newDate) {
+    this.state.isClear = false;
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -115,9 +125,11 @@ export default class App extends Component {
     if (day.length < 2) day = '0' + day;
 
     this.setState({ s_set_date: [year, month, day].join('-') });
+    DataService.setSSet(this.state.s_set_date);
   }
 
   setSetEndD(newDate) {
+    this.state.isClear = false;
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -126,9 +138,37 @@ export default class App extends Component {
     if (day.length < 2) day = '0' + day;
 
     this.setState({ e_set_date: [year, month, day].join('-') });
+    DataService.setESet(this.state.e_set_date);
+  }
+
+  setAppStartD(newDate) {
+    this.state.isClear = false;
+    let month = '' + (newDate.getMonth() + 1)
+    let day = '' + newDate.getDate()
+    let year = newDate.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    this.setState({ s_app_date: [year, month, day].join('-') });
+    DataService.setSApp(this.state.s_app_date);
+  }
+
+  setAppEndD(newDate) {
+    this.state.isClear = false;
+    let month = '' + (newDate.getMonth() + 1)
+    let day = '' + newDate.getDate()
+    let year = newDate.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    this.setState({ e_app_date: [year, month, day].join('-') });
+    DataService.setEApp(this.state.e_app_date);
   }
 
   setDueStartD(newDate) {
+    this.state.isClear = false;
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -137,9 +177,11 @@ export default class App extends Component {
     if (day.length < 2) day = '0' + day;
 
     this.setState({ s_due_date: [year, month, day].join('-') });
+    DataService.setSDue(this.state.s_due_date);
   }
 
   setDueEndD(newDate) {
+    this.state.isClear = false;
     let month = '' + (newDate.getMonth() + 1)
     let day = '' + newDate.getDate()
     let year = newDate.getFullYear();
@@ -148,6 +190,7 @@ export default class App extends Component {
     if (day.length < 2) day = '0' + day;
 
     this.setState({ e_due_date: [year, month, day].join('-') });
+    DataService.setEDue(this.state.e_due_date);
   }
 
   _check = (status) => {
@@ -185,17 +228,28 @@ export default class App extends Component {
 
   _clear = () => {
     const { filter_agent, normal, arrears, bad_debt, filter_sales_no, filter_nric_no, filter_broker, filter_cust_name, filter_phone_no, settle, pending, approved, rejected, groupOptions, filter_agent_group } = this.state;
+    this.state.isClear = true;
     this.setState({
       filter_agent: '',
       filter_sales_no: '',
       filter_nric_no: '',
       filter_cust_name: '',
       filter_phone_no: '',
+      filter_broker: '',
+      settle: false,
+      pending: false,
+      approved: false,
+      rejected: false,
+      normal: false,
+      arrears: false,
+      bad_debt: false
     })
     DataService.setAgent('');
     DataService.setCustName('');
     DataService.setSDue('');
     DataService.setEDue('');
+    DataService.setSApp('');
+    DataService.setEApp('');
     DataService.setSTrans('');
     DataService.setETrans('');
     DataService.setSSet('');
@@ -210,7 +264,7 @@ export default class App extends Component {
 
   render () {
     const { pgView, filter, _in } = this.props;
-    const { filter_agent, normal, arrears, bad_debt, filter_sales_no, filter_nric_no, filter_broker, filter_cust_name, filter_phone_no, settle, pending, approved, rejected, groupOptions, filter_agent_group } = this.state;
+    const { filter_agent, normal, arrears, bad_debt, filter_sales_no, filter_nric_no, filter_broker, filter_cust_name, filter_phone_no, settle, pending, approved, rejected, groupOptions, filter_agent_group, isClear } = this.state;
     return (
       <Container>
         <ScrollView>
@@ -221,12 +275,12 @@ export default class App extends Component {
             filter = {filter()}
             agent = {DataService.setAgent(this.state.filter_agent)}
             custName = {DataService.setCustName(this.state.filter_cust_name)}
-            sDue = {DataService.setSDue(this.state.s_due_date)}
-            eDue = {DataService.setEDue(this.state.e_due_date)}
-            sTrans = {DataService.setSTrans(this.state.s_trans_date)}
-            eTrans = {DataService.setETrans(this.state.e_trans_date)}
-            sSet = {DataService.setSSet(this.state.s_set_date)}
-            eSet = {DataService.setESet(this.state.e_set_date)}
+            // sDue = {DataService.setSDue(this.state.s_due_date)}
+            // eDue = {DataService.setEDue(this.state.e_due_date)}
+            // sTrans = {DataService.setSTrans(this.state.s_trans_date)}
+            // eTrans = {DataService.setETrans(this.state.e_trans_date)}
+            // sSet = {DataService.setSSet(this.state.s_set_date)}
+            // eSet = {DataService.setESet(this.state.e_set_date)}
             status = {DataService.setStatus(this.state.selectedStatus)}
             nric = {DataService.setNric(this.state.filter_nric_no)}
             sales_id = {DataService.setSalesId(this.state.filter_sales_no)}
@@ -364,19 +418,16 @@ export default class App extends Component {
                   </Item> : null
               }
               {
-                pgView === 'Transaction' || pgView === 'Expenses' ?
+                (pgView === 'Transaction' || pgView === 'Expenses') && !this.state.isClear?
                 <Item fixedLabel style={styles.inputContainer}>
                   <Label style={styles.label}>Trans Date (From)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
-                    // minimumDate={new Date(2018, 1, 1)}
-                    // maximumDate={new Date()}
+                    defaultDate={DataService.getSTrans() ? new Date(DataService.getSTrans()) : null}
                     locale={"en"}
                     timeZoneOffsetInMinutes={undefined}
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setTransStartD}
@@ -385,11 +436,30 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Transaction' || pgView === 'Expenses' ?
+                (pgView === 'Transaction' || pgView === 'Expenses') && this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Trans Date (From)</Label>
+                  <DatePicker
+                    defaultDate={null}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setTransStartD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                (pgView === 'Transaction' || pgView === 'Expenses') && !this.state.isClear ?
                 <Item fixedLabel style={styles.inputContainer}>
                   <Label style={styles.label}>Trans Date (To)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
+                    defaultDate={DataService.getETrans() ? new Date(DataService.getETrans()) : null}
                     // minimumDate={new Date(2018, 1, 1)}
                     // maximumDate={new Date()}
                     locale={"en"}
@@ -397,7 +467,7 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setTransEndD}
@@ -406,11 +476,11 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Sales' ?
+                (pgView === 'Transaction' || pgView === 'Expenses') && this.state.isClear ?
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Sales Date (From)</Label>
+                  <Label style={styles.label}>Trans Date (To)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
+                    defaultDate={null}
                     // minimumDate={new Date(2018, 1, 1)}
                     // maximumDate={new Date()}
                     locale={"en"}
@@ -418,7 +488,28 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setTransEndD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Sales Date (From)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getSTrans() ? new Date(DataService.getSTrans()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setTransStartD}
@@ -427,11 +518,11 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Sales' ?
+                pgView === 'Sales' && this.state.isClear ?
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Sales Date (To)</Label>
+                  <Label style={styles.label}>Sales Date (From)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
+                    defaultDate={null}
                     // minimumDate={new Date(2018, 1, 1)}
                     // maximumDate={new Date()}
                     locale={"en"}
@@ -439,7 +530,28 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setTransStartD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Sales Date (To)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getETrans() ? new Date(DataService.getETrans()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setTransEndD}
@@ -448,11 +560,11 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Sales' ?
+                pgView === 'Sales' && this.state.isClear ?
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Settle Date (From)</Label>
+                  <Label style={styles.label}>Sales Date (To)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
+                    defaultDate={null}
                     // minimumDate={new Date(2018, 1, 1)}
                     // maximumDate={new Date()}
                     locale={"en"}
@@ -460,7 +572,28 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setTransEndD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Settle Date (From)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getSSet() ? new Date(DataService.getSSet()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setSetStartD}
@@ -469,11 +602,11 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Sales' ?
+                pgView === 'Sales' && this.state.isClear ?
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Settle Date (To)</Label>
+                  <Label style={styles.label}>Settle Date (From)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
+                    defaultDate={null}
                     // minimumDate={new Date(2018, 1, 1)}
                     // maximumDate={new Date()}
                     locale={"en"}
@@ -481,7 +614,28 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setSetStartD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Settle Date (To)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getESet() ? new Date(DataService.getESet()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setSetEndD}
@@ -490,11 +644,11 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Due Listing' ?
+                pgView === 'Sales' && this.state.isClear ?
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Due Date (From)</Label>
+                  <Label style={styles.label}>Settle Date (To)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
+                    defaultDate={null}
                     // minimumDate={new Date(2018, 1, 1)}
                     // maximumDate={new Date()}
                     locale={"en"}
@@ -502,7 +656,112 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setSetEndD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Apply Date (From)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getSApp() ? new Date(DataService.getSApp()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setAppStartD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Apply Date (From)</Label>
+                  <DatePicker
+                    defaultDate={null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setAppStartD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Apply Date (To)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getEApp() ? new Date(DataService.getEApp()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setAppEndD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Sales' && this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Apply Date (To)</Label>
+                  <DatePicker
+                    defaultDate={null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setAppEndD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Due Listing' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Due Date (From)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getSDue() ? new Date(DataService.getSDue()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setDueStartD}
@@ -511,11 +770,11 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Due Listing' ?
+                pgView === 'Due Listing' && this.state.isClear ?
                 <Item fixedLabel style={styles.inputContainer}>
-                  <Label style={styles.label}>Due Date (To)</Label>
+                  <Label style={styles.label}>Due Date (From)</Label>
                   <DatePicker
-                    defaultDate={new Date()}
+                    defaultDate={null}
                     // minimumDate={new Date(2018, 1, 1)}
                     // maximumDate={new Date()}
                     locale={"en"}
@@ -523,7 +782,49 @@ export default class App extends Component {
                     modalTransparent={false}
                     animationType={"fade"}
                     androidMode={"default"}
-                    placeHolderText="Select date"
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setDueStartD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Due Listing' && !this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Due Date (To)</Label>
+                  <DatePicker
+                    defaultDate={DataService.getEDue() ? new Date(DataService.getEDue()) : null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
+                    textStyle={{ color: "#000" }}
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={this.setDueEndD}
+                    disabled={false}
+                  />
+                </Item> : null
+              }
+              {
+                pgView === 'Due Listing' && this.state.isClear ?
+                <Item fixedLabel style={styles.inputContainer}>
+                  <Label style={styles.label}>Due Date (To)</Label>
+                  <DatePicker
+                    defaultDate={null}
+                    // minimumDate={new Date(2018, 1, 1)}
+                    // maximumDate={new Date()}
+                    locale={"en"}
+                    timeZoneOffsetInMinutes={undefined}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    // placeHolderText="Select date"
                     textStyle={{ color: "#000" }}
                     placeHolderTextStyle={{ color: "#d3d3d3" }}
                     onDateChange={this.setDueEndD}
@@ -645,6 +946,7 @@ export default class App extends Component {
             buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
             onPress = {() => this._clear()}
             titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+            TouchableComponent = {TouchableOpacity}
           />
         </ButtonContainer>
       </Container>

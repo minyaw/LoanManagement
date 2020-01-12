@@ -9,6 +9,8 @@ let s_trans_date = null;
 let e_trans_date = null;
 let s_set_date = null;
 let e_set_date = null;
+let s_app_date = null;
+let e_app_date = null;
 let status = []
 let agentList = [];
 let salesId = null;
@@ -112,6 +114,21 @@ class DataService {
 
   getESet = () => {
     return e_set_date;
+  }
+  setSApp = (date) => {
+    s_app_date = date;
+  }
+
+  getSApp = () => {
+    return s_app_date;
+  }
+
+  setEApp = (date) => {
+    e_app_date = date;
+  }
+
+  getEApp = () => {
+    return e_app_date;
   }
 
   setStatus = (item) => {

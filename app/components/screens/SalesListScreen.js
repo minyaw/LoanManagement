@@ -197,6 +197,8 @@ export default class App extends Component {
         filter_sales_no: DataService.getSalesId(),
         filter_trans_date_from: DataService.getSTrans(),
         filter_trans_date_to: DataService.getETrans(),
+        filter_apply_date_from: DataService.getSApp(),
+        filter_apply_date_to: DataService.getEApp(),
         filter_settle_date_from: DataService.getSSet(),
         filter_settle_date_to: DataService.getESet(),
         filter_status: DataService.getStatus(),
@@ -213,6 +215,8 @@ export default class App extends Component {
         filter_sales_no: DataService.getSalesId(),
         filter_trans_date_from: DataService.getSTrans(),
         filter_trans_date_to: DataService.getETrans(),
+        filter_apply_date_from: DataService.getSApp(),
+        filter_apply_date_to: DataService.getEApp(),
         filter_settle_date_from: DataService.getSSet(),
         filter_settle_date_to: DataService.getESet(),
         filter_status: DataService.getStatus()
