@@ -62,6 +62,14 @@ const ButtonContainer = styled.View`
   flexDirection: row;
 `
 
+const CancelBadge = styled.View`
+  background: #B71C1C;
+  padding: 1px;
+`
+const CancelText = styled.Text`
+  color: #FFF;
+  fontSize: 12px;
+`
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -118,7 +126,7 @@ export default class App extends Component {
 
   _loadmore = () => {
     const { filter } = this.state;
-    this.setState({loadPage: this.state.loadPage++})
+    this.state.loadPage++;
     if (filter) {
       this._filter();
     } else {
@@ -245,6 +253,15 @@ export default class App extends Component {
                           <DueDateDetail>Agent: {content.agent}</DueDateDetail>
                         </DetailsCol>
                         <RemarksCol>
+                          {
+                            content.is_cancelled ? (
+                              <View style = {{ position: 'absolute', top: 0 }}>
+                                <CancelBadge>
+                                  <CancelText>Cancelled</CancelText>
+                                </CancelBadge>
+                              </View>
+                            ) : null
+                          }
                           <Remark>{content.trans_type}</Remark>
                           {
                             content.can_delete ? (

@@ -19,6 +19,9 @@ let phone = null;
 let agentGroupId = null;
 let password = null;
 let custId = null;
+let prevTitle = null;
+let expensesStatus = [];
+let filterStatus = [];
 
 class DataService {
   setGroup = (item) => {
@@ -219,6 +222,51 @@ class DataService {
     } else {
       return `${trans_day}-${trans_month}-${trans_year}`;
     }
+  }
+
+  setPrevTitle = (title) => {
+    prevTitle = title;
+  }
+
+  getPrevTitle = () => {
+    return prevTitle;
+  }
+
+  setExpensesFilter = (status) => {
+    if (expensesStatus.indexOf(status) > -1) {
+      expensesStatus.splice(expensesStatus.indexOf(status), 1);
+    } else {
+      expensesStatus.push(status);
+    }
+  }
+
+  getExpensesFilter = () => {
+    return expensesStatus;
+  }
+
+  clearExpensesFilter = () => {
+    expensesStatus = [];
+  }
+
+  setFilterStatus = (pgView, status) => {
+    const index = filterStatus.findIndex(v => v.pgView === pgView && v.status === status)
+    if (index > -1) {
+      filterStatus.splice(index, 1)
+    } else {
+      filterStatus.push({'pgView': pgView, 'status': status});
+    }
+  }
+
+  getFilterStatus = () => {
+    return filterStatus;
+  }
+
+  clearFilterStatus = () => {
+    filterStatus = [];
+  }
+
+  removeFilterStatus = (pgView) => {
+    filterStatus = filterStatus.filter(i => i.pgView === pgView)
   }
 }
 

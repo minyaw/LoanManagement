@@ -213,7 +213,8 @@ export default class App extends Component {
     }
   }
 
-  componentWillReceiveProps = () => {
+  componentWillReceiveProps = (data) => {
+    console.log(data);
     this.setState({ 
       groupOptions: DataService.getGroup(),
       role: ApiService.getRole(),
@@ -390,7 +391,7 @@ export default class App extends Component {
                 </Col>
               </InfoContainer>
               {
-                this.state.approvalAccess ? (
+                this.state.approvalAccess && item.total_approval_count ? (
                   <ActionContainer
                     onPress={()=> Actions.ApprovalList()}
                   >
@@ -421,7 +422,7 @@ export default class App extends Component {
                   item.due_date_list.map((content) => {
                     return(
                     <Card
-                      onPress = {() => Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id})}
+                      onPress = {() => Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id, isFromHome: true})}
                     >
                       <DetailsCol>
                         <Username>{content.customer_name}</Username>

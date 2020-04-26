@@ -86,7 +86,7 @@ export default class App extends Component {
               content.sales_no,
               // content.sales_date,
               // content.apply_date,
-              content.installment_amount,
+              content.sales_amount,
               content.next_due_date
               // content.credit,
               // content.int,
@@ -121,7 +121,7 @@ export default class App extends Component {
                 content.sales_no,
                 // content.sales_date,
                 // content.apply_date,
-                content.installment_amount,
+                content.sales_amount,
                 content.next_due_date
                 // content.credit,
                 // content.int,

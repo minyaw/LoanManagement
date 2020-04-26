@@ -223,8 +223,9 @@ export default class App extends Component {
       cust_id,
       sales_id
     }
+    this.setState({ loading: true })
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      this.setState({item: res.data.response.sales_detail})
+      this.setState({ item: res.data.response.sales_detail, loading: false })
       for (const content of res.data.response.sales_detail.sales_transaction) {
         content.ori_due_date = content.due_date;
         content.due_date = DataService.changeDateFormat(content.due_date);
@@ -423,6 +424,7 @@ export default class App extends Component {
                 type = 'ionicon'
                 color = '#3e59a6'
               />
+              <Text style={{backgroundColor: '#B71C1C', color: '#FFF', fontSize: 10}}>Cancelled</Text>
             </TouchableOpacity>
           ) : null
         }
@@ -454,6 +456,7 @@ export default class App extends Component {
             <CustomHeader
               title = 'Trans History'
               showBack = {true}
+              refresh = {this.props.isFromHome}
             />
             <ScrollView keyboardShouldPersistTaps={'handled'}>
               <FormContainer>

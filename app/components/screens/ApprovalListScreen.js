@@ -37,7 +37,7 @@ const RemarksCol = styled.View`
   justifyContent: center;
   alignItems: flex-end;
 `
-const SelectCol = styled.View`
+const SelectCol = styled.TouchableOpacity`
   flex:1;
   justifyContent: center;
 `
@@ -219,7 +219,9 @@ export default class App extends Component {
                         >
                           {
                             edit ?
-                            <SelectCol>
+                            <SelectCol
+                              onPress = {() => this._select(content.sales_id)}
+                            >
                               <CheckBox 
                                 checked={this.state[content.sales_id]}
                                 onPress={() => this._select(content.sales_id)}

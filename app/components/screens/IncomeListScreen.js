@@ -12,6 +12,7 @@ import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
 import DataService from '../common/DataService';
 import { Content, Card, CardItem, Body } from 'native-base';
+import CancelReasonModal from "../common/CancelReasonModal";
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -28,6 +29,7 @@ const AddButton = styled.TouchableOpacity`
   alignItems: center;
 `
 const HeaderList = [
+  'Action',
   'Agent',
   'Trans Date',
   'Trans Type',
@@ -59,12 +61,14 @@ export default class App extends Component {
     this.state = {
       menuOpen: false,
       contentList : [],
-      widthArr: [130, 130, 130, 130, 130, 130],
+      widthArr: [80, 130, 130, 130, 130, 130, 130],
       loadPage: 1,
       loading: false,
       agentList:{},
       createIncomeAccess: false,
-      sortAsc: false
+      sortAsc: false,
+      showCancelReason: false,
+      deleteId: null
     }
   }
 
@@ -109,12 +113,14 @@ export default class App extends Component {
           for (const content of res.data.response.records) {
             content.trans_date = DataService.changeDateFormat(content.trans_date);
             this.state.contentList.push([
+              '',
               content.agent,
               content.trans_date,
               content.trans_type,
               content.item,
               content.trans_amount,
-              content.remark
+              content.remark,
+              content.id
             ])
           }
           this.setState({contentList: this.state.contentList})
@@ -123,12 +129,14 @@ export default class App extends Component {
             for (const content of this.state.item.records) {
               content.trans_date = DataService.changeDateFormat(content.trans_date);
               this.state.contentList.push([
+                '',
                 content.agent,
                 content.trans_date,
                 content.trans_type,
                 content.item,
                 content.trans_amount,
-                content.remark
+                content.remark,
+                content.id
               ])
             }
             this.setState({contentList: this.state.contentList})
@@ -227,8 +235,55 @@ export default class App extends Component {
       }
     })
   }
+
+  _deleteIncome = (reason) => {
+    const { deleteId } = this.state;
+    const body = {
+      act: 'deleteOtherIncome',
+      id: deleteId,
+      reason
+    }
+    this.setState({ loading: true })
+    ApiService.post(ApiService.getUrl(), body).then((res) => {
+      this.setState({ loading: false })
+      console.log(res);
+      if (res.status === 200) {
+        Alert.alert('', res.data.errMsg)
+        this.setState({
+          contentList:[],
+          loadPage:1
+        })
+        this._getOtherIncomeList();
+      }
+    });
+  }
+
   render () {
     const { menuOpen, widthArr, loading, item, contentList, filter } = this.state;
+
+    const edit = (index) => (
+      <View style={[{alignItems: 'center', flexDirection: 'row'}]}>
+        {
+          <TouchableOpacity
+            onPress = {() => this.setState({ showCancelReason: true, deleteId: this.state.contentList[index][7] })}
+            // onPress = {() => this._deleteIncome(index)}
+            style={{flex:1, alignItems:'flex-start', paddingLeft: 15}}
+          >
+            <Icon
+              name = 'md-trash'
+              type = 'ionicon'
+              color = '#B71C1C'
+            />
+          </TouchableOpacity>
+        }
+        <CancelReasonModal
+          isVisible = {this.state.showCancelReason}
+          closeModal = {() => this.setState({ showCancelReason: false })}
+          deleteSales = {(reason) => this._deleteIncome(reason)}
+          _in = {this}
+        />
+      </View>
+    );
       return(
         <Drawer
           ref={(ref) => this._drawer = ref}
@@ -268,8 +323,8 @@ export default class App extends Component {
                                         return(
                                           <Cell
                                             key={cellIndex}
-                                            data={cellData} textStyle={styles.cellText}
-                                            style={[{width:130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                            data={cellIndex === 0 ? edit(index) : cellData} textStyle={styles.cellText}
+                                            style={[{width: cellIndex === 0 ? 80 : cellIndex < 7 ? 130 : 0}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                           />
                                         )
                                       })

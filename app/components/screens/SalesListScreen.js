@@ -67,8 +67,6 @@ export default class App extends Component {
   componentDidMount = () => {
     const { today } = this.props;
     if (today) {
-      DataService.setSTrans(new Date().toISOString().substring(0, 10));
-      DataService.setETrans(new Date().toISOString().substring(0, 10));
       this._filter();
     } else {
       this._getSalesList();
@@ -186,6 +184,7 @@ export default class App extends Component {
 
   _filter = (val) => {
     const { loadPage } = this.state;
+    const { today } = this.props;
     let body;
     if (val) {
       body = {
@@ -204,6 +203,13 @@ export default class App extends Component {
         filter_status: DataService.getStatus(),
         sort_by: val,
         sort_order: this.state.sortAsc ? 'asc' : 'desc'
+      }
+    } else if (today) {
+      body = {
+        act: 'getCustomerSalesList',
+        page_no: loadPage,
+        filter_trans_date_from: new Date().toISOString().substring(0, 10),
+        filter_trans_date_to: new Date().toISOString().substring(0, 10),
       }
     } else {
       body = {

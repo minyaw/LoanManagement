@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity, Platform, Alert, Text } from 'react-native';
 import { Header, Icon, Button, Avatar } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
+import DataService from './DataService';
 
 class CustomHeader extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class CustomHeader extends Component {
   }
 
   _search = () => {
-    const {filter, agent, status, cust_name, e_due, s_due, _in} = this.props;
+    const {filter, agent, status, cust_name, e_due, s_due, _in, pgView} = this.props;
     _in.setState({
       loadPage: 1,
       contentList: [],
@@ -30,6 +31,7 @@ class CustomHeader extends Component {
       salesIdList: [],
       val: null
      }, () => {
+       DataService.setPrevTitle(pgView)
       filter();
     })
     Actions.pop();
@@ -57,7 +59,7 @@ class CustomHeader extends Component {
               showBack ? 
               <TouchableOpacity
                 // hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                onPress = {() => Actions.pop()}
+                onPress = {() => refresh ? Actions.Home() : Actions.pop()}
                 style={{ paddingHorizontal:15, paddingVertical: 15}}
                 activeOpacity = {0.5}
               >
@@ -65,7 +67,7 @@ class CustomHeader extends Component {
                   name = 'chevron-left'
                   type = 'font-awesome'
                   color = '#000'
-                  onPress = {() => Actions.pop()}
+                  onPress = {() => refresh ? Actions.Home() : Actions.pop()}
                   containerStyle = {{paddingLeft: 15}}
                 />
               </TouchableOpacity> : showMenu ?

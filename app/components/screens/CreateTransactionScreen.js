@@ -106,22 +106,24 @@ export default class App extends Component {
       currency: "MYR",
       currency_rate: "1",
       trans_date: null,
-      trans_type: 'Repayment',
+      trans_type: null,
       trans_amount: null,
       bank_acct_id: null,
       attachment: null,
       isVisible: false,
       sVisible: false,
       source: null,
-      next_due_date: null,
-      refund_amount: "0",
+      next_due_date: this.props.transInfo.next_repay_due_date,
+      refund_amount: null,
       showNextDue: false,
       next_default_date: null,
       display_trans_date: null,
       display_next_due_date: null,
       ref_no: null,
       remark: null,
-      uploadAccess: false
+      uploadAccess: false,
+      default_next_due_date: this.props.transInfo.next_repay_due_date,
+      next_pay_amt: '0'
     },
     this.setDate = this.setDate.bind(this),
     this.setNexyPayDate = this.setNexyPayDate.bind(this)
@@ -129,11 +131,7 @@ export default class App extends Component {
 
   componentDidMount = () => {
     console.log('info', this.props.transInfo);
-    const next_default_date = new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))
-
-    this.setState({ next_default_date: new Date().setDate(new Date().getDate() + parseInt(this.props.transInfo.days))})
-
-    this._displayNextDue(new Date(next_default_date))
+    
     this.setDate(new Date());
     this._getBank();
     this._getCurrency();
@@ -162,12 +160,15 @@ export default class App extends Component {
   _getTransactionType = () => {
     const body = {
       act: "getMasterDataList",
-      type: "TransactionType"
+      type: "TransactionType",
+      sales_id: this.props.sales_id
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
+        console.log('options', res);
         this.setState({
           transTypeOptions: res.data.response.records,
+          trans_type: res.data.response.records[0].id
         })
       }
     })
@@ -252,7 +253,13 @@ export default class App extends Component {
         Alert.alert('Info', res.data.errMsg,[
           {
             text: 'OK',
-            onPress:() => Actions.pop({refresh: true, cust_id, sales_id})
+            onPress:() => {
+              Actions.pop({refresh: true, cust_id, sales_id})
+              this.setState({ loading: true})
+              setTimeout(() => {
+                this.setState({ loading: false })
+              }, 3000);
+            }
           }
         ])
       }
@@ -392,16 +399,39 @@ export default class App extends Component {
   }
 
   _checkTransAmount = (value) => {
-    const { item } = this.state;
-    if (parseInt(value) < item.installment_amount) {
-      this.setState({ showNextDue: true, trans_amount: value })
+    const { item, trans_type } = this.state;
+    this.setState({ trans_amount: value })
+    if (trans_type === 'Repayment') {
+      if (parseInt(value) < item.installment_amount) {
+        this.setState({ showNextDue: true })
+      } else {
+        this.setState({ showNextDue: false })
+      }
+    } else if (trans_type === 'Renew') {
+      let nextPayAmt = (item.outstanding_amount - parseInt(value)).toString()
+      this.setState({ next_pay_amt: nextPayAmt })
+    }
+  }
+
+  _setTransType = (value) => {
+    const { item, trans_amount } = this.state;
+    this.setState({trans_type: value})
+    if (value === 'Renew') {
+      this.setState({ next_due_date: this.props.transInfo.next_renew_due_date, showNextDue: false, default_next_due_date: this.props.transInfo.next_renew_due_date, next_pay_amt: (item.outstanding_amount - parseInt(trans_amount)).toString() })
+    } else if (value === 'Repayment') {
+      this.setState({ next_due_date: this.props.transInfo.next_repay_due_date, default_next_due_date: this.props.transInfo.next_repay_due_date })
+      if (trans_amount < item.installment_amount) {
+        this.setState({ showNextDue: true })
+      } else {
+        this.setState({ showNextDue: false })
+      }
     } else {
-      this.setState({ showNextDue: false, trans_amount: value})
+      this.setState({ showNextDue: false })
     }
   }
 
   render() {
-    const { currencyOptions, transTypeOptions, bankOptions, loading, isVisible, sVisible, source, attachment, item, repayOptions, repayment_no, trans_type, currency_rate, showNextDue, next_default_date, display_trans_date, display_next_due_date, trans_amount } = this.state;
+    const { currencyOptions, transTypeOptions, bankOptions, loading, isVisible, sVisible, source, attachment, item, repayOptions, repayment_no, trans_type, currency_rate, showNextDue, next_default_date, display_trans_date, display_next_due_date, trans_amount, default_next_due_date, next_pay_amt } = this.state;
     const { transInfo } = this.props;
     if (currencyOptions.length > 0 && transTypeOptions.length > 0 && bankOptions.length > 0 && item && repayOptions) {
       return(
@@ -483,7 +513,7 @@ export default class App extends Component {
                         // iosIcon={<Icon name="ios-arrow-down-outline" />}
                         style={{ width: undefined }}
                         selectedValue={repayment_no}
-                        onValueChange={(value) => this.setState({filter_agent: value})}
+                        onValueChange={(value) => this.setState({repayment_no: value})}
                       >
                       {
                         repayOptions.map((item, index) => {
@@ -563,7 +593,7 @@ export default class App extends Component {
                         // iosIcon={<Icon name="ios-arrow-down-outline" />}
                         style={{ width: undefined }}
                         selectedValue={this.state.trans_type}
-                        onValueChange={(value) => this.setState({trans_type: value})}
+                        onValueChange={(value) => this._setTransType(value)}
                       >
                         {
                           transTypeOptions.map((item, index) => {
@@ -586,18 +616,39 @@ export default class App extends Component {
                         <Item fixedLabel style={styles.inputContainer}>
                           <Label style={styles.label}>Next Pay Amount</Label>
                           <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                            value = {trans_amount ? (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString() : '0'}
+                            // value = {trans_amount ? (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString() : '0'}
+                            value = {next_pay_amt}
                             disabled = {true}
                           />
                         </Item>
                       ) : null
                     }
                     {
-                      trans_type === 'Renew' || showNextDue ? (
+                      showNextDue ? (
                         <Item fixedLabel style={styles.inputContainer}>
                           <Label style={styles.label}>Next Due Date*</Label>
                           <DatePicker
-                            defaultDate={new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + parseInt(this.props.transInfo.days))}
+                            defaultDate={new Date(default_next_due_date)}
+                            // minimumDate={new Date(2018, 1, 1)}
+                            locale={"en"}
+                            timeZoneOffsetInMinutes={undefined}
+                            modalTransparent={false}
+                            animationType={"fade"}
+                            androidMode={"default"}
+                            textStyle={{ color: "#000" }}
+                            placeHolderTextStyle={{ color: "#d3d3d3" }}
+                            onDateChange={this.setNexyPayDate}
+                            disabled={false}
+                          />
+                        </Item>
+                      ) : null
+                    }
+                    {
+                      trans_type === 'Renew' ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Next Due Date*</Label>
+                          <DatePicker
+                            defaultDate={new Date(new Date(this.props.transInfo.next_renew_due_date).getFullYear(), new Date(this.props.transInfo.next_renew_due_date).getMonth(), new Date(this.props.transInfo.next_renew_due_date).getDate())}
                             // minimumDate={new Date(2018, 1, 1)}
                             locale={"en"}
                             timeZoneOffsetInMinutes={undefined}

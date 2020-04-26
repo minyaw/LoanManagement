@@ -59,13 +59,13 @@ export default class App extends Component {
       e_app_date: null,
       s_due_date: null,
       e_due_date: null,
-      normal: false,
-      arrears: false,
-      bad_debt: false,
-      settle: false,
-      pending: false,
-      approved: false,
-      rejected: false,
+      Normal: false,
+      Arrears: false,
+      Bad_debt: false,
+      Settle: false,
+      Pending: false,
+      Approved: false,
+      Rejected: false,
       selectedStatus: [],
       agentList:{},
       groupOptions: [],
@@ -84,8 +84,35 @@ export default class App extends Component {
 
   componentDidMount = () => {
     const { pgView } = this.props;
+    if (pgView !== DataService.getPrevTitle()) {
+      console.log('true');
+      this.setState({ 
+        filter_agent: null,
+        filter_cust_name: null,
+        filter_nric_no: null,
+        filter_sales_no: null,
+        filter_broker: null,
+        filter_phone_no: null 
+      })
+    }
     if (pgView === 'Expenses') {
       this.setState({groupOptions: DataService.getGroup()})
+      for (const item of DataService.getExpensesFilter()) {
+        this.state[item] = true;
+        this.state.selectedStatus.push(item);
+      }
+    }
+
+    if (pgView === 'Sales' || pgView === 'Due Listing') {
+      for (const item of DataService.getFilterStatus()) {
+        if (item.pgView === pgView) {
+          this.state[item.status] = true;
+          // this.setState({ [item.status]: true })
+          this.state.selectedStatus.push(item.status)
+        } else {
+          DataService.removeFilterStatus(pgView)
+        }
+      }
     }
   }
 
@@ -195,6 +222,13 @@ export default class App extends Component {
 
   _check = (status) => {
     const { selectedStatus } = this.state;
+    const { pgView } = this.props;
+    if (status === 'Pending' || status === 'Rejected' || status === 'Approved') {
+      DataService.setExpensesFilter(status);
+    } else {
+      DataService.setFilterStatus(pgView, status);
+    }
+
     if (this.state[status]) {
       this.setState({[status]: false})
       for (let i = 0; i < selectedStatus.length; i++) {
@@ -205,24 +239,6 @@ export default class App extends Component {
     } else {
       this.setState({[status]: true})
       selectedStatus.push(status)
-    }
-    
-    for (let i = 0; i < selectedStatus.length; i++) {
-      if (selectedStatus[i] === 'normal') {
-        selectedStatus[i] = 'Normal'
-      } else if (selectedStatus[i] === 'arrears') {
-        selectedStatus[i] = 'Arrears'
-      } else if (selectedStatus[i] === 'bad_debt') {
-        selectedStatus[i] = 'Bad Debt'
-      } else if (selectedStatus[i] === 'settle') {
-        selectedStatus[i] = 'Settle'
-      } else if (selectedStatus[i] === 'pending') {
-        selectedStatus[i] = 'Pending'
-      } else if (selectedStatus[i] === 'approved') {
-        selectedStatus[i] = 'Approved'
-      } else if (selectedStatus[i] === 'rejected') {
-        selectedStatus[i] = 'Rejected'
-      }
     }
   }
 
@@ -260,11 +276,13 @@ export default class App extends Component {
     DataService.setBroker('');
     DataService.setPhone('');
     DataService.setAgentGroup('');
+    DataService.clearExpensesFilter();
+    DataService.clearFilterStatus();
   }
 
   render () {
     const { pgView, filter, _in } = this.props;
-    const { filter_agent, normal, arrears, bad_debt, filter_sales_no, filter_nric_no, filter_broker, filter_cust_name, filter_phone_no, settle, pending, approved, rejected, groupOptions, filter_agent_group, isClear } = this.state;
+    const { filter_agent, Normal, Arrears, Bad_debt, filter_sales_no, filter_nric_no, filter_broker, filter_cust_name, filter_phone_no, Settle, Pending, Approved, Rejected, groupOptions, filter_agent_group, isClear } = this.state;
     return (
       <Container>
         <ScrollView>
@@ -839,8 +857,8 @@ export default class App extends Component {
                       <Label style={[styles.label, {paddingLeft: 14}]}>Status</Label>
                     </Body>
                     <CheckBox 
-                      checked={normal}
-                      onPress={() => this._check('normal')}
+                      checked={Normal}
+                      onPress={() => this._check('Normal')}
                     />
                     <Body>
                       <Text style={[styles.label, {paddingLeft: 10}]}>Normal</Text>
@@ -854,8 +872,8 @@ export default class App extends Component {
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
                     <CheckBox 
-                      checked={arrears}
-                      onPress={() => this._check('arrears')}
+                      checked={Arrears}
+                      onPress={() => this._check('Arrears')}
                     />
                     <Body>
                       <Text style={[styles.label, {paddingLeft: 10}]}>Arrears</Text>
@@ -869,8 +887,8 @@ export default class App extends Component {
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
                     <CheckBox 
-                      checked={bad_debt}
-                      onPress={() => this._check('bad_debt')}
+                      checked={Bad_debt}
+                      onPress={() => this._check('Bad_debt')}
                     />
                     <Body>
                       <Text style={[styles.label, {paddingLeft: 10}]}>Bad Debt</Text>
@@ -884,8 +902,8 @@ export default class App extends Component {
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
                     <CheckBox 
-                      checked={settle}
-                      onPress={() => this._check('settle')}
+                      checked={Settle}
+                      onPress={() => this._check('Settle')}
                     />
                     <Body>
                       <Text style={[styles.label, {paddingLeft: 10}]}>Settle</Text>
@@ -899,8 +917,8 @@ export default class App extends Component {
                       <Label style={[styles.label, {paddingLeft: 14}]}>Status</Label>
                     </Body>
                     <CheckBox 
-                      checked={pending}
-                      onPress={() => this._check('pending')}
+                      checked={Pending}
+                      onPress={() => this._check('Pending')}
                     />
                     <Body>
                       <Text style={[styles.label, {paddingLeft: 10}]}>Pending</Text>
@@ -914,8 +932,8 @@ export default class App extends Component {
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
                     <CheckBox 
-                      checked={rejected}
-                      onPress={() => this._check('rejected')}
+                      checked={Rejected}
+                      onPress={() => this._check('Rejected')}
                     />
                     <Body>
                       <Text style={[styles.label, {paddingLeft: 10}]}>Rejected</Text>
@@ -929,8 +947,8 @@ export default class App extends Component {
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
                     <CheckBox 
-                      checked={approved}
-                      onPress={() => this._check('approved')}
+                      checked={Approved}
+                      onPress={() => this._check('Approved')}
                     />
                     <Body>
                       <Text style={[styles.label, {paddingLeft: 10}]}>Approved</Text>
