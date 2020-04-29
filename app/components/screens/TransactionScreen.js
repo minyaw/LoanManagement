@@ -26,7 +26,7 @@ const ItemCard = styled.TouchableOpacity`
   borderBottomWidth: 1px;
   borderBottomColor: #eee;
 `
-const DetailsCol = styled.View`
+const DetailsCol = styled.TouchableOpacity`
   flex:2;
   justifyContent: flex-start;
 `
@@ -163,7 +163,8 @@ export default class App extends Component {
   }
 
   _longPress = (id) => {
-    this.setState({ isEdit: true, deleteId: id })
+    // this.setState({ isEdit: true, deleteId: id })
+    this.setState({ showCancelReason: true, deleteId: id })
   }
 
   _deleteSalesRepayment = (reason) => {
@@ -226,58 +227,55 @@ export default class App extends Component {
               item ? (
                 item.records.map((content, index) => {
                   return(
-                    // this._renderList(content, index)
-                    // <TouchableHighlight
-                    //   onLongPress = {() => console.log('object')}
-                    //   underlayColor="white"
-                    //   onPress={()=> Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })} key={index}
-                    //   activeOpacity = {0.6}
-                    // >
-                      <ItemCard 
-                        onLongPress = {() => {
-                          if (content.can_delete) {
-                            this._longPress(content.trans_id)
-                          }
-                        }}
-                        onPress={()=> {
-                          this.setState({ isEdit: false})
-                          Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
-                        }} key={index}
-                        activeOpacity = {0.6}
-                      >
-                        <DetailsCol>
-                          <Username>{content.customer_name}</Username>
-                          <DueDateDetail>Sales ID: {content.repay_no}</DueDateDetail>
-                          <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
-                          <DueDateDetail>Trans Amount: {content.trans_amount}</DueDateDetail>
-                          <DueDateDetail>Agent: {content.agent}</DueDateDetail>
-                        </DetailsCol>
-                        <RemarksCol>
-                          {
-                            content.is_cancelled ? (
-                              <View style = {{ position: 'absolute', top: 0 }}>
-                                <CancelBadge>
-                                  <CancelText>Cancelled</CancelText>
-                                </CancelBadge>
-                              </View>
-                            ) : null
-                          }
-                          <Remark>{content.trans_type}</Remark>
-                          {
-                            content.can_delete ? (
-                              <View style = {{ position: 'absolute', bottom: 0 }}>
-                                <Icon
-                                  name="trash"
-                                  size={15}
-                                  color="#B71C1C"
-                                  type='font-awesome'
-                                />
-                              </View>
-                            ) : null
-                          }
-                        </RemarksCol>
-                      </ItemCard>
-                    // </TouchableHighlight>
+                    <ItemCard 
+                      // onLongPress = {() => {
+                      //   if (content.can_delete) {
+                      //     this._longPress(content.trans_id)
+                      //   }
+                      // }}
+                      // onPress={()=> {
+                      //   this.setState({ isEdit: false})
+                      //   Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
+                      // }} 
+                      key={index}
+                      activeOpacity = {0.6}
+                    >
+                      <DetailsCol onPress={() => {
+                        this.setState({ isEdit: false})
+                        Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
+                      }}>
+                        <Username>{content.customer_name}</Username>
+                        <DueDateDetail>Sales ID: {content.repay_no}</DueDateDetail>
+                        <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
+                        <DueDateDetail>Trans Amount: {content.trans_amount}</DueDateDetail>
+                        <DueDateDetail>Agent: {content.agent}</DueDateDetail>
+                      </DetailsCol>
+                      <RemarksCol>
+                        {
+                          content.is_cancelled ? (
+                            <View style = {{ position: 'absolute', top: 0 }}>
+                              <CancelBadge>
+                                <CancelText>Cancelled</CancelText>
+                              </CancelBadge>
+                            </View>
+                          ) : null
+                        }
+                        <Remark>{content.trans_type}</Remark>
+                        {
+                          content.can_delete ? (
+                            <View style = {{ position: 'absolute', bottom: 0 }}>
+                              <Icon
+                                name="trash"
+                                size={15}
+                                color="#B71C1C"
+                                type='font-awesome'
+                                onPress= {() => this._longPress(content.trans_id)}
+                              />
+                            </View>
+                          ) : null
+                        }
+                      </RemarksCol>
+                    </ItemCard>
                   )
                 })
               ) : (

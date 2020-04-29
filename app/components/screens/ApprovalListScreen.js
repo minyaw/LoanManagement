@@ -150,7 +150,7 @@ export default class App extends Component {
     const { selectedList, item } = this.state;
     const body = {
       act: 'processSalesApproval',
-      cust_id: item.cust_id,
+      // cust_id: item.cust_id,
       records: selectedList
     }
     this.setState({loading: true})
@@ -172,7 +172,7 @@ export default class App extends Component {
     const { selectedList, item } = this.state;
     const body = {
       act: 'processSalesReject',
-      cust_id: item.cust_id,
+      // cust_id: item.cust_id,
       records: selectedList
     }
     this.setState({loading: true})
