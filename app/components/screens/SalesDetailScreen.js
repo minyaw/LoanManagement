@@ -116,6 +116,8 @@ const HeaderList = [
 const InfoHeaderList = [
   'Action',
   'Submit Date',
+  'Transaction Type',
+  'Transaction Amount',
   'Receipt',
   'Remark',
   'Action By',
@@ -130,6 +132,11 @@ const TransactionListTitle = styled.Text`
   fontFamily: AvenirLTStd-Black;
   fontSize: 14px;
   color: ${colors.primary};
+`
+const CancelText = styled.Text`
+  fontSize: 10px;
+  fontFamily: 'Montserrat-Bold';
+  color: #B71C1C;
 `
 const styles = StyleSheet.create({
   label: {
@@ -173,7 +180,7 @@ export default class App extends Component {
       salesIdList: [],
       repayIdList: [],
       widthArr: [80, 130, 130, 130, 130, 130],
-      infoWidthArr: [80, 130, 130, 130, 130, 130, 130],
+      infoWidthArr: [80, 180, 160, 160, 130, 130, 130, 130, 130],
       isVisible: false,
       infoList: [],
       showImg: false,
@@ -237,7 +244,8 @@ export default class App extends Component {
           content.trans_date,
           content.trans_type,
           content.trans_amount,
-          content.is_editable
+          content.is_editable,
+          content.is_cancelled
         ])
         // this.state.infoList.push([
         //   content.submit_date.substring(0,10),
@@ -303,17 +311,20 @@ export default class App extends Component {
       console.log(res);
       this.setState({loading: false})
       for (const content of res.data.response.records) {
-        content.submit_date = DataService.changeDateFormat(content.submit_date.substring(0,10));
+        // content.submit_date = DataService.changeDateFormat(content.submit_date.substring(0,10));
         this.state.infoList.push([
           '',
           content.submit_date,
+          content.trans_type,
+          content.trans_amount,
           content.receipt_file === '' ? null : 'View Receipt',
           content.remark,
           content.action_by,
           content.bank_name,
           content.holder_name,
+          content.is_cancelled,
           content.can_delete,
-          content.trans_id
+          content.trans_id,
         ])
         this.state.imageList.push(
           content.receipt_file === '' ? 'none' : content.receipt_file
@@ -390,10 +401,9 @@ export default class App extends Component {
     const edit = (index, id) => (
       <View style={{alignItems: 'flex-start', paddingLeft: 5}}>
         {
-          this.state.infoList[index][7] && this.state.editTransAccess ? (
+          this.state.infoList[index][10] && this.state.editTransAccess ? (
             <TouchableOpacity
-            // onPress={() => this._deleteSalesRepayment(this.state.infoList[index][8])}
-            onPress = {() => this.setState({ showCancelReason: true, deleteId: this.state.infoList[index][8]})}
+            onPress = {() => this.setState({ showCancelReason: true, deleteId: this.state.infoList[index][11]})}
             >
               <Icon
                 name = 'times'
@@ -401,6 +411,8 @@ export default class App extends Component {
                 color = '#ad2429'
                 />
             </TouchableOpacity>
+          ) : this.state.infoList[index][9] ? (
+            <CancelText>Cancelled</CancelText>
           ) : null
         }
         <CancelReasonModal
@@ -413,7 +425,7 @@ export default class App extends Component {
     );
 
     const editSales = (index) => (
-      <View style={{alignItems: 'flex-start', paddingLeft: 5}}>
+      <View style={{alignItems: 'center', paddingLeft: 5}}>
         {
           this.state.contentList[index][6] && this.state.editTransAccess ? (
             <TouchableOpacity
@@ -424,10 +436,14 @@ export default class App extends Component {
                 type = 'ionicon'
                 color = '#3e59a6'
               />
-              <Text style={{backgroundColor: '#B71C1C', color: '#FFF', fontSize: 10}}>Cancelled</Text>
             </TouchableOpacity>
           ) : null
         }
+        {/* {
+          this.state.contentList[index][7] ? (
+            <Text style={{fontFamily: 'Montserrat-Bold', color: '#B71C1C', fontSize: 8}}>Cancelled</Text>
+          ) : null
+        } */}
       </View>
     )
 
@@ -638,8 +654,8 @@ export default class App extends Component {
                                               return(
                                                 <Cell
                                                   key={cellIndex}
-                                                  data={cellIndex === 2 ? element(index) : cellIndex === 0 ? edit(index, rowData[8]) : cellIndex > 6 ? null : cellData} textStyle={styles.cellText}
-                                                  style={[{width: cellIndex === 0 ? 82 : cellIndex > 6 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                                  data={cellIndex === 4 ? element(index) : cellIndex === 0 ? edit(index, rowData[11]) : cellIndex > 8 ? null : cellData} textStyle={styles.cellText}
+                                                  style={[{width: cellIndex === 0 ? 82 : cellIndex > 8 ? 0 : cellIndex === 1 ? 180 : cellIndex === 2 || cellIndex === 3 ? 160 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
                                                 />
                                               )
                                             })

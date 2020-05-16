@@ -63,12 +63,13 @@ const ButtonContainer = styled.View`
 `
 
 const CancelBadge = styled.View`
-  background: #B71C1C;
+  background: transparent;
   padding: 1px;
 `
 const CancelText = styled.Text`
-  color: #FFF;
-  fontSize: 12px;
+  fontSize: 8px;
+  fontFamily: 'Montserrat-Bold';
+  color: #B71C1C;
 `
 export default class App extends Component {
   constructor(props) {
@@ -253,7 +254,7 @@ export default class App extends Component {
                       <RemarksCol>
                         {
                           content.is_cancelled ? (
-                            <View style = {{ position: 'absolute', top: 0 }}>
+                            <View style = {{ position: 'absolute', top: 5 }}>
                               <CancelBadge>
                                 <CancelText>Cancelled</CancelText>
                               </CancelBadge>

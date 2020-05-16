@@ -238,9 +238,11 @@ class Scene extends Component {
                     } else if (item.title === 'DUE DATE LIST') {
                       path = require("../../../assets/icons/ic_query_builder_24px.png")
                     } else if (item.title === 'EXPENSES') {
-                      path = require("../../../assets/icons/ic_attach_money_24px.png")
+                      path = require("../../../assets/icons/icon-expenses.png")
                     } else if (item.title === 'LOGOUT') {
                       path = require("../../../assets/icons/ic_exit_to_app_24px.png")
+                    } else if (item.title === 'OTHER INCOME') {
+                      path = require("../../../assets/icons/icon-income_2x.png")
                     } else {
                       path = null
                     }
@@ -252,7 +254,11 @@ class Scene extends Component {
                         onPress        = {() => this._onItemPress(item)}
                         containerStyle = {{backgroundColor: colors.primary,paddingVertical:20}}
                         component      = {TouchableOpacity}
-                        leftIcon = {<LeftIcon path={path}/>}
+                        leftIcon = {
+                          <LeftIcon 
+                            path = {path}
+                          />
+                        }
                       />
                     )
                   })
