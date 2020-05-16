@@ -10,6 +10,7 @@ let username = '';
 let fullname = '';
 let code = '';
 let accessList = [];
+const md5 = require('md5');
 
 class ApiService {
   getToken = () => {
@@ -17,8 +18,9 @@ class ApiService {
   }
 
   getUrl = () => {
-    return 'https://uat.mmc899.com/_moappz_api_v1/app_call.php';
+    // return 'https://uat.mmc899.com/_moappz_api_v1/app_call.php';
     // return 'https://dev.mmc899.com/_moappz_api_v1/app_call.php';
+    return 'https://mmc899.com/_moappz_api_v1/app_call.php';
   }
 
   getUsername = () => {
@@ -50,16 +52,20 @@ class ApiService {
 
     if (login) {
       body.deviceid = DeviceInfo.getUniqueID();
-      body.signature = '17872df7a1c70c4f97bf333084699243';
+      // body.signature = '17872df7a1c70c4f97bf333084699243';
       body.reqtime = new Date().getTime();
     } else {
       body.deviceid = DeviceInfo.getUniqueID();
-      body.signature = '17872df7a1c70c4f97bf333084699243';
+      // body.signature = '17872df7a1c70c4f97bf333084699243';
       body.reqtime = new Date().getTime();
       body.token = this.getToken();
       body.username = this.getUsername();
       body.sel_group_id = DataService.getSelectedGroup();
     }
+    
+    // body.signature = '17872df7a1c70c4f97bf333084699243';
+    // act + reqtime + username + deviceid + API KEY
+    body.signature = `${md5(body.act + body.reqtime + body.username + body.deviceid + 'Dac#w@d*;hd#1s@Ks9)2qd8*27Z@2@Sub2(q2#2E#$A+')}`;
     
     console.log(body);
     if (login) {
