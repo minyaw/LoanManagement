@@ -86,13 +86,13 @@ export default class App extends Component {
     const { pgView } = this.props;
     if (pgView !== DataService.getPrevTitle()) {
       console.log('true');
-      this.setState({ 
+      this.setState({
         filter_agent: null,
         filter_cust_name: null,
         filter_nric_no: null,
         filter_sales_no: null,
         filter_broker: null,
-        filter_phone_no: null 
+        filter_phone_no: null
       })
     }
     if (pgView === 'Expenses') {
@@ -316,7 +316,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Agent</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={filter_agent}
                         onValueChange={(value) => this.setState({filter_agent: value})}
@@ -336,7 +336,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Agent</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={filter_agent}
                         onValueChange={(value) => this.setState({filter_agent: value})}
@@ -353,7 +353,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Current Group</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={filter_agent_group}
                         onValueChange={(value) => this.setState({filter_agent_group: value})}
@@ -370,12 +370,12 @@ export default class App extends Component {
                 ) : null
               }
               {
-                pgView === 'Customer' ? 
+                pgView === 'Customer' ?
                 <Item fixedLabel style={styles.inputContainer}>
                   <Label style={styles.label}>Broker</Label>
                   <Picker
                     mode="dropdown"
-                    // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                    iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                     style={{ width: undefined }}
                     selectedValue={filter_broker}
                     onValueChange={(value) => this.setState({filter_broker: value})}
@@ -425,7 +425,7 @@ export default class App extends Component {
                 </Item> : null
               }
               {
-                pgView === 'Sales' ? 
+                pgView === 'Sales' ?
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>ID</Label>
                     <Input style={styles.input}
@@ -856,7 +856,7 @@ export default class App extends Component {
                     <Body>
                       <Label style={[styles.label, {paddingLeft: 14}]}>Status</Label>
                     </Body>
-                    <CheckBox 
+                    <CheckBox
                       checked={Normal}
                       onPress={() => this._check('Normal')}
                     />
@@ -871,7 +871,7 @@ export default class App extends Component {
                     <Body>
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
-                    <CheckBox 
+                    <CheckBox
                       checked={Arrears}
                       onPress={() => this._check('Arrears')}
                     />
@@ -886,7 +886,7 @@ export default class App extends Component {
                     <Body>
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
-                    <CheckBox 
+                    <CheckBox
                       checked={Bad_debt}
                       onPress={() => this._check('Bad_debt')}
                     />
@@ -901,7 +901,7 @@ export default class App extends Component {
                     <Body>
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
-                    <CheckBox 
+                    <CheckBox
                       checked={Settle}
                       onPress={() => this._check('Settle')}
                     />
@@ -916,7 +916,7 @@ export default class App extends Component {
                     <Body>
                       <Label style={[styles.label, {paddingLeft: 14}]}>Status</Label>
                     </Body>
-                    <CheckBox 
+                    <CheckBox
                       checked={Pending}
                       onPress={() => this._check('Pending')}
                     />
@@ -931,7 +931,7 @@ export default class App extends Component {
                     <Body>
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
-                    <CheckBox 
+                    <CheckBox
                       checked={Rejected}
                       onPress={() => this._check('Rejected')}
                     />
@@ -946,7 +946,7 @@ export default class App extends Component {
                     <Body>
                       <Label style={[styles.label, {paddingLeft: 14}]}></Label>
                     </Body>
-                    <CheckBox 
+                    <CheckBox
                       checked={Approved}
                       onPress={() => this._check('Approved')}
                     />

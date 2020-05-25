@@ -1,0 +1,33 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+# Override Firebase SDK Version
+$FirebaseSDKVersion = '6.8.1'
+target 'LoanManagement' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  # use_frameworks!
+
+  # add pods for desired Firebase products
+  # https://firebase.google.com/docs/ios/setup#available-pods
+  # Pods for LoanManagement
+
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
+
+  target 'LoanManagement-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'LoanManagementTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
+
+target 'LoanManagement-tvOS' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for LoanManagement-tvOS
+end

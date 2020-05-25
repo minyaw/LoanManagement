@@ -131,7 +131,7 @@ export default class App extends Component {
 
   componentDidMount = () => {
     console.log('info', this.props.transInfo);
-    
+
     this.setDate(new Date());
     this._getBank();
     this._getCurrency();
@@ -296,9 +296,9 @@ export default class App extends Component {
               this.setState({
                 [path]: source,
               });
-      
+
               // formdata.append('avatar', response)
-              
+
             }
           });
         }
@@ -323,9 +323,9 @@ export default class App extends Component {
           this.setState({
             [path]: source,
           });
-  
+
           // formdata.append('avatar', response)
-          
+
         }
       });
     }
@@ -354,7 +354,7 @@ export default class App extends Component {
         } else {
           this.setState({ item: res.data.response.records, repayOptions: res.data.response.records.repayment_list })
         }
-      } 
+      }
     })
   }
 
@@ -510,7 +510,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Sales ID*</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={repayment_no}
                         onValueChange={(value) => this.setState({repayment_no: value})}
@@ -537,7 +537,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Repay Currency*</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.currency}
                         onValueChange={(value) => this.setState({currency: value})}
@@ -590,7 +590,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Trans Type*</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.trans_type}
                         onValueChange={(value) => this._setTransType(value)}
@@ -678,7 +678,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Bank Account*</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.bank_acct_id}
                         onValueChange={(value) => this.setState({bank_acct_id: value})}
@@ -741,7 +741,7 @@ export default class App extends Component {
                 onPress = {() => this._checkRequiredField()}
                 titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
               />
-            </ButtonContainer> 
+            </ButtonContainer>
         </Container>
       )
     } else {

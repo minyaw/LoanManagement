@@ -83,11 +83,11 @@ export default class App extends Component {
       isEdit: false
     }
   }
-  
+
   componentDidMount = () => {
     this._getTransList();
   }
-  
+
   componentWillReceiveProps = () => {
     this.setState({ isEdit: false })
   }
@@ -120,7 +120,7 @@ export default class App extends Component {
         console.log(res);
       })
   }
-  
+
   openMenu = () => {
     this.setState({menuOpen: true})
   }
@@ -180,7 +180,7 @@ export default class App extends Component {
         {
           text: 'OK',
           onPress:() => {
-            this.setState({ 
+            this.setState({
               loadPage: 1,
               item: null
             }, ()=> {
@@ -226,59 +226,73 @@ export default class App extends Component {
             />
             {
               item ? (
-                item.records.map((content, index) => {
-                  return(
-                    <ItemCard 
-                      // onLongPress = {() => {
-                      //   if (content.can_delete) {
-                      //     this._longPress(content.trans_id)
-                      //   }
-                      // }}
-                      // onPress={()=> {
-                      //   this.setState({ isEdit: false})
-                      //   Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
-                      // }} 
-                      key={index}
-                      activeOpacity = {0.6}
-                    >
-                      <DetailsCol onPress={() => {
-                        this.setState({ isEdit: false})
-                        Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
-                      }}>
-                        <Username>{content.customer_name}</Username>
-                        <DueDateDetail>Sales ID: {content.repay_no}</DueDateDetail>
-                        <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
-                        <DueDateDetail>Trans Amount: {content.trans_amount}</DueDateDetail>
-                        <DueDateDetail>Agent: {content.agent}</DueDateDetail>
-                      </DetailsCol>
-                      <RemarksCol>
-                        {
-                          content.is_cancelled ? (
-                            <View style = {{ position: 'absolute', top: 5 }}>
-                              <CancelBadge>
-                                <CancelText>Cancelled</CancelText>
-                              </CancelBadge>
-                            </View>
-                          ) : null
-                        }
-                        <Remark>{content.trans_type}</Remark>
-                        {
-                          content.can_delete ? (
-                            <View style = {{ position: 'absolute', bottom: 0 }}>
-                              <Icon
-                                name="trash"
-                                size={15}
-                                color="#B71C1C"
-                                type='font-awesome'
-                                onPress= {() => this._longPress(content.trans_id)}
-                              />
-                            </View>
-                          ) : null
-                        }
-                      </RemarksCol>
-                    </ItemCard>
-                  )
-                })
+                item.records.length > 0 ? (
+                  item.records.map((content, index) => {
+                    return(
+                      <ItemCard
+                        // onLongPress = {() => {
+                        //   if (content.can_delete) {
+                        //     this._longPress(content.trans_id)
+                        //   }
+                        // }}
+                        // onPress={()=> {
+                        //   this.setState({ isEdit: false})
+                        //   Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
+                        // }}
+                        key={index}
+                        activeOpacity = {0.6}
+                      >
+                        <DetailsCol onPress={() => {
+                          this.setState({ isEdit: false})
+                          Actions.SalesDetail({cust_id: content.cust_id, sales_id: content.sales_id })
+                        }}>
+                          <Username>{content.customer_name}</Username>
+                          <DueDateDetail>Sales ID: {content.repay_no}</DueDateDetail>
+                          <DueDateDetail>Trans. Date: {content.trans_date}</DueDateDetail>
+                          <DueDateDetail>Trans Amount: {content.trans_amount}</DueDateDetail>
+                          <DueDateDetail>Agent: {content.agent}</DueDateDetail>
+                        </DetailsCol>
+                        <RemarksCol>
+                          {
+                            content.is_cancelled ? (
+                              <View style = {{ position: 'absolute', top: 5 }}>
+                                <CancelBadge>
+                                  <CancelText>Cancelled</CancelText>
+                                </CancelBadge>
+                              </View>
+                            ) : null
+                          }
+                          <Remark>{content.trans_type}</Remark>
+                          {
+                            content.can_delete ? (
+                              <View style = {{ position: 'absolute', bottom: 0 }}>
+                                <Icon
+                                  name="trash"
+                                  size={15}
+                                  color="#B71C1C"
+                                  type='font-awesome'
+                                  onPress= {() => this._longPress(content.trans_id)}
+                                />
+                              </View>
+                            ) : null
+                          }
+                        </RemarksCol>
+                      </ItemCard>
+                    )
+                  })
+                ) : (
+                  <Content>
+                  <Card>
+                    <CardItem>
+                      <Body style={{alignItems: 'center'}}>
+                        <Text>
+                          Empty
+                        </Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </Content>
+                )
               ) : (
                 <Content>
                   <Card>

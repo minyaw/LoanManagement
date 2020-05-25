@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>415488378892-kkbfqp9asbm26pgq5t82s57hisda28na.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.415488378892-kkbfqp9asbm26pgq5t82s57hisda28na</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCRpsTkHtuaAW3YiIXHGxQAH5s4q6nUlac</string>
+	<key>GCM_SENDER_ID</key>
+	<string>415488378892</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mmc899.financemanagement</string>
+	<key>PROJECT_ID</key>
+	<string>aabb-20571</string>
+	<key>STORAGE_BUCKET</key>
+	<string>aabb-20571.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:415488378892:ios:f048d44705d93aeab48629</string>
+	<key>DATABASE_URL</key>
+	<string>https://aabb-20571.firebaseio.com</string>
+</dict>
+</plist>

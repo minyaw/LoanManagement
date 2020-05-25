@@ -38,7 +38,9 @@ export default class App extends Component {
     // console.warn('User -> ', user.toJSON());
 
     // await firebase.analytics().logEvent('foo', { bar: '123'});
-    this._checkPermission();
+    // if (Platform.OS === 'android') {
+      this._checkPermission();
+    // }
   }
 
   _checkPermission = async () => {
@@ -59,8 +61,9 @@ export default class App extends Component {
             await AsyncStorage.setItem('fcmToken', fcmToken);
         }
       }
+      console.log('token', fcmToken)
   }
-  
+
     //2
   _requestPermission = async () => {
     try {

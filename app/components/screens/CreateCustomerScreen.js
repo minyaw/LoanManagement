@@ -398,7 +398,7 @@ export default class App extends Component {
         this.setState({ mail_address: null, mail_address2: null, mail_city: null, mail_country: 'MY', mail_postcode: null, mail_state: null })
       }
     })
-    
+
   }
 
   _checkRequiredField = () => {
@@ -624,9 +624,9 @@ export default class App extends Component {
               this.setState({
                 [path]: source,
               });
-      
+
               // formdata.append('avatar', response)
-              
+
             }
           });
         }
@@ -652,9 +652,9 @@ export default class App extends Component {
           this.setState({
             [path]: source,
           });
-  
+
           // formdata.append('avatar', response)
-          
+
         }
       });
     }
@@ -697,7 +697,7 @@ export default class App extends Component {
               submit = {() => this._submit()}
             />
             {
-              pgView === 'add' ? 
+              pgView === 'add' ?
                 currentPage === 1 ?
                 <Divider>
                   <DividerText>Customer Details</DividerText>
@@ -705,7 +705,7 @@ export default class App extends Component {
                     <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
                     <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
                   </Pagination>
-                </Divider> : 
+                </Divider> :
                 <Divider>
                   <DividerText>Guarantor Details</DividerText>
                   <Pagination>
@@ -713,7 +713,7 @@ export default class App extends Component {
                     <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
                   </Pagination>
                 </Divider>
-                : 
+                :
                 <Tab>
                   <CustomerTab
                     style = {{borderBottomColor: currentPage === 1 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
@@ -728,10 +728,10 @@ export default class App extends Component {
                     <Guarantor>Guarantor</Guarantor>
                   </GuarantorTab>
                 </Tab>
-  
+
             }
             {
-              currentPage === 1 ? 
+              currentPage === 1 ?
               <View>
                 <Section>
                   <SectionName>Personal Details</SectionName>
@@ -799,7 +799,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Race</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.race}
                         onValueChange={(value) => this.setState({race: value})}
@@ -817,7 +817,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Nationality</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.nationality}
                         onValueChange={(value) => this.setState({nationality: value})}
@@ -842,7 +842,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Broker</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.broker}
                         onValueChange={(value) => this.setState({broker: value})}
@@ -879,7 +879,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Country</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.country}
                         onValueChange={(value) => this.setState({country: value})}
@@ -897,7 +897,7 @@ export default class App extends Component {
                       <Label style={styles.label}>State</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.state}
                         onValueChange={(value) => this.setState({state: value})}
@@ -932,7 +932,7 @@ export default class App extends Component {
                   <SectionName>Mailing Address</SectionName>
                   <Form>
                   <ListItem style={styles.listItem}>
-                    <CheckBox 
+                    <CheckBox
                       checked={copyAddr}
                       onPress={() => this._copyAddr()}
                     />
@@ -958,7 +958,7 @@ export default class App extends Component {
                     <Label style={styles.label}>Country</Label>
                     <Picker
                       mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                       style={{ width: undefined }}
                       selectedValue={this.state.mail_country}
                       onValueChange={(value) => this.setState({mail_country: value})}
@@ -976,7 +976,7 @@ export default class App extends Component {
                     <Label style={styles.label}>State</Label>
                     <Picker
                       mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                       style={{ width: undefined }}
                       selectedValue={this.state.mail_state}
                       onValueChange={(value) => this.setState({mail_state: value})}
@@ -997,7 +997,7 @@ export default class App extends Component {
                         defaultValue = {item ? item.mail_city: mail_city}
                       />
                   </Item>
-  
+
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>Postcode</Label>
                     <Input style={styles.input}
@@ -1015,7 +1015,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Bank Name</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={bankid}
                         onValueChange={(bankName) => this.setState({bankid: bankName})}
@@ -1092,7 +1092,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Country</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={company_country}
                         onValueChange={(value) => this.setState({company_country: value})}
@@ -1110,7 +1110,7 @@ export default class App extends Component {
                       <Label style={styles.label}>State</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={company_state}
                         onValueChange={(value) => this.setState({company_state: value})}
@@ -1343,7 +1343,7 @@ export default class App extends Component {
                     )
                   }
                   </ImageContainer>
-                  
+
                 </Section>
               </View>
               : null
@@ -1405,7 +1405,7 @@ export default class App extends Component {
                     <Label style={styles.label}>Country</Label>
                     <Picker
                       mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                       style={{ width: undefined }}
                       selectedValue={this.state.beneficiary_country}
                       onValueChange={(value) => this.setState({beneficiary_country: value})}
@@ -1423,7 +1423,7 @@ export default class App extends Component {
                     <Label style={styles.label}>State</Label>
                     <Picker
                       mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                       style={{ width: undefined }}
                       selectedValue={this.state.beneficiary_state}
                       onValueChange={(value) => this.setState({beneficiary_state: value})}
@@ -1658,10 +1658,10 @@ export default class App extends Component {
                 </Section>
               </View> : null
             }
-            
+
           </ScrollView>
           {
-            currentPage === 1 && pgView === 'add' ? 
+            currentPage === 1 && pgView === 'add' ?
               <ButtonContainer>
                 <Button
                   title = 'NEXT'
@@ -1669,7 +1669,7 @@ export default class App extends Component {
                   onPress = {() => this.setState({currentPage: 2})}
                   titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                 />
-              </ButtonContainer> 
+              </ButtonContainer>
               : currentPage === 2 && pgView === 'add' ?
               <ButtonsContainer>
                 <View style={{flex:1}}>
@@ -1689,7 +1689,7 @@ export default class App extends Component {
                   />
                 </View>
               </ButtonsContainer>
-              : 
+              :
               <ButtonContainer>
                 <Button
                   title = {currentPage === 1 ? 'UPDATE CUSTOMER' : 'UPDATE GUARANTOR'}
@@ -1697,7 +1697,7 @@ export default class App extends Component {
                   onPress = {() => this._checkRequiredField()}
                   titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                 />
-              </ButtonContainer> 
+              </ButtonContainer>
           }
         </Container>
       )

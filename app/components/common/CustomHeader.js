@@ -55,12 +55,12 @@ class CustomHeader extends Component {
       // >
         <View>
           <Header
-            leftComponent        = { 
-              showBack ? 
+            leftComponent        = {
+              showBack ?
               <TouchableOpacity
                 // hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
                 onPress = {() => refresh ? Actions.Home() : Actions.pop()}
-                style={{ paddingHorizontal:15, paddingVertical: 15}}
+                style={{ paddingHorizontal: Platform.OS === 'android' ? 15 : 0, paddingVertical: Platform.OS === 'android' ? 15 : 0}}
                 activeOpacity = {0.5}
               >
                 <Icon
@@ -74,7 +74,7 @@ class CustomHeader extends Component {
               <TouchableOpacity
                 onPress={ () => openMenu()}
                 hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                style={{ paddingHorizontal:15, paddingVertical: 15}}
+                style={{ paddingHorizontal:Platform.OS === 'android' ? 15 : 0, paddingVertical: Platform.OS === 'android' ? 15 : 0}}
               >
                 <Icon
                   name = 'bars'
@@ -100,7 +100,7 @@ class CustomHeader extends Component {
               <TouchableOpacity
                 onPress = {() => this._onSearchPress()}
                 hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                style={{ paddingHorizontal:15, paddingVertical: 15}}
+                style={{ paddingHorizontal:Platform.OS === 'android' ? 15 : 0, paddingVertical: Platform.OS === 'android' ? 15 : 0}}
               >
                 <Icon
                   name = 'search'
@@ -114,7 +114,7 @@ class CustomHeader extends Component {
                 <TouchableOpacity
                   onPress = {() => this._search()}
                   hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                  style={{ paddingHorizontal:15, paddingVertical: 15}}
+                  style={{ paddingHorizontal:Platform.OS === 'android' ? 15 : 0, paddingVertical: Platform.OS === 'android' ? 15 : 0}}
                 >
                   <Icon
                     name = 'check'
@@ -128,7 +128,7 @@ class CustomHeader extends Component {
                 <TouchableOpacity
                   onPress = {edit}
                   hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                  style={{ paddingHorizontal:15, paddingVertical: 15}}
+                  style={{ paddingHorizontal:Platform.OS === 'android' ? 15 : 0, paddingVertical: Platform.OS === 'android' ? 15 : 0}}
                 >
                   <Icon
                     name = 'md-create'

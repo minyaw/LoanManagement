@@ -11,6 +11,7 @@ import { Actions } from 'react-native-router-flux';
 import Loader from '../common/Loader';
 import ApiService from '../common/ApiService';
 import DataService from '../common/DataService';
+import { Content, Card, CardItem, Body } from 'native-base';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -190,11 +191,11 @@ export default class App extends Component {
   }
 
   _sort = () => {
-    
+
   }
   render () {
     const { menuOpen, widthArr, loading, item, contentList, filter } = this.state;
-    if (contentList.length > 0 || filter) {
+    if (contentList || filter) {
       return(
         <Drawer
             ref={(ref) => this._drawer = ref}
@@ -216,49 +217,65 @@ export default class App extends Component {
               filter = {()=> this._filter.bind(this)}
               _in = {this}
             />
-            <ScrollView horizontal={true}>
-              <View>
-                <Table borderStyle={{borderColor: 'transparent'}}>
-                  <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
-                </Table>
-                <ScrollView>
-                    {
-                      this.state.contentList.map((rowData, index) => {
-                        return(
-                          <TouchableOpacity
-                            onPress = {() => Actions.CustomerDetail({ custId: this.state.custIdList[index] })}
-                          >
-                            <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
-                              {
-                                rowData.map((cellData, cellIndex) => {
-                                  return(
-                                    <Cell
-                                      key={cellIndex}
-                                      data={cellData} textStyle={styles.cellText}
-                                      style={[{width:130}, index%2 && {backgroundColor: '#FFFFFF'}]}
-                                    />
-                                  )
-                                })
-                              }
-                            </TableWrapper>
-                          </TouchableOpacity>
-                         )
-                       })
-                    }
-                    {
-                      item.records.length < item.total_count ? (
-                        <TouchableOpacity
-                          onPress={() => this._loadmore()}
-                        >
-                          <Loadmore>View More ({item.records.length}/{item.total_count}) ...</Loadmore>
-                        </TouchableOpacity>
-                      ) : (
-                        null
-                      )
-                    }
+            {
+              contentList.length > 0 ? (
+                <ScrollView horizontal={true}>
+                  <View>
+                    <Table borderStyle={{borderColor: 'transparent'}}>
+                      <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                    </Table>
+                    <ScrollView>
+                        {
+                          this.state.contentList.map((rowData, index) => {
+                            return(
+                              <TouchableOpacity
+                                onPress = {() => Actions.CustomerDetail({ custId: this.state.custIdList[index] })}
+                              >
+                                <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
+                                  {
+                                    rowData.map((cellData, cellIndex) => {
+                                      return(
+                                        <Cell
+                                          key={cellIndex}
+                                          data={cellData} textStyle={styles.cellText}
+                                          style={[{width:130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                        />
+                                      )
+                                    })
+                                  }
+                                </TableWrapper>
+                              </TouchableOpacity>
+                            )
+                          })
+                        }
+                        {
+                          item.records.length < item.total_count ? (
+                            <TouchableOpacity
+                              onPress={() => this._loadmore()}
+                            >
+                              <Loadmore>View More ({item.records.length}/{item.total_count}) ...</Loadmore>
+                            </TouchableOpacity>
+                          ) : (
+                            null
+                          )
+                        }
+                    </ScrollView>
+                  </View>
                 </ScrollView>
-              </View>
-            </ScrollView>
+              ) : (
+                <Content>
+                  <Card>
+                    <CardItem>
+                      <Body style={{alignItems: 'center'}}>
+                        <Text>
+                          Empty
+                        </Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </Content>
+              )
+            }
             {/* <ButtonContainer>
               <AddButton onPress={() => this._redirect()}>
                 <Icon
@@ -272,11 +289,11 @@ export default class App extends Component {
         </Drawer>
       )
     } else {
-      return (
-        <Container>
-          <Loader loading={true}/>
-        </Container>
-      )
+        return (
+          <Container>
+            <Loader loading={true}/>
+          </Container>
+        )
     }
   }
 }

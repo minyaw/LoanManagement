@@ -136,10 +136,10 @@ const EmptyText = styled.Text`
   textAlign: center;
   fontSize: 14px;
   paddingVertical: 20px;
-` 
+`
 const GroupContainer = styled.View`
 
-`  
+`
 const styles = StyleSheet.create({
   linearGradient: {
     borderRadius: 10,
@@ -193,7 +193,7 @@ export default class App extends Component {
   }
 
   componentDidMount = () => {
-    this.setState({ 
+    this.setState({
       groupOptions: DataService.getGroup(),
       role: ApiService.getRole(),
       groupId: DataService.getSelectedGroup()
@@ -215,7 +215,7 @@ export default class App extends Component {
 
   componentWillReceiveProps = (data) => {
     console.log(data);
-    this.setState({ 
+    this.setState({
       groupOptions: DataService.getGroup(),
       role: ApiService.getRole(),
       groupId: DataService.getSelectedGroup()
@@ -283,7 +283,7 @@ export default class App extends Component {
                       <Label style={styles.label}>Current Group</Label>
                       <Picker
                         mode="dropdown"
-                        // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.groupId}
                         onValueChange={(value) => this._selectGroup(value)}
@@ -326,8 +326,10 @@ export default class App extends Component {
                         <LinearGradient colors={['#ddf3e2', '#c2f3cc', '#9eecac']} style={styles.linearGradient}>
                           <IconContainer>
                             <Icon
-                              name = 'clock'
+                              name = 'alarm'
                               type = 'material-community'
+                              // name = 'shopping-cart'
+                              // type = 'font-awesome'
                             />
                           </IconContainer>
                           <DetailsContainer>
@@ -385,7 +387,7 @@ export default class App extends Component {
                       <DetailsContainer>
                         <Detail>Late</Detail>
                         <Detail>{item.summary.total_late}</Detail>
-                      </DetailsContainer> 
+                      </DetailsContainer>
                     </LinearGradient>
                   </TouchableOpacity>
                 </Col>

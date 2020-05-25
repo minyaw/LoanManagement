@@ -147,7 +147,7 @@ export default class App extends Component {
       Alert.alert('Error', 'Please select Agent.');
       return;
     }
-    
+
     if (filter_sales_amount === null || filter_sales_amount === '') {
       Alert.alert('Error', 'Please enter Sales Amount.');
       return;
@@ -296,7 +296,7 @@ export default class App extends Component {
                     <Label style={styles.label}>Request By*</Label>
                     <Picker
                       mode="dropdown"
-                      // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                       style={{ width: undefined }}
                       selectedValue={filter_agent}
                       onValueChange={(value) => this.setState({filter_agent: value})}
@@ -375,7 +375,7 @@ export default class App extends Component {
                             <SelectCol>
                               {
                                 content.can_share ? (
-                                  <CheckBox 
+                                  <CheckBox
                                     checked={this.state[content.cust_id]}
                                     onPress={() => this._select(content.cust_id)}
                                   />

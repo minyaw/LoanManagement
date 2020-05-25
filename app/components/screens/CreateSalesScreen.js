@@ -259,7 +259,7 @@ export default class App extends Component {
     if (currency === null) {
       this.setState({currency: currencyOptions[0].id});
     }
-    
+
     if (bank_acct_id2 === null) {
       bank_acct_id2 = 0;
     }
@@ -377,7 +377,7 @@ export default class App extends Component {
                             <Label style={styles.label}>Currency*</Label>
                             <Picker
                               mode="dropdown"
-                              // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                              iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                               style={{ width: undefined }}
                               selectedValue={this.state.currency}
                               onValueChange={(value) => this.setState({currency: value})}
@@ -464,7 +464,7 @@ export default class App extends Component {
                             <Label style={styles.label}>Bank Account*</Label>
                             <Picker
                               mode="dropdown"
-                              // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                              iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                               style={{ width: undefined }}
                               selectedValue={this.state.bank_acct_id}
                               onValueChange={(value) => this.setState({bank_acct_id: value})}
@@ -482,7 +482,7 @@ export default class App extends Component {
                             <Label style={styles.label}>Bank Account 2</Label>
                             <Picker
                               mode="dropdown"
-                              // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                              iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                               style={{ width: undefined }}
                               selectedValue={this.state.bank_acct_id2}
                               onValueChange={(value) => this.setState({bank_acct_id2: value})}
@@ -500,7 +500,7 @@ export default class App extends Component {
                             <Label style={styles.label}>Bank Account 3</Label>
                             <Picker
                               mode="dropdown"
-                              // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                              iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                               style={{ width: undefined }}
                               selectedValue={this.state.bank_acct_id3}
                               onValueChange={(value) => this.setState({bank_acct_id3: value})}
@@ -580,7 +580,7 @@ export default class App extends Component {
               onPress = {() => this._checkRequiredField()}
               titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
             />
-          </ButtonContainer> 
+          </ButtonContainer>
         </Container>
       )
     } else {

@@ -1,0 +1,6 @@
+framework module Pods_LoanManagement_tvOS {
+  umbrella header "Pods-LoanManagement-tvOS-umbrella.h"
+
+  export *
+  module * { export * }
+}

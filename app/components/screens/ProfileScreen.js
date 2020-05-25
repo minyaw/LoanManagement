@@ -241,7 +241,7 @@ export default class App extends Component {
       }
     })
   }
-  
+
   _mapData = () => {
     const {item} = this.state;
     this.setState({
@@ -312,7 +312,7 @@ export default class App extends Component {
         mail_state,
         mail_country
       }
-      
+
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
@@ -500,7 +500,7 @@ export default class App extends Component {
                         <Label style={styles.label}>Gender</Label>
                         <Picker
                           mode="dropdown"
-                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                           style={{ width: undefined }}
                           selectedValue={this.state.gender}
                           onValueChange={(value) => this.setState({gender: value})}
@@ -536,7 +536,7 @@ export default class App extends Component {
                         <Label style={styles.label}>Race</Label>
                         <Picker
                           mode="dropdown"
-                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                           style={{ width: undefined }}
                           selectedValue={this.state.race}
                           onValueChange={(value) => this.setState({race: value})}
@@ -554,7 +554,7 @@ export default class App extends Component {
                         <Label style={styles.label}>Nationality</Label>
                         <Picker
                           mode="dropdown"
-                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                           style={{ width: undefined }}
                           selectedValue ={this.state.nationality}
                           onValueChange={(value) => this.setState({nationality: value})}
@@ -593,7 +593,7 @@ export default class App extends Component {
                         <Label style={styles.label}>Country</Label>
                         <Picker
                           mode="dropdown"
-                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                           style={{ width: undefined }}
                           selectedValue={this.state.country}
                           onValueChange={(value) => this.setState({country: value})}
@@ -611,7 +611,7 @@ export default class App extends Component {
                         <Label style={styles.label}>State</Label>
                         <Picker
                           mode="dropdown"
-                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                           style={{ width: undefined }}
                           selectedValue={this.state.state}
                           onValueChange={(value) => this.setState({state: value})}
@@ -632,7 +632,7 @@ export default class App extends Component {
                           onChangeText = {(city) => this.setState({city: city})}
                         />
                       </Item>
-      
+
                       <Item fixedLabel style={styles.inputContainer}>
                         <Label style={styles.label}>Postcode</Label>
                         <Input style={styles.input}
@@ -648,7 +648,7 @@ export default class App extends Component {
                   <FormContainer>
                     <Form>
                       <ListItem style={styles.listItem}>
-                        <CheckBox 
+                        <CheckBox
                           checked={copyAddr}
                           onPress={() => this._copyAddr()}
                         />
@@ -674,7 +674,7 @@ export default class App extends Component {
                         <Label style={styles.label}>Country</Label>
                         <Picker
                           mode="dropdown"
-                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                           style={{ width: undefined }}
                           selectedValue={this.state.mail_country}
                           onValueChange={(value) => this.setState({mail_country: value})}
@@ -692,7 +692,7 @@ export default class App extends Component {
                         <Label style={styles.label}>State</Label>
                         <Picker
                           mode="dropdown"
-                          // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                           style={{ width: undefined }}
                           selectedValue={this.state.mail_state}
                           onValueChange={(value) => this.setState({mail_state: value})}
@@ -713,7 +713,7 @@ export default class App extends Component {
                           defaultValue = {item.mail_city}
                         />
                       </Item>
-      
+
                       <Item fixedLabel style={styles.inputContainer}>
                         <Label style={styles.label}>Postcode</Label>
                         <Input style={styles.input}

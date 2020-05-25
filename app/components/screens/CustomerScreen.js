@@ -223,7 +223,7 @@ export default class App extends Component {
             _in = {this}
           />
           {
-            item ? (
+            item && item.records.length > 0 ? (
               item.records.map((content, index) => {
                 return(
                   // this._renderList(content, index)
@@ -261,7 +261,7 @@ export default class App extends Component {
             )
           }
           {
-            item ? 
+            item ?
             (
               item.records.length < item.total_count ? (
                 <TouchableOpacity

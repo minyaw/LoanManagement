@@ -126,7 +126,7 @@ export default class App extends Component {
       }
     })
   }
-  
+
   _submit = () => {
     let { trans_date, trans_amount, remark, income_item, bank_acct_id } = this.state;
 
@@ -271,7 +271,7 @@ export default class App extends Component {
                   <Label style={styles.label}>Bank Account*</Label>
                   <Picker
                     mode="dropdown"
-                    // iosIcon={<Icon name="ios-arrow-down-outline" />}
+                    iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                     style={{ width: undefined }}
                     selectedValue={bank_acct_id}
                     onValueChange={(value) => this.setState({bank_acct_id: value})}
@@ -302,7 +302,7 @@ export default class App extends Component {
             onPress = {() => this._checkRequiredField()}
             titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
           />
-        </ButtonContainer> 
+        </ButtonContainer>
       </Container>
     )
   }
