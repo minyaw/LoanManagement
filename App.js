@@ -46,6 +46,11 @@ export default class App extends Component {
         DeviceInfo.syncUniqueId().then(id => {
           DataService.setDeviceId(id);
         });
+      } else {
+        // DeviceInfo.getUniqueID().then(id => {
+        //   DataService.setDeviceId(id);
+        // })
+        DataService.setDeviceId(DeviceInfo.getUniqueID());
       }
     // }
 
