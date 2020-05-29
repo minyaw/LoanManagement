@@ -51,11 +51,13 @@ class ApiService {
     }
 
     if (login) {
-      body.deviceid = DeviceInfo.getUniqueID();
+      body.deviceid = DataService.getDeviceId();
+      // body.deviceid = DeviceInfo.getUniqueId();
       // body.signature = '17872df7a1c70c4f97bf333084699243';
       body.reqtime = new Date().getTime();
     } else {
-      body.deviceid = DeviceInfo.getUniqueID();
+      body.deviceid = DataService.getDeviceId();
+      // body.deviceid = DeviceInfo.getUniqueId();
       // body.signature = '17872df7a1c70c4f97bf333084699243';
       body.reqtime = new Date().getTime();
       body.token = this.getToken();
@@ -66,7 +68,6 @@ class ApiService {
     // body.signature = '17872df7a1c70c4f97bf333084699243';
     // act + reqtime + username + deviceid + API KEY
     body.signature = `${md5(body.act + body.reqtime + body.username + body.deviceid + 'Dac#w@d*;hd#1s@Ks9)2qd8*27Z@2@Sub2(q2#2E#$A+')}`;
-
     console.log(body);
     if (login) {
       axios.post(url, body, reqOpts).then((res) => {

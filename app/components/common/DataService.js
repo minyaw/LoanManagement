@@ -1,3 +1,5 @@
+import DeviceInfo from 'react-native-device-info';
+
 let groupOptions = [];
 let groupId = 0;
 let agentId = null;
@@ -22,6 +24,7 @@ let custId = null;
 let prevTitle = null;
 let expensesStatus = [];
 let filterStatus = [];
+let deviceId = '';
 
 class DataService {
   setGroup = (item) => {
@@ -267,6 +270,14 @@ class DataService {
 
   removeFilterStatus = (pgView) => {
     filterStatus = filterStatus.filter(i => i.pgView === pgView)
+  }
+
+  setDeviceId =  (id) => {
+    deviceId = id;
+  }
+
+  getDeviceId = () => {
+    return deviceId;
   }
 }
 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, DeviceEventEmitter} from 'react-native';
 import {Scene, Router, TabNavigator, ActionConst} from 'react-native-router-flux';
 import styled from 'styled-components';
 import HomeScreen from './app/components/screens/HomeScreen';
@@ -27,6 +27,8 @@ import CreateIncomeScreen from './app/components/screens/CreateIncomeScreen';
 import EditApprovalScreen from './app/components/screens/EditApprovalScreen';
 import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
+import DeviceInfo from 'react-native-device-info';
+import DataService from './app/components/common/DataService';
 
 const Container = styled.View`
   flex: 1;
@@ -40,7 +42,13 @@ export default class App extends Component {
     // await firebase.analytics().logEvent('foo', { bar: '123'});
     // if (Platform.OS === 'android') {
       this._checkPermission();
+      if (Platform.OS === 'ios') {
+        DeviceInfo.syncUniqueId().then(id => {
+          DataService.setDeviceId(id);
+        });
+      }
     // }
+
   }
 
   _checkPermission = async () => {
