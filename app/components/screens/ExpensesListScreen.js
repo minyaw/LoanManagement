@@ -13,6 +13,7 @@ import ApiService from '../common/ApiService';
 import DataService from '../common/DataService';
 import { Content, Card, CardItem, Body, CheckBox } from 'native-base';
 import Modal from "react-native-modal";
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
@@ -550,11 +551,13 @@ export default class App extends Component {
                     <ImageBackground
                       style = {{width: '90%', height: '90%', backgroundColor: '#EEE'}}
                     >
-                      <ImageBackground
-                        source = {{uri: imageList[imageIndex]}}
-                        style = {{width: '100%', height: '100%', backgroundColor: '#EEE'}}
-                        imageStyle = {{resizeMode: 'contain'}}
-                      ></ImageBackground>
+                      <ImageViewer
+                        // source = {{uri: imageList[imageIndex]}}
+                        // style = {{width: '100%', height: '100%', backgroundColor: '#EEE'}}
+                        // imageStyle = {{resizeMode: 'contain'}}
+                        imageUrls={[{ url: imageList[imageIndex ]}]}
+                        saveToLocalByLongPress = {false}
+                      ></ImageViewer>
                     </ImageBackground>
                   </View>
                 </Modal>
