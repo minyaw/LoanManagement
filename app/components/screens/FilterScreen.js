@@ -5,7 +5,7 @@ import { colors } from '../../constants/colors';
 import { Form, Label, Input, Picker, DatePicker, CheckBox, Item, ListItem, Body } from 'native-base';
 import { StyleSheet, Text, ScrollView, View, TouchableOpacity } from 'react-native';
 import DataService from '../common/DataService';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground};
@@ -252,14 +252,16 @@ export default class App extends Component {
       filter_cust_name: '',
       filter_phone_no: '',
       filter_broker: '',
-      settle: false,
-      pending: false,
-      approved: false,
-      rejected: false,
-      normal: false,
-      arrears: false,
-      bad_debt: false
+      Settle: false,
+      Pending: false,
+      Approved: false,
+      Rejected: false,
+      Normal: false,
+      Arrears: false,
+      Bad_debt: false,
+      selectedStatus: []
     })
+
     DataService.setAgent('');
     DataService.setCustName('');
     DataService.setSDue('');
