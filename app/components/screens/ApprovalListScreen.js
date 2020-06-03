@@ -65,7 +65,7 @@ const RemarkAlert = styled.Text`
 const IconContainer = styled.View`
   flex:1;
   alignItems: flex-end;
-`  
+`
 const ButtonsContainer = styled.View`
   flexDirection: row;
 `
@@ -158,12 +158,14 @@ export default class App extends Component {
         this.setState({loading: false})
         console.log(res);
         if (res.status === 200) {
-          Alert.alert('Info', res.data.errMsg,[
-            {
-              text: 'OK',
-              onPress: () => Actions.pop({ refresh: true })
-            }
-          ])
+          setTimeout(() => {
+            Alert.alert('Info', res.data.errMsg,[
+              {
+                text: 'OK',
+                onPress: () => Actions.pop({ refresh: true })
+              }
+            ])
+          }, 510)
         }
       })
   }
@@ -180,12 +182,14 @@ export default class App extends Component {
         this.setState({loading: false})
         console.log(res);
         if (res.status === 200) {
-          Alert.alert('Info', res.data.errMsg,[
-            {
-              text: 'OK',
-              onPress: () => Actions.pop({ refresh: true })
-            }
-          ])
+          setTimeout(() => {
+            Alert.alert('Info', res.data.errMsg,[
+              {
+                text: 'OK',
+                onPress: () => Actions.pop({ refresh: true })
+              }
+            ])
+          })
         }
       })
   }
@@ -222,7 +226,7 @@ export default class App extends Component {
                             <SelectCol
                               onPress = {() => this._select(content.sales_id)}
                             >
-                              <CheckBox 
+                              <CheckBox
                                 checked={this.state[content.sales_id]}
                                 onPress={() => this._select(content.sales_id)}
                               />

@@ -10,6 +10,7 @@ let username = '';
 let fullname = '';
 let code = '';
 let accessList = [];
+let appMode = 'PRD';
 const md5 = require('md5');
 
 class ApiService {
@@ -18,9 +19,13 @@ class ApiService {
   }
 
   getUrl = () => {
-    // return 'https://uat.mmc899.com/_moappz_api_v1/app_call.php';
-    // return 'https://dev.mmc899.com/_moappz_api_v1/app_call.php';
-    return 'https://mmc899.com/_moappz_api_v1/app_call.php';
+    if (appMode === 'PRD') {
+      return 'https://mmc899.com/_moappz_api_v1/app_call.php';
+    } else if (appMode === 'UAT') {
+      return 'https://uat.mmc899.com/_moappz_api_v1/app_call.php';
+    } else if (appMode === 'DEV') {
+      return 'https://dev.mmc899.com/_moappz_api_v1/app_call.php';
+    }
   }
 
   getUsername = () => {
@@ -43,6 +48,14 @@ class ApiService {
     return accessList;
   }
 
+  setAppMode = (mode) => {
+    appMode = mode;
+  }
+
+  getAppMode = () => {
+    return appMode;
+  }
+
   post = (url, body, login = false) => {
     const reqOpts = {
       headers: {
@@ -52,22 +65,20 @@ class ApiService {
 
     if (login) {
       body.deviceid = DataService.getDeviceId();
-      // body.deviceid = DeviceInfo.getUniqueId();
-      // body.signature = '17872df7a1c70c4f97bf333084699243';
       body.reqtime = new Date().getTime();
     } else {
       body.deviceid = DataService.getDeviceId();
-      // body.deviceid = DeviceInfo.getUniqueId();
-      // body.signature = '17872df7a1c70c4f97bf333084699243';
       body.reqtime = new Date().getTime();
       body.token = this.getToken();
       body.username = this.getUsername();
       body.sel_group_id = DataService.getSelectedGroup();
     }
 
-    // body.signature = '17872df7a1c70c4f97bf333084699243';
-    // act + reqtime + username + deviceid + API KEY
-    body.signature = `${md5(body.act + body.reqtime + body.username + body.deviceid + 'Dac#w@d*;hd#1s@Ks9)2qd8*27Z@2@Sub2(q2#2E#$A+')}`;
+    if(appMode === 'PRD') {
+      body.signature = `${md5(body.act + body.reqtime + body.username + body.deviceid + 'Dac#w@d*;hd#1s@Ks9)2qd8*27Z@2@Sub2(q2#2E#$A+')}`;
+    } else {
+      body.signature = '17872df7a1c70c4f97bf333084699243';
+    }
     console.log(body);
     if (login) {
       axios.post(url, body, reqOpts).then((res) => {

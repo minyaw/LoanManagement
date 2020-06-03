@@ -147,6 +147,7 @@ export default class App extends Component {
       if (res.status === 200) {
         this.setState({
           bankOptions: res.data.response.records,
+          bank_acct_id: res.data.response.records[0].id
         })
       }
     })
@@ -161,6 +162,7 @@ export default class App extends Component {
       if (res.status === 200) {
         this.setState({
           expensesOptions: res.data.response.records,
+          expense_type: res.data.response.records[0].id
         })
       }
     })
@@ -174,6 +176,7 @@ export default class App extends Component {
       if (res.status === 200) {
         this.setState({
           currencyOptions: res.data.response.records,
+          currency: res.data.response.records[0].id
         })
       }
     })
@@ -223,18 +226,19 @@ export default class App extends Component {
         attachment
       }
     }
-
-    this.setState({loading: true})
+    this.setState({ loading: true })
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      this.setState({loading: false})
+      this.setState({ loading: false })
       console.log(res);
       if (res.status === 200) {
-        Alert.alert('Info', res.data.errMsg,[
-          {
-            text: 'OK',
-            onPress:() => Actions.pop({refresh: true})
-          }
-        ])
+        setTimeout(() => {
+          Alert.alert('Info', res.data.errMsg,[
+            {
+              text: 'OK',
+              onPress:() => Actions.pop({refresh: true})
+            }
+          ])
+        }, 510)
       }
     })
   }
@@ -497,7 +501,7 @@ export default class App extends Component {
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
+                      style={{ width: width*0.65 }}
                       selectedValue={this.state.bank_acct_id}
                       onValueChange={(value) => this.setState({bank_acct_id: value})}
                     >

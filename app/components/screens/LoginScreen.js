@@ -6,6 +6,7 @@ import CustomHeader from '../common/CustomHeader';
 import { Form, Item, Input, Label, Text, Button } from 'native-base';
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
+import DataService from '../common/DataService';
 
 const { width, height } = Dimensions.get('window');
 const Container = styled.View`
@@ -50,12 +51,24 @@ export default class App extends Component {
     this.state = {
       username: '',
       password: '',
-      loading: false
+      loading: false,
+      env: ''
     }
   }
-  
+
   _login = () => {
     const {username, password} = this.state;
+    if (username === 'CONFIG') {
+      if (password === 'mmcDEV') {
+        ApiService.setAppMode('DEV');
+      } else if (password === 'mmcUAT') {
+        ApiService.setAppMode('UAT');
+      } else {
+        ApiService.setAppMode('PRD')
+      }
+      this.setState({ username: '', password: '' })
+      return;
+    }
     const body = {
       act: 'login',
       username,
@@ -69,7 +82,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {loading, username, password} = this.state;
+    const {loading, username, password, env} = this.state;
     return (
       <Container>
         <Loader loading={loading}/>
@@ -87,7 +100,7 @@ export default class App extends Component {
             <Item stackedLabel last>
               <Label style={styles.label}>Password</Label>
               <Input
-                style={styles.input} 
+                style={styles.input}
                 value = {password}
                 onChangeText = {(password) => this.setState({password})}
                 autoCapitalize = "none"
@@ -98,8 +111,8 @@ export default class App extends Component {
           <Button full style={styles.button} onPress={() => this._login()}>
           <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>LOGIN</Text>
           </Button>
-          <VersionNo>v1.0.57</VersionNo>
-        </Content>  
+          <VersionNo>v1.0.58 {ApiService.getAppMode() !== 'PRD' ? ApiService.getAppMode() : ''}</VersionNo>
+        </Content>
       </Container>
     )
   }

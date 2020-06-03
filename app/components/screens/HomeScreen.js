@@ -228,9 +228,7 @@ export default class App extends Component {
       act: 'getDashboardData',
       sel_group_id: DataService.getSelectedGroup()
     }
-    this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      this.setState({loading: false})
       if (res.status === 200) {
         this.setState({item: res.data.response})
       } else {
@@ -286,6 +284,7 @@ export default class App extends Component {
                         iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
                         style={{ width: undefined }}
                         selectedValue={this.state.groupId}
+                        // selectedValue = {"0"}
                         onValueChange={(value) => this._selectGroup(value)}
                       >
                         {

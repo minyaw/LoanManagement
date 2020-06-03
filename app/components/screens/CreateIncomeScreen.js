@@ -121,7 +121,8 @@ export default class App extends Component {
       console.log(res);
       if (res.status === 200) {
         this.setState({
-          bankAccountOptions: res.data.response.records
+          bankAccountOptions: res.data.response.records,
+          bank_acct_id: res.data.response.records[0].id
         })
       }
     })
@@ -272,7 +273,7 @@ export default class App extends Component {
                   <Picker
                     mode="dropdown"
                     iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                    style={{ width: undefined }}
+                    style={{ width: width*0.65 }}
                     selectedValue={bank_acct_id}
                     onValueChange={(value) => this.setState({bank_acct_id: value})}
                   >

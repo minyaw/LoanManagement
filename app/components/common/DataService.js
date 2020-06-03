@@ -1,7 +1,7 @@
 import DeviceInfo from 'react-native-device-info';
 
 let groupOptions = [];
-let groupId = 0;
+let groupId = "0";
 let agentId = null;
 let cust_name = null;
 let nric_no = null;

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, Dimensions } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
@@ -11,6 +11,7 @@ import { Actions } from 'react-native-router-flux';
 import SecurityModal from "../common/SecurityModal";
 import DataService from '../common/DataService';
 
+const { width, height } = Dimensions.get('window');
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
@@ -150,7 +151,8 @@ export default class App extends Component {
           options.push(item);
         }
         this.setState({
-          bankOptions: options
+          bankOptions: options,
+          bank_acct_id: "0"
         })
       }
     })
@@ -232,18 +234,20 @@ export default class App extends Component {
       this.setState({loading: false})
       console.log(res);
       if (res.status === 200) {
-        Alert.alert('Info', res.data.errMsg,[
-          {
-            text: 'OK',
-            onPress:() => {
-              if (pgView === 'edit') {
-                Actions.pop({ refresh:true });
-              } else {
-                Actions.Home();
+        setTimeout(() => {
+          Alert.alert('Info', res.data.errMsg,[
+            {
+              text: 'OK',
+              onPress:() => {
+                if (pgView === 'edit') {
+                  Actions.pop({ refresh:true });
+                } else {
+                  Actions.Home();
+                }
               }
             }
-          }
-        ])
+          ])
+        }, 510)
       }
     })
   }
@@ -301,7 +305,7 @@ export default class App extends Component {
       return;
     }
 
-    if (bank_acct_id === null) {
+    if (bank_acct_id === null || bank_acct_id === "0") {
       Alert.alert('Error', 'Please select bank account');
       return;
     }
@@ -465,7 +469,7 @@ export default class App extends Component {
                             <Picker
                               mode="dropdown"
                               iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                              style={{ width: undefined }}
+                              style={{ width: width*0.65 }}
                               selectedValue={this.state.bank_acct_id}
                               onValueChange={(value) => this.setState({bank_acct_id: value})}
                             >
@@ -483,7 +487,7 @@ export default class App extends Component {
                             <Picker
                               mode="dropdown"
                               iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                              style={{ width: undefined }}
+                              style={{ width: width*0.65 }}
                               selectedValue={this.state.bank_acct_id2}
                               onValueChange={(value) => this.setState({bank_acct_id2: value})}
                             >
@@ -501,7 +505,7 @@ export default class App extends Component {
                             <Picker
                               mode="dropdown"
                               iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                              style={{ width: undefined }}
+                              style={{ width: width*0.65 }}
                               selectedValue={this.state.bank_acct_id3}
                               onValueChange={(value) => this.setState({bank_acct_id3: value})}
                             >

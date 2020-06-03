@@ -151,8 +151,10 @@ export default class App extends Component {
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       if (res.status === 200) {
+        console.log('bank', res);
         this.setState({
           bankOptions: res.data.response.records,
+          bank_acct_id: res.data.response.records[0].id
         })
       }
     })
@@ -250,18 +252,20 @@ export default class App extends Component {
       this.setState({loading: false})
       console.log(res);
       if (res.status === 200) {
-        Alert.alert('Info', res.data.errMsg,[
-          {
-            text: 'OK',
-            onPress:() => {
-              Actions.pop({refresh: true, cust_id, sales_id})
-              this.setState({ loading: true})
-              setTimeout(() => {
-                this.setState({ loading: false })
-              }, 3000);
+        setTimeout(() => {
+          Alert.alert('Info', res.data.errMsg,[
+            {
+              text: 'OK',
+              onPress:() => {
+                Actions.pop({refresh: true, cust_id, sales_id})
+                this.setState({ loading: true})
+                setTimeout(() => {
+                  this.setState({ loading: false })
+                }, 3000);
+              }
             }
-          }
-        ])
+          ])
+        }, 510);
       }
     })
   }
@@ -352,7 +356,7 @@ export default class App extends Component {
             }
           ])
         } else {
-          this.setState({ item: res.data.response.records, repayOptions: res.data.response.records.repayment_list })
+          this.setState({ item: res.data.response.records, repayOptions: res.data.response.records.repayment_list, repayment_no: res.data.response.records.repayment_list[0].id })
         }
       }
     })
@@ -511,7 +515,7 @@ export default class App extends Component {
                       <Picker
                         mode="dropdown"
                         iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
+                        style={{ width: width*0.65, justifyContent: 'flex-end' }}
                         selectedValue={repayment_no}
                         onValueChange={(value) => this.setState({repayment_no: value})}
                       >
@@ -591,7 +595,7 @@ export default class App extends Component {
                       <Picker
                         mode="dropdown"
                         iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
+                        style={{ width: undefined}}
                         selectedValue={this.state.trans_type}
                         onValueChange={(value) => this._setTransType(value)}
                       >
@@ -679,7 +683,7 @@ export default class App extends Component {
                       <Picker
                         mode="dropdown"
                         iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
+                        style={{ width: width*0.65 }}
                         selectedValue={this.state.bank_acct_id}
                         onValueChange={(value) => this.setState({bank_acct_id: value})}
                       >

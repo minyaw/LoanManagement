@@ -286,6 +286,7 @@ export default class App extends Component {
         console.log(res);
         this.setState({
           genderOptions: res.data.response.records,
+          gender: res.data.response.records[0].id
         })
       }
     })
@@ -312,6 +313,7 @@ export default class App extends Component {
       if (res.status === 200) {
         this.setState({
           raceOptions: res.data.response.records,
+          race: res.data.response.records[0].id,
         })
       }
     })
@@ -325,6 +327,7 @@ export default class App extends Component {
       if (res.status === 200) {
         this.setState({
           stateOptions: res.data.response.records,
+          state: res.data.response.records[0].id
         })
       }
     })
