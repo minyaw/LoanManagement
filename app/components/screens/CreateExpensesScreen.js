@@ -4,7 +4,7 @@ import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
 import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
-import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
+import { Form, Label, Input, Item, Picker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
 import { Actions } from 'react-native-router-flux';
@@ -13,6 +13,7 @@ import DataService from '../common/DataService';
 import ActionSheet from 'react-native-action-sheet';
 import ImagePicker from 'react-native-image-picker';
 import Modal from "react-native-modal";
+import DatePicker from 'react-native-datepicker'
 
 const { width, height } = Dimensions.get('window');
 const Container = styled.View`
@@ -244,14 +245,7 @@ export default class App extends Component {
   }
 
   setDate(newDate) {
-    let month = '' + (newDate.getMonth() + 1)
-    let day = '' + newDate.getDate()
-    let year = newDate.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    this.setState({ trans_date: [year, month, day].join('-') });
+    this.setState({ trans_date: newDate });
   }
 
   _upload = (path) => {
@@ -403,19 +397,16 @@ export default class App extends Component {
                       <Item fixedLabel style={styles.inputContainer}>
                         <Label style={styles.label}>Transaction Date*</Label>
                         <DatePicker
-                          defaultDate={new Date()}
-                          // minimumDate={new Date(2018, 1, 1)}
-                          // maximumDate={new Date()}
-                          locale={"en"}
-                          timeZoneOffsetInMinutes={undefined}
-                          modalTransparent={false}
-                          animationType={"fade"}
+                          maxDate={new Date()}
+                          date={this.state.trans_date}
                           androidMode={"default"}
                           // placeHolderText="Select date"
                           textStyle={{ color: "#000" }}
                           placeHolderTextStyle={{ color: "#d3d3d3" }}
-                          onDateChange={this.setDate}
+                          onDateChange={(date) => this.setState({ trans_date: date })}
                           disabled={false}
+                          confirmBtnText="OK"
+                          cancelBtnText="Cancel"
                         />
                       </Item>
                     ) : null
@@ -444,6 +435,7 @@ export default class App extends Component {
                       onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
                       keyboardType = 'number-pad'
                       value = {trans_amount}
+                      returnKeyType={"done"}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>

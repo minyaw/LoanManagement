@@ -613,6 +613,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(value) => this._checkTransAmount(value) }
                         keyboardType = 'number-pad'
+                        returnKeyType={"done"}
                       />
                     </Item>
                     {
@@ -674,6 +675,7 @@ export default class App extends Component {
                           <Input style={styles.input}
                             onChangeText = {(phoneNo2) => this.setState({refund_amount: phoneNo2})}
                             keyboardType = 'number-pad'
+                            returnKeyType={"done"}
                           />
                         </Item>
                       ) : null

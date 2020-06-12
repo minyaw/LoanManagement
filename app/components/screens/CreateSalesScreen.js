@@ -403,6 +403,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(phoneNo2) => this.setState({sales_amount: phoneNo2})}
                               keyboardType = 'number-pad'
+                              returnKeyType={"done"}
                             />
                           </Item>
                           <Item fixedLabel style={styles.inputContainer}>
@@ -410,6 +411,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({interest_amount: email})}
                               keyboardType = 'number-pad'
+                              returnKeyType={"done"}
                               value = {interest_amount}
                             />
                           </Item>
@@ -418,6 +420,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({deposit_amount: email})}
                               keyboardType = 'number-pad'
+                              returnKeyType={"done"}
                               value = {deposit_amount}
                             />
                           </Item>
@@ -426,6 +429,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({fee_amount: email})}
                               keyboardType = 'number-pad'
+                              returnKeyType={"done"}
                               value = {fee_amount}
                             />
                           </Item>
@@ -434,6 +438,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({payment: email})}
                               keyboardType = 'number-pad'
+                              returnKeyType={"done"}
                             />
                           </Item>
                           <Item fixedLabel style={styles.inputContainer}>
@@ -441,6 +446,7 @@ export default class App extends Component {
                             <Input style={styles.input}
                               onChangeText = {(email) => this.setState({days: email})}
                               keyboardType = 'number-pad'
+                              returnKeyType={"done"}
                             />
                           </Item>
                           <Item fixedLabel style={styles.inputContainer}>
@@ -560,6 +566,7 @@ export default class App extends Component {
                               onChangeText = {(nric) => this.setState({installment_amount: nric})}
                               defaultValue = {repayInfo.installment_amount.replace(/\,/g,'')}
                               keyboardType = 'number-pad'
+                              returnKeyType={"done"}
                             />
                           </Item>
                           <Item fixedLabel style={styles.inputContainer}>

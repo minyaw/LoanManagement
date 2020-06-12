@@ -92,6 +92,7 @@ class DataService {
   }
 
   setSTrans = (date) => {
+    console.log('date', date)
     s_trans_date = date;
   }
 

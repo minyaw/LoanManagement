@@ -37,6 +37,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Finance Managemant App would like to access to your camera to take photo.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Finance Management App would like to access to your device's location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

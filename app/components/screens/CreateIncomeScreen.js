@@ -266,6 +266,7 @@ export default class App extends Component {
                   <Input style={styles.input}
                     onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
                     keyboardType = 'number-pad'
+                    returnKeyType={"done"}
                   />
                 </Item>
                 <Item fixedLabel style={styles.inputContainer}>

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
-import { ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, TouchableOpacity, StyleSheet, Dimensions, Keyboard } from 'react-native';
 import CustomHeader from '../common/CustomHeader';
 import { Form, Item, Input, Label, Text, Button } from 'native-base';
 import ApiService from '../common/ApiService';
@@ -57,6 +57,7 @@ export default class App extends Component {
   }
 
   _login = () => {
+    Keyboard.dismiss();
     const {username, password} = this.state;
     if (username === 'CONFIG') {
       if (password === 'mmcDEV') {
@@ -111,7 +112,7 @@ export default class App extends Component {
           <Button full style={styles.button} onPress={() => this._login()}>
           <Text style={{ color: '#FFF', fontFamily: 'AvenirLTStd-Black', fontSize: 14}}>LOGIN</Text>
           </Button>
-          <VersionNo>v1.0.58 {ApiService.getAppMode() !== 'PRD' ? ApiService.getAppMode() : ''}</VersionNo>
+          <VersionNo>v1.0.59 {ApiService.getAppMode() !== 'PRD' ? ApiService.getAppMode() : ''}</VersionNo>
         </Content>
       </Container>
     )

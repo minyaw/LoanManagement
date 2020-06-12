@@ -486,6 +486,7 @@ export default class App extends Component {
                           defaultValue = {item.phoneno}
                           onChangeText = {(phoneno) => this.setState({phoneno: phoneno})}
                           keyboardType = 'number-pad'
+                          returnKeyType={"done"}
                         />
                       </Item>
                       <Item fixedLabel style={styles.inputContainer}>

@@ -580,16 +580,18 @@ export default class App extends Component {
         console.log(res);
         if (res.status === 200) {
           this.setState({ cust_id: res.data.response.cust_id});
-          Alert.alert('Info', res.data.errMsg,[
-            {
-              text: 'Done',
-              onPress: () => Actions.pop({ refresh: true})
-            },
-            {
-              text: 'Create Sales',
-              onPress: () => Actions.CreateSales({item: this.state})
-            }
-          ])
+          setTimeout(() => {
+            Alert.alert('Info', res.data.errMsg,[
+              {
+                text: 'Done',
+                onPress: () => Actions.pop({ refresh: true})
+              },
+              {
+                text: 'Create Sales',
+                onPress: () => Actions.CreateSales({item: this.state})
+              }
+            ])
+          }, 501)
         }
       })
     }
@@ -779,6 +781,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(phoneNo) => this.setState({phoneno: phoneNo})}
                         keyboardType = 'number-pad'
+                        returnKeyType={"done"}
                         defaultValue = {item ? item.phone_no : null}
                       />
                     </Item>
@@ -787,6 +790,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(phoneNo2) => this.setState({phoneno2: phoneNo2})}
                         keyboardType = 'number-pad'
+                        returnKeyType={"done"}
                         defaultValue = {item ? item.phone_no2 : null}
                       />
                     </Item>
@@ -926,6 +930,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(postcode) => this.setState({postcode: postcode})}
                         keyboardType = 'number-pad'
+                        returnKeyType={"done"}
                         defaultValue = {item ? item.postcode: null}
                       />
                     </Item>
@@ -1006,6 +1011,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(postcode) => this.setState({mail_postcode: postcode})}
                       keyboardType = 'number-pad'
+                      returnKeyType={"done"}
                       defaultValue = {item ? item.mail_postcode: mail_postcode}
                     />
                   </Item>
@@ -1139,6 +1145,7 @@ export default class App extends Component {
                       <Input style={styles.input}
                         onChangeText = {(postcode) => this.setState({company_postcode: postcode})}
                         keyboardType = 'number-pad'
+                        returnKeyType={"done"}
                         defaultValue = {item ? item.company_postcode: null}
                       />
                     </Item>
@@ -1377,6 +1384,7 @@ export default class App extends Component {
                         onChangeText = {(bphone) => this.setState({beneficiary_phoneno: bphone})}
                         defaultValue = {item ? item.beneficiary_phone_no: null}
                         keyboardType = 'number-pad'
+                        returnKeyType={"done"}
                       />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
@@ -1452,6 +1460,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(postcode) => this.setState({beneficiary_postcode: postcode})}
                       keyboardType = 'number-pad'
+                      returnKeyType={"done"}
                       defaultValue = {item ? item.beneficiary_zip: null}
                     />
                   </Item>

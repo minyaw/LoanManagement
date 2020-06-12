@@ -141,6 +141,7 @@ export default class App extends Component {
   }
 
   _search = () => {
+    this.setState({item: null })
     const { filter_agent, filter_ic_no, filter_keyin_phone, filter_name, filter_sales_amount, filter_search_phone, loadPage } = this.state;
 
     if (filter_agent == null || filter_agent === '') {
@@ -315,6 +316,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(phoneNo) => this.setState({filter_sales_amount: phoneNo})}
                       keyboardType = 'number-pad'
+                      returnKeyType={"done"}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -322,6 +324,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(phoneNo) => this.setState({filter_keyin_phone: phoneNo})}
                       keyboardType = 'number-pad'
+                      returnKeyType={"done"}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -329,6 +332,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(phoneNo) => this.setState({filter_search_phone: phoneNo})}
                       keyboardType = 'number-pad'
+                      returnKeyType={"done"}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
