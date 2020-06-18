@@ -476,156 +476,157 @@ export default class App extends Component {
               refresh = {this.props.isFromHome}
             />
             <ScrollView keyboardShouldPersistTaps={'handled'}>
-              <FormContainer>
-                <DetailContainer>
-                  <DetailTitle>Sales ID</DetailTitle>
-                  <DetailValue>{item.sales_no}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Agent</DetailTitle>
-                  <DetailValue>{item.agent}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Customer</DetailTitle>
-                  <DetailValue>{item.customer_name}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Sales Date</DetailTitle>
-                  <DetailValue>{item.sales_date.substring(0, 10)}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <BoldTitle>Sales Amount</BoldTitle>
-                  <BoldText>{item.sales_amount}</BoldText>
-                </DetailContainer>
-                <DetailContainer>
-                  <BoldTitle style = {{ color: '#F44336'}}>Credit</BoldTitle>
-                  <BoldText style = {{ color: '#F44336'}}>{item.credit_amount}</BoldText>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Interest</DetailTitle>
-                  <DetailValue>{item.interest}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Deposit</DetailTitle>
-                  <DetailValue>{item.deposit}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Fees</DetailTitle>
-                  <DetailValue>{item.fees}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Payment</DetailTitle>
-                  <DetailValue>{item.payment}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Days</DetailTitle>
-                  <DetailValue>{item.days}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <BoldTitle>Outstanding Amt</BoldTitle>
-                  <BoldText>{item.outstanding_amount}</BoldText>
-                </DetailContainer>
-                <DetailContainer>
-                  <GainLossTitle>Gain/Loss</GainLossTitle>
-                  <DetailAlert>{item.gain_loss_amount}</DetailAlert>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Total Principal</DetailTitle>
-                  <DetailValue>{item.total_principal}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Total Renew</DetailTitle>
-                  <DetailValue>{item.total_renew}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Total Penalty</DetailTitle>
-                  <DetailValue>{item.total_penalty}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Total Refund</DetailTitle>
-                  <DetailValue>{item.total_refund}</DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Status</DetailTitle>
-                  {
-                    item.status === 'Bad Debt' || item.status === 'Arrears' ? (
-                      <DetailAlert>{item.status}</DetailAlert>
-                    ) : (
+                <FormContainer>
+                  <DetailContainer>
+                    <DetailTitle>Sales ID</DetailTitle>
+                    <DetailValue>{item.sales_no}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Agent</DetailTitle>
+                    <DetailValue>{item.agent}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Customer</DetailTitle>
+                    <DetailValue>{item.customer_name}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Sales Date</DetailTitle>
+                    <DetailValue>{item.sales_date.substring(0, 10)}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <BoldTitle>Sales Amount</BoldTitle>
+                    <BoldText>{item.sales_amount}</BoldText>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <BoldTitle style = {{ color: '#F44336'}}>Credit</BoldTitle>
+                    <BoldText style = {{ color: '#F44336'}}>{item.credit_amount}</BoldText>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Interest</DetailTitle>
+                    <DetailValue>{item.interest}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Deposit</DetailTitle>
+                    <DetailValue>{item.deposit}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Fees</DetailTitle>
+                    <DetailValue>{item.fees}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Payment</DetailTitle>
+                    <DetailValue>{item.payment}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Days</DetailTitle>
+                    <DetailValue>{item.days}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <BoldTitle>Outstanding Amt</BoldTitle>
+                    <BoldText>{item.outstanding_amount}</BoldText>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <GainLossTitle>Gain/Loss</GainLossTitle>
+                    <DetailAlert>{item.gain_loss_amount}</DetailAlert>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Total Principal</DetailTitle>
+                    <DetailValue>{item.total_principal}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Total Renew</DetailTitle>
+                    <DetailValue>{item.total_renew}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Total Penalty</DetailTitle>
+                    <DetailValue>{item.total_penalty}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Total Refund</DetailTitle>
+                    <DetailValue>{item.total_refund}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Status</DetailTitle>
+                    {
+                      item.status === 'Bad Debt' || item.status === 'Arrears' ? (
+                        <DetailAlert>{item.status}</DetailAlert>
+                      ) : (
 
-                      <DetailValue>{item.status}</DetailValue>
-                    )
+                        <DetailValue>{item.status}</DetailValue>
+                      )
+                    }
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Remarks</DetailTitle>
+                    <DetailValue>{item.remark}</DetailValue>
+                  </DetailContainer>
+                  <DetailContainer>
+                    <DetailTitle>Bank Info</DetailTitle>
+                    {/* <View style={{flex:1, justifyContent: 'flex-end'}}>
+                      <Picker
+                        selectedValue={this.state.selectedBankSlip}
+                        style={{ width: undefined}}
+                        onValueChange={(value) => this._showBankSlip(value)}
+                      >
+                        {
+                          bankReceipt.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.id} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </View> */}
+                    <DetailValue>{item.bank_code} [{item.bank_holder}]</DetailValue>
+                  </DetailContainer>
+                  {
+                    this.state.createTransAccess ? (
+                      <ButtonContainer>
+                        <Button
+                          title = 'Create Trans'
+                          buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
+                          onPress= {() => Actions.CreateTransaction({cust_id, sales_id, transInfo: item})}
+                          titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                        />
+                      </ButtonContainer>
+                    ) : null
                   }
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Remarks</DetailTitle>
-                  <DetailValue></DetailValue>
-                </DetailContainer>
-                <DetailContainer>
-                  <DetailTitle>Bank In Slip</DetailTitle>
-                  <View style={{flex:1, justifyContent: 'flex-end'}}>
-                    <Picker
-                      selectedValue={this.state.selectedBankSlip}
-                      style={{ width: undefined}}
-                      onValueChange={(value) => this._showBankSlip(value)}
-                    >
-                      {
-                        bankReceipt.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.id} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
+                </FormContainer>
+                <TransactionListContainer>
+                  <TransactionListTitle>Repayment List</TransactionListTitle>
+                </TransactionListContainer>
+                <ScrollView horizontal={true}>
+                  <View>
+                    <Table borderStyle={{borderColor: 'transparent'}}>
+                      <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
+                    </Table>
+                    <View>
+                        {
+                          this.state.contentList.map((rowData, index) => {
+                            return(
+                              <TouchableOpacity
+                                onPress={() => this._showExpand(index)}
+                              >
+                                <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
+                                  {
+                                    rowData.map((cellData, cellIndex) => {
+                                      return(
+                                        <Cell
+                                          key={cellIndex}
+                                          data={cellIndex === 0 ? editSales(index) : cellData} textStyle={cellIndex === 2 ? styles.alertCellText : styles.cellText}
+                                          style={[{width: cellIndex === 0 ? 82 : cellIndex > 5 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
+                                        />
+                                      )
+                                    })
+                                  }
+                                </TableWrapper>
+                              </TouchableOpacity>
+                            )
+                          })
+                        }
+                    </View>
                   </View>
-                </DetailContainer>
-                {
-                  this.state.createTransAccess ? (
-                    <ButtonContainer>
-                      <Button
-                        title = 'Create Trans'
-                        buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
-                        onPress= {() => Actions.CreateTransaction({cust_id, sales_id, transInfo: item})}
-                        titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                      />
-                    </ButtonContainer>
-                  ) : null
-                }
-              </FormContainer>
-              <TransactionListContainer>
-                <TransactionListTitle>Repayment List</TransactionListTitle>
-              </TransactionListContainer>
-              <ScrollView horizontal={true}>
-                <View>
-                  <Table borderStyle={{borderColor: 'transparent'}}>
-                    <Row rowPress={(col)=> this._sort(col)} data={HeaderList} widthArr={widthArr} style={styles.header} textStyle={styles.text}/>
-                  </Table>
-                  <ScrollView>
-                      {
-                        this.state.contentList.map((rowData, index) => {
-                          return(
-                            <TouchableOpacity
-                              onPress={() => this._showExpand(index)}
-                            >
-                              <TableWrapper key={index} style={styles.row} borderStyle={{borderColor: 'transparent'}}>
-                                {
-                                  rowData.map((cellData, cellIndex) => {
-                                    return(
-                                      <Cell
-                                        key={cellIndex}
-                                        data={cellIndex === 0 ? editSales(index) : cellData} textStyle={cellIndex === 2 ? styles.alertCellText : styles.cellText}
-                                        style={[{width: cellIndex === 0 ? 82 : cellIndex > 5 ? 0 : 130}, index%2 && {backgroundColor: '#FFFFFF'}]}
-                                      />
-                                    )
-                                  })
-                                }
-                              </TableWrapper>
-                            </TouchableOpacity>
-                          )
-                        })
-                      }
-                  </ScrollView>
-                </View>
-              </ScrollView>
+                </ScrollView>
               <View>
                 <Modal
                   isVisible = {isVisible}

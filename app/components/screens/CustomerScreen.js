@@ -154,7 +154,8 @@ export default class App extends Component {
 
   _loadmore = () => {
     const { filter } = this.state;
-    this.setState({loadPage: this.state.loadPage++})
+    this.state.loadPage++;
+    console.log(this.state.loadPage)
     if (filter) {
       this._filter();
     } else {

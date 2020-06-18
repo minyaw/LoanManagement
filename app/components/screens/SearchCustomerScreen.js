@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
-import { ScrollView, StyleSheet, Text, Alert, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, Alert, TouchableOpacity, View, KeyboardAvoidingView, Dimensions } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import CustomHeader from '../common/CustomHeader';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body, Content, Card, CardItem } from 'native-base';
@@ -11,6 +11,7 @@ import { Button, Icon } from 'react-native-elements';
 import ApiService from '../common/ApiService';
 import Loader from '../common/Loader';
 
+const { width, height } = Dimensions.get('window');
 const Container = styled.View`
   backgroundColor: ${colors.defaultBackground}
   flex             : 1;
@@ -280,7 +281,10 @@ export default class App extends Component {
           tapToClose={true}
           onClose={() => this.setState({menuOpen: false})}
         >
-          <Container>
+          <KeyboardAvoidingView
+            style = {{ flex:1, backgroundColor: `${colors.defaultBackground}` }}
+            behavior = 'padding'
+          >
           <Loader loading={loading}/>
             <CustomHeader
               title = 'Customer Search'
@@ -298,7 +302,7 @@ export default class App extends Component {
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
+                      style={{ width: width*0.65 }}
                       selectedValue={filter_agent}
                       onValueChange={(value) => this.setState({filter_agent: value})}
                     >
@@ -339,12 +343,14 @@ export default class App extends Component {
                     <Label style={styles.label}>Full Name</Label>
                     <Input style={styles.input}
                       onChangeText = {(fullname) => this.setState({filter_name: fullname})}
+                      returnKeyType={"done"}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
                     <Label style={styles.label}>NRIC/Passport</Label>
                     <Input style={styles.input}
                       onChangeText = {(nric) => this.setState({filter_ic_no: nric})}
+                      returnKeyType={"done"}
                     />
                   </Item>
                 </Form>
@@ -490,7 +496,7 @@ export default class App extends Component {
                 null
               )
             }
-          </Container>
+          </KeyboardAvoidingView>
         </Drawer>
       )
     } else {

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
@@ -338,7 +338,10 @@ export default class App extends Component {
 
     if (expensesOptions.length > 0 && currencyOptions.length > 0 && bankOptions.length > 0) {
       return(
-        <Container>
+        <KeyboardAvoidingView
+          style = {{ flex: 1, backgroundColor: `${colors.defaultBackground}` }}
+          behavior = 'padding'
+        >
           <Loader loading={loading}/>
           <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
@@ -464,6 +467,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(ref_no) => this.setState({ref_no: ref_no})}
                       value = {ref_no}
+                      returnKeyType={"done"}
                     />
                   </Item>
                   <Item fixedLabel style={styles.inputContainer}>
@@ -511,6 +515,7 @@ export default class App extends Component {
                     <Input style={styles.input}
                       onChangeText = {(remark) => this.setState({remark: remark})}
                       value = {remark}
+                      returnKeyType={"done"}
                     />
                   </Item>
                 </Form>
@@ -525,7 +530,7 @@ export default class App extends Component {
               titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
             />
           </ButtonContainer>
-        </Container>
+        </KeyboardAvoidingView>
       )
     } else {
       return (

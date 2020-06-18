@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import { Actions } from 'react-native-router-flux';
@@ -670,7 +670,10 @@ export default class App extends Component {
     const { pgView, item } = this.props;
     if (raceOptions.length > 0 && countryOptions.length > 0 && nationalityOptions.length > 0 && stateOptions.length > 0 && bankOptions.length > 0 && brokerOptions.length > 0) {
       return(
-        <Container>
+        <KeyboardAvoidingView
+          style = {{ flex: 1, backgroundColor: `${colors.defaultBackground}` }}
+          behavior = 'padding'
+        >
           <Loader loading={loading}/>
           <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
@@ -1711,7 +1714,7 @@ export default class App extends Component {
                 />
               </ButtonContainer>
           }
-        </Container>
+        </KeyboardAvoidingView>
       )
     } else {
       return (
