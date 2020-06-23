@@ -25,7 +25,7 @@ let prevTitle = null;
 let expensesStatus = [];
 let filterStatus = [];
 let deviceId = '';
-const appVersion = '1.0.61'
+const appVersion = '1.1.0'
 
 class DataService {
   setGroup = (item) => {
