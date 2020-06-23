@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
@@ -316,10 +316,13 @@ export default class App extends Component {
     const { item, pgView, repayInfo } = this.props;
     if (currencyOptions.length > 0 && bankOptions.length > 0 && apply_date) {
       return(
+        Platform.OS === 'ios' ? (
+
         <KeyboardAvoidingView
           style = {{ flex: 1, backgroundColor: `${colors.defaultBackground}` }}
           behavior = 'padding'
         >
+        
           <Loader loading={loading}/>
           <ScrollView keyboardShouldPersistTaps={'handled'}>
             <CustomHeader
@@ -478,7 +481,7 @@ export default class App extends Component {
                             <Picker
                               mode="dropdown"
                               iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                              style={{ width: width*0.65 }}
+                              style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
                               selectedValue={this.state.bank_acct_id}
                               onValueChange={(value) => this.setState({bank_acct_id: value})}
                             >
@@ -496,7 +499,7 @@ export default class App extends Component {
                             <Picker
                               mode="dropdown"
                               iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                              style={{ width: width*0.65 }}
+                              style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
                               selectedValue={this.state.bank_acct_id2}
                               onValueChange={(value) => this.setState({bank_acct_id2: value})}
                             >
@@ -514,7 +517,7 @@ export default class App extends Component {
                             <Picker
                               mode="dropdown"
                               iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                              style={{ width: width*0.65 }}
+                              style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
                               selectedValue={this.state.bank_acct_id3}
                               onValueChange={(value) => this.setState({bank_acct_id3: value})}
                             >
@@ -597,6 +600,286 @@ export default class App extends Component {
             />
           </ButtonContainer>
         </KeyboardAvoidingView>
+        ) : (
+          <Container>
+            <Loader loading={loading}/>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
+              <CustomHeader
+                title = {pgView === 'edit' ? 'Edit Sales' : 'New Sales Application'}
+                showBack = {true}
+                showMenu = {false}
+              />
+                <View>
+                  <SecurityModal
+                    isVisible = {sVisible}
+                    closeModal = {() => this.setState({sVisible: false})}
+                    submit = {() => this._submit()}
+                  />
+                  <Divider>
+                    <DividerText>{pgView === 'edit' ? 'Edit Sales' : 'New Sales Application'}</DividerText>
+                    {/* <Pagination>
+                      <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                      <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                    </Pagination> */}
+                  </Divider>
+                  <Section>
+                    {/* <SectionName>Personal Details</SectionName> */}
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Customer Name</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          onChangeText = {(cusName) => this.setState({fullname: cusName})}
+                          defaultValue = {item ? item.customer_name : null}
+                          editable = {false}
+                        />
+                      </Item>
+                      {
+                        pgView !== 'edit' ? (
+                          <View>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>NRIC/Passport</Label>
+                              <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                                onChangeText = {(nric) => this.setState({nricno: nric})}
+                                defaultValue = {item ? item.ic_no : null}
+                                editable = {false}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Apply Date*</Label>
+                              <DatePicker
+                                defaultDate={new Date()}
+                                // minimumDate={new Date(2018, 1, 1)}
+                                maximumDate={new Date()}
+                                locale={"en"}
+                                timeZoneOffsetInMinutes={undefined}
+                                modalTransparent={false}
+                                animationType={"fade"}
+                                androidMode={"default"}
+                                // placeHolderText={apply_date ? apply_date : 'Select Date'}
+                                textStyle={{ color: "#000" }}
+                                placeHolderTextStyle={{ color: "#d3d3d3" }}
+                                onDateChange={this.setDate}
+                                disabled={false}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Currency*</Label>
+                              <Picker
+                                mode="dropdown"
+                                iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                                style={{ width: undefined }}
+                                selectedValue={this.state.currency}
+                                onValueChange={(value) => this.setState({currency: value})}
+                                placeholder="Select Currency"
+                                placeholderStyle={{ color: "#bfc6ea" }}
+                                placeholderIconColor="#007aff"
+                              >
+                                {
+                                  currencyOptions.map((item, index) => {
+                                    return(
+                                      <Picker.Item label={item.value} value={item.value}/>
+                                    )
+                                  })
+                                }
+                              </Picker>
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Sales Amount*</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(phoneNo2) => this.setState({sales_amount: phoneNo2})}
+                                keyboardType = 'number-pad'
+                                returnKeyType={"done"}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Interest*</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(email) => this.setState({interest_amount: email})}
+                                keyboardType = 'number-pad'
+                                returnKeyType={"done"}
+                                value = {interest_amount}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Deposit*</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(email) => this.setState({deposit_amount: email})}
+                                keyboardType = 'number-pad'
+                                returnKeyType={"done"}
+                                value = {deposit_amount}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Fee*</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(email) => this.setState({fee_amount: email})}
+                                keyboardType = 'number-pad'
+                                returnKeyType={"done"}
+                                value = {fee_amount}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Payment*</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(email) => this.setState({payment: email})}
+                                keyboardType = 'number-pad'
+                                returnKeyType={"done"}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Days*</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(email) => this.setState({days: email})}
+                                keyboardType = 'number-pad'
+                                returnKeyType={"done"}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Loan Final Amt</Label>
+                              <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                                editable = {false}
+                                value = {sales_amount}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Credit</Label>
+                              <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                                value= { (sales_amount - interest_amount - deposit_amount - fee_amount).toString()}
+                                editable = {false}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Installment Amt</Label>
+                              <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                                value= {(sales_amount === null || payment === null) ? "0" : (sales_amount / payment).toString()}
+                                editable = {false}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Bank Account*</Label>
+                              <Picker
+                                mode="dropdown"
+                                iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                                style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                                selectedValue={this.state.bank_acct_id}
+                                onValueChange={(value) => this.setState({bank_acct_id: value})}
+                              >
+                                {
+                                  bankOptions.map((item,index) => {
+                                    return (
+                                      <Picker.Item label={item.value} value={item.id}/>
+                                    )
+                                  })
+                                }
+                              </Picker>
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Bank Account 2</Label>
+                              <Picker
+                                mode="dropdown"
+                                iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                                style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                                selectedValue={this.state.bank_acct_id2}
+                                onValueChange={(value) => this.setState({bank_acct_id2: value})}
+                              >
+                                {
+                                  bankOptions.map((item,index) => {
+                                    return (
+                                      <Picker.Item label={item.value} value={item.id}/>
+                                    )
+                                  })
+                                }
+                              </Picker>
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Bank Account 3</Label>
+                              <Picker
+                                mode="dropdown"
+                                iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                                style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                                selectedValue={this.state.bank_acct_id3}
+                                onValueChange={(value) => this.setState({bank_acct_id3: value})}
+                              >
+                                {
+                                  bankOptions.map((item,index) => {
+                                    return (
+                                      <Picker.Item label={item.value} value={item.id}/>
+                                    )
+                                  })
+                                }
+                              </Picker>
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Remark</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(remark) => this.setState({remark: remark})}
+                                returnKeyType={"done"}
+                              />
+                            </Item>
+                          </View>
+                        ) : null
+                      }
+                      {
+                        pgView === 'edit' ? (
+                          <View>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Sales ID*</Label>
+                              <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                                // onChangeText = {(nric) => this.setState({nricno: nric})}
+                                defaultValue = {item.sales_no.concat(repayInfo.repay_no)}
+                                editable = {false}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Due Date*</Label>
+                              <DatePicker
+                                defaultDate={new Date(new Date(parseInt(repayInfo.ori_due_date.substring(0,4))), new Date(parseInt(repayInfo.ori_due_date.substring(5,7)) -1), new Date(parseInt(repayInfo.ori_due_date.substring(8,10))))}
+                                locale={"en"}
+                                timeZoneOffsetInMinutes={undefined}
+                                modalTransparent={false}
+                                animationType={"fade"}
+                                androidMode={"default"}
+                                // placeHolderText={apply_date ? apply_date : 'Select Date'}
+                                textStyle={{ color: "#000" }}
+                                placeHolderTextStyle={{ color: "#d3d3d3" }}
+                                onDateChange={this.setDueDate}
+                                disabled={false}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Installment Amount*</Label>
+                              <Input style={styles.input}
+                                onChangeText = {(nric) => this.setState({installment_amount: nric})}
+                                defaultValue = {repayInfo.installment_amount.replace(/\,/g,'')}
+                                keyboardType = 'number-pad'
+                                returnKeyType={"done"}
+                              />
+                            </Item>
+                            <Item fixedLabel style={styles.inputContainer}>
+                              <Label style={styles.label}>Status*</Label>
+                              <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                                // onChangeText = {(nric) => this.setState({nricno: nric})}
+                                defaultValue = {repayInfo.status}
+                                editable = {false}
+                              />
+                            </Item>
+                          </View>
+                        ) : null
+                      }
+                    </Form>
+                  </Section>
+                </View>
+            </ScrollView>
+            <ButtonContainer>
+              <Button
+                title = 'NEXT'
+                buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                onPress = {() => this._checkRequiredField()}
+                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+              />
+            </ButtonContainer>
+          </Container>
+        )
       )
     } else {
       return (

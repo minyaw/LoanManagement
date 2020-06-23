@@ -457,7 +457,7 @@ export default class App extends Component {
                       <Picker
                         mode="dropdown"
                         iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: width*0.65 }}
+                        style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
                         selectedValue={this.state.bank_acct_id}
                         onValueChange={(value) => this.setState({bank_acct_id: value})}
                       >
@@ -475,7 +475,7 @@ export default class App extends Component {
                       <Picker
                         mode="dropdown"
                         iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: width*0.65 }}
+                        style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
                         selectedValue={this.state.bank_acct_id2}
                         onValueChange={(value) => this.setState({bank_acct_id2: value})}
                       >
@@ -493,7 +493,7 @@ export default class App extends Component {
                       <Picker
                         mode="dropdown"
                         iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: width*0.65 }}
+                        style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
                         selectedValue={this.state.bank_acct_id3}
                         onValueChange={(value) => this.setState({bank_acct_id3: value})}
                       >

@@ -276,6 +276,7 @@ class DataService {
 
   setDeviceId =  (id) => {
     deviceId = id;
+    console.log('id', id);
   }
 
   getDeviceId = () => {

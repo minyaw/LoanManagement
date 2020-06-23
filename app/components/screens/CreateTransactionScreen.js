@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
@@ -439,310 +439,622 @@ export default class App extends Component {
     const { transInfo } = this.props;
     if (currencyOptions.length > 0 && transTypeOptions.length > 0 && bankOptions.length > 0 && item && repayOptions) {
       return(
-        <KeyboardAvoidingView
-          style = {{ flex:1, backgroundColor: `${colors.defaultBackground}` }}
-          behavior = 'padding'
-        >
-          <Loader loading={loading}/>
-          <ScrollView keyboardShouldPersistTaps={'handled'}>
-            <CustomHeader
-              title = 'Create Transaction'
-              showBack = {true}
-              showMenu = {false}
-            />
-              <View>
+        Platform.OS === 'ios' ? (
+          <KeyboardAvoidingView
+            style = {{ flex:1, backgroundColor: `${colors.defaultBackground}` }}
+            behavior = 'padding'
+          >
+            <Loader loading={loading}/>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
+              <CustomHeader
+                title = 'Create Transaction'
+                showBack = {true}
+                showMenu = {false}
+              />
                 <View>
-                  <Modal
-                    isVisible = {isVisible}
-                    onBackdropPress = {() => this.setState({isVisible: false})}
-                    onBackButtonPress = {() => this.setState({isVisible: false})}
-                  >
-                    <View
-                      style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
+                  <View>
+                    <Modal
+                      isVisible = {isVisible}
+                      onBackdropPress = {() => this.setState({isVisible: false})}
+                      onBackButtonPress = {() => this.setState({isVisible: false})}
                     >
-                      <ImageBackground
-                        source = {{uri: source}}
-                        style = {{width: width, height: '90%'}}
+                      <View
+                        style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
                       >
-                      </ImageBackground>
-                    </View>
-                  </Modal>
-                </View>
-                <SecurityModal
-                  isVisible = {sVisible}
-                  closeModal = {() => this.setState({sVisible: false})}
-                  submit = {() => this._submit()}
-                />
-                <Divider>
-                  <DividerText>Customer Transaction</DividerText>
-                  {/* <Pagination>
-                    <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
-                    <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
-                  </Pagination> */}
-                </Divider>
-                <Section>
-                  {/* <SectionName>Personal Details</SectionName> */}
-                  <Form>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Customer Name</Label>
-                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                        // onChangeText = {(salutation) => this.setState({fullname: salutation})}
-                        value = {item.customer}
-                        disabled = {true}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>NRIC/Passport</Label>
-                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                        onChangeText = {(cusName) => this.setState({nricno: cusName})}
-                        value = {item.ic_no}
-                        disabled = {true}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Phone No</Label>
-                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                        value = {item.pheno_no}
-                        disabled = {true}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Outstanding Amount</Label>
-                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                        value = {item.outstanding_amount}
-                        disabled = {true}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Sales ID*</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: width*0.65, justifyContent: 'flex-end' }}
-                        selectedValue={repayment_no}
-                        onValueChange={(value) => this.setState({repayment_no: value})}
-                      >
+                        <ImageBackground
+                          source = {{uri: source}}
+                          style = {{width: width, height: '90%'}}
+                        >
+                        </ImageBackground>
+                      </View>
+                    </Modal>
+                  </View>
+                  <SecurityModal
+                    isVisible = {sVisible}
+                    closeModal = {() => this.setState({sVisible: false})}
+                    submit = {() => this._submit()}
+                  />
+                  <Divider>
+                    <DividerText>Customer Transaction</DividerText>
+                    {/* <Pagination>
+                      <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                      <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                    </Pagination> */}
+                  </Divider>
+                  <Section>
+                    {/* <SectionName>Personal Details</SectionName> */}
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Customer Name</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          // onChangeText = {(salutation) => this.setState({fullname: salutation})}
+                          value = {item.customer}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>NRIC/Passport</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          onChangeText = {(cusName) => this.setState({nricno: cusName})}
+                          value = {item.ic_no}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Phone No</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          value = {item.pheno_no}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Outstanding Amount</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          value = {item.outstanding_amount}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Sales ID*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined, justifyContent: 'flex-end' }}
+                          selectedValue={repayment_no}
+                          onValueChange={(value) => this.setState({repayment_no: value})}
+                        >
+                        {
+                          repayOptions.map((item, index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id} />
+                            )
+                          })
+                        }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Repayment Value</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          placeholder = "0"
+                          // value = {trans_amount === null ? "0" : (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
+                          value = {item.installment_amount}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Repay Currency*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.currency}
+                          onValueChange={(value) => this.setState({currency: value})}
+                          placeholder="Select Currency"
+                          placeholderStyle={{ color: "#bfc6ea" }}
+                          placeholderIconColor="#007aff"
+                        >
+                          {
+                            currencyOptions.map((item, index) => {
+                              return(
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Currency Rate*</Label>
+                        <Input style={[styles.input, this.state.currency === 'MYR' ? { backgroundColor: '#eee'} : null]}
+                          defaultValue = {currency_rate}
+                          disabled = {this.state.currency === "MYR"}
+                          onChangeText = {(value) => this.setState({ currency_rate: value })}
+                          keyboardType = "number-pad"
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Trans Date*</Label>
+                        {/* <DatePicker
+                          defaultDate={new Date()}
+                          // minimumDate={new Date(2018, 1, 1)}
+                          maximumDate={new Date()}
+                          locale={"en"}
+                          timeZoneOffsetInMinutes={undefined}
+                          modalTransparent={false}
+                          animationType={"fade"}
+                          androidMode={"default"}
+                          placeHolderText="Select date"
+                          textStyle={{ color: "#000" }}
+                          placeHolderTextStyle={{ color: "#d3d3d3" }}
+                          onDateChange={this.setDate}
+                          disabled={false}
+                        /> */}
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          value = {display_trans_date}
+                          disabled = {true}
+                          style = {{textAlign: 'right'}}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Trans Type*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined}}
+                          selectedValue={this.state.trans_type}
+                          onValueChange={(value) => this._setTransType(value)}
+                        >
+                          {
+                            transTypeOptions.map((item, index) => {
+                              return(
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Trans Amount*</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(value) => this._checkTransAmount(value) }
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                        />
+                      </Item>
                       {
-                        repayOptions.map((item, index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id} />
-                          )
-                        })
-                      }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Repayment Value</Label>
-                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                        placeholder = "0"
-                        // value = {trans_amount === null ? "0" : (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
-                        value = {item.installment_amount}
-                        disabled = {true}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Repay Currency*</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={this.state.currency}
-                        onValueChange={(value) => this.setState({currency: value})}
-                        placeholder="Select Currency"
-                        placeholderStyle={{ color: "#bfc6ea" }}
-                        placeholderIconColor="#007aff"
-                      >
-                        {
-                          currencyOptions.map((item, index) => {
-                            return(
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Currency Rate*</Label>
-                      <Input style={[styles.input, this.state.currency === 'MYR' ? { backgroundColor: '#eee'} : null]}
-                        defaultValue = {currency_rate}
-                        disabled = {this.state.currency === "MYR"}
-                        onChangeText = {(value) => this.setState({ currency_rate: value })}
-                        keyboardType = "number-pad"
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Trans Date*</Label>
-                      {/* <DatePicker
-                        defaultDate={new Date()}
-                        // minimumDate={new Date(2018, 1, 1)}
-                        maximumDate={new Date()}
-                        locale={"en"}
-                        timeZoneOffsetInMinutes={undefined}
-                        modalTransparent={false}
-                        animationType={"fade"}
-                        androidMode={"default"}
-                        placeHolderText="Select date"
-                        textStyle={{ color: "#000" }}
-                        placeHolderTextStyle={{ color: "#d3d3d3" }}
-                        onDateChange={this.setDate}
-                        disabled={false}
-                      /> */}
-                      <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                        value = {display_trans_date}
-                        disabled = {true}
-                        style = {{textAlign: 'right'}}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Trans Type*</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined}}
-                        selectedValue={this.state.trans_type}
-                        onValueChange={(value) => this._setTransType(value)}
-                      >
-                        {
-                          transTypeOptions.map((item, index) => {
-                            return(
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Trans Amount*</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(value) => this._checkTransAmount(value) }
-                        keyboardType = 'number-pad'
-                        returnKeyType={"done"}
-                      />
-                    </Item>
-                    {
-                      trans_type === 'Renew' ? (
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Next Pay Amount</Label>
-                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                            // value = {trans_amount ? (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString() : '0'}
-                            value = {next_pay_amt}
-                            disabled = {true}
-                          />
-                        </Item>
-                      ) : null
-                    }
-                    {
-                      showNextDue ? (
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Next Due Date*</Label>
-                          <DatePicker
-                            defaultDate={new Date(default_next_due_date)}
-                            // minimumDate={new Date(2018, 1, 1)}
-                            locale={"en"}
-                            timeZoneOffsetInMinutes={undefined}
-                            modalTransparent={false}
-                            animationType={"fade"}
-                            androidMode={"default"}
-                            textStyle={{ color: "#000" }}
-                            placeHolderTextStyle={{ color: "#d3d3d3" }}
-                            onDateChange={this.setNexyPayDate}
-                            disabled={false}
-                          />
-                        </Item>
-                      ) : null
-                    }
-                    {
-                      trans_type === 'Renew' ? (
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Next Due Date*</Label>
-                          <DatePicker
-                            defaultDate={new Date(new Date(this.props.transInfo.next_renew_due_date).getFullYear(), new Date(this.props.transInfo.next_renew_due_date).getMonth(), new Date(this.props.transInfo.next_renew_due_date).getDate())}
-                            // minimumDate={new Date(2018, 1, 1)}
-                            locale={"en"}
-                            timeZoneOffsetInMinutes={undefined}
-                            modalTransparent={false}
-                            animationType={"fade"}
-                            androidMode={"default"}
-                            textStyle={{ color: "#000" }}
-                            placeHolderTextStyle={{ color: "#d3d3d3" }}
-                            onDateChange={this.setNexyPayDate}
-                            disabled={false}
-                          />
-                        </Item>
-                      ) : null
-                    }
-                    {
-                      trans_type === 'Settle' ? (
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Refund Amount*</Label>
-                          <Input style={styles.input}
-                            onChangeText = {(phoneNo2) => this.setState({refund_amount: phoneNo2})}
-                            keyboardType = 'number-pad'
-                            returnKeyType={"done"}
-                          />
-                        </Item>
-                      ) : null
-                    }
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Bank Account*</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: width*0.65 }}
-                        selectedValue={this.state.bank_acct_id}
-                        onValueChange={(value) => this.setState({bank_acct_id: value})}
-                      >
-                        {
-                          bankOptions.map((item, index) => {
-                            return(
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Receipt No</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(value) => this.setState({ref_no: value})}
-                      />
-                    </Item>
-                    {
-                      this.state.uploadAccess ? (
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Payment Receipt</Label>
-                          <View style={{ justifyContent: 'center' }}>
-                            <Button
-                              title = 'Select file to upload'
-                              buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
-                              onPress = {()=> this._upload('attachment')}
-                              icon={
-                                attachment ? (
-                                  <Icon
-                                    name="check-circle"
-                                    size={15}
-                                    color="#4eff4e"
-                                    style={{paddingLeft: 5}}
-                                  />
-                                ) : null
-                              }
-                              iconRight
-                              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                        trans_type === 'Renew' ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Next Pay Amount</Label>
+                            <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                              // value = {trans_amount ? (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString() : '0'}
+                              value = {next_pay_amt}
+                              disabled = {true}
                             />
-                          </View>
-                        </Item>
-                      ) : null
-                    }
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Remark</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(email) => this.setState({remark: email})}
-                      />
-                    </Item>
-                  </Form>
-                </Section>
-              </View>
-          </ScrollView>
+                          </Item>
+                        ) : null
+                      }
+                      {
+                        showNextDue ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Next Due Date*</Label>
+                            <DatePicker
+                              defaultDate={new Date(default_next_due_date)}
+                              // minimumDate={new Date(2018, 1, 1)}
+                              locale={"en"}
+                              timeZoneOffsetInMinutes={undefined}
+                              modalTransparent={false}
+                              animationType={"fade"}
+                              androidMode={"default"}
+                              textStyle={{ color: "#000" }}
+                              placeHolderTextStyle={{ color: "#d3d3d3" }}
+                              onDateChange={this.setNexyPayDate}
+                              disabled={false}
+                            />
+                          </Item>
+                        ) : null
+                      }
+                      {
+                        trans_type === 'Renew' ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Next Due Date*</Label>
+                            <DatePicker
+                              defaultDate={new Date(new Date(this.props.transInfo.next_renew_due_date).getFullYear(), new Date(this.props.transInfo.next_renew_due_date).getMonth(), new Date(this.props.transInfo.next_renew_due_date).getDate())}
+                              // minimumDate={new Date(2018, 1, 1)}
+                              locale={"en"}
+                              timeZoneOffsetInMinutes={undefined}
+                              modalTransparent={false}
+                              animationType={"fade"}
+                              androidMode={"default"}
+                              textStyle={{ color: "#000" }}
+                              placeHolderTextStyle={{ color: "#d3d3d3" }}
+                              onDateChange={this.setNexyPayDate}
+                              disabled={false}
+                            />
+                          </Item>
+                        ) : null
+                      }
+                      {
+                        trans_type === 'Settle' ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Refund Amount*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(phoneNo2) => this.setState({refund_amount: phoneNo2})}
+                              keyboardType = 'number-pad'
+                              returnKeyType={"done"}
+                            />
+                          </Item>
+                        ) : null
+                      }
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Bank Account*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                          selectedValue={this.state.bank_acct_id}
+                          onValueChange={(value) => this.setState({bank_acct_id: value})}
+                        >
+                          {
+                            bankOptions.map((item, index) => {
+                              return(
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Receipt No</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(value) => this.setState({ref_no: value})}
+                        />
+                      </Item>
+                      {
+                        this.state.uploadAccess ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Payment Receipt</Label>
+                            <View style={{ justifyContent: 'center' }}>
+                              <Button
+                                title = 'Select file to upload'
+                                buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
+                                onPress = {()=> this._upload('attachment')}
+                                icon={
+                                  attachment ? (
+                                    <Icon
+                                      name="check-circle"
+                                      size={15}
+                                      color="#4eff4e"
+                                      style={{paddingLeft: 5}}
+                                    />
+                                  ) : null
+                                }
+                                iconRight
+                                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                              />
+                            </View>
+                          </Item>
+                        ) : null
+                      }
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Remark</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(email) => this.setState({remark: email})}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                </View>
+            </ScrollView>
+              <ButtonContainer>
+                <Button
+                  title = 'NEXT'
+                  buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                  onPress = {() => this._checkRequiredField()}
+                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                />
+              </ButtonContainer>
+          </KeyboardAvoidingView>
+        ) : (
+          <Container>
+            <Loader loading={loading}/>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
+              <CustomHeader
+                title = 'Create Transaction'
+                showBack = {true}
+                showMenu = {false}
+              />
+                <View>
+                  <View>
+                    <Modal
+                      isVisible = {isVisible}
+                      onBackdropPress = {() => this.setState({isVisible: false})}
+                      onBackButtonPress = {() => this.setState({isVisible: false})}
+                    >
+                      <View
+                        style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
+                      >
+                        <ImageBackground
+                          source = {{uri: source}}
+                          style = {{width: width, height: '90%'}}
+                        >
+                        </ImageBackground>
+                      </View>
+                    </Modal>
+                  </View>
+                  <SecurityModal
+                    isVisible = {sVisible}
+                    closeModal = {() => this.setState({sVisible: false})}
+                    submit = {() => this._submit()}
+                  />
+                  <Divider>
+                    <DividerText>Customer Transaction</DividerText>
+                    {/* <Pagination>
+                      <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                      <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                    </Pagination> */}
+                  </Divider>
+                  <Section>
+                    {/* <SectionName>Personal Details</SectionName> */}
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Customer Name</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          // onChangeText = {(salutation) => this.setState({fullname: salutation})}
+                          value = {item.customer}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>NRIC/Passport</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          onChangeText = {(cusName) => this.setState({nricno: cusName})}
+                          value = {item.ic_no}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Phone No</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          value = {item.pheno_no}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Outstanding Amount</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          value = {item.outstanding_amount}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Sales ID*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined, justifyContent: 'flex-end' }}
+                          selectedValue={repayment_no}
+                          onValueChange={(value) => this.setState({repayment_no: value})}
+                        >
+                        {
+                          repayOptions.map((item, index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id} />
+                            )
+                          })
+                        }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Repayment Value</Label>
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          placeholder = "0"
+                          // value = {trans_amount === null ? "0" : (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString()}
+                          value = {item.installment_amount}
+                          disabled = {true}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Repay Currency*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.currency}
+                          onValueChange={(value) => this.setState({currency: value})}
+                          placeholder="Select Currency"
+                          placeholderStyle={{ color: "#bfc6ea" }}
+                          placeholderIconColor="#007aff"
+                        >
+                          {
+                            currencyOptions.map((item, index) => {
+                              return(
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Currency Rate*</Label>
+                        <Input style={[styles.input, this.state.currency === 'MYR' ? { backgroundColor: '#eee'} : null]}
+                          defaultValue = {currency_rate}
+                          disabled = {this.state.currency === "MYR"}
+                          onChangeText = {(value) => this.setState({ currency_rate: value })}
+                          keyboardType = "number-pad"
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Trans Date*</Label>
+                        {/* <DatePicker
+                          defaultDate={new Date()}
+                          // minimumDate={new Date(2018, 1, 1)}
+                          maximumDate={new Date()}
+                          locale={"en"}
+                          timeZoneOffsetInMinutes={undefined}
+                          modalTransparent={false}
+                          animationType={"fade"}
+                          androidMode={"default"}
+                          placeHolderText="Select date"
+                          textStyle={{ color: "#000" }}
+                          placeHolderTextStyle={{ color: "#d3d3d3" }}
+                          onDateChange={this.setDate}
+                          disabled={false}
+                        /> */}
+                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                          value = {display_trans_date}
+                          disabled = {true}
+                          style = {{textAlign: 'right'}}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Trans Type*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined}}
+                          selectedValue={this.state.trans_type}
+                          onValueChange={(value) => this._setTransType(value)}
+                        >
+                          {
+                            transTypeOptions.map((item, index) => {
+                              return(
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Trans Amount*</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(value) => this._checkTransAmount(value) }
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                        />
+                      </Item>
+                      {
+                        trans_type === 'Renew' ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Next Pay Amount</Label>
+                            <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                              // value = {trans_amount ? (parseInt(this.props.transInfo.outstanding_amount) - parseInt(trans_amount)).toString() : '0'}
+                              value = {next_pay_amt}
+                              disabled = {true}
+                            />
+                          </Item>
+                        ) : null
+                      }
+                      {
+                        showNextDue ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Next Due Date*</Label>
+                            <DatePicker
+                              defaultDate={new Date(default_next_due_date)}
+                              // minimumDate={new Date(2018, 1, 1)}
+                              locale={"en"}
+                              timeZoneOffsetInMinutes={undefined}
+                              modalTransparent={false}
+                              animationType={"fade"}
+                              androidMode={"default"}
+                              textStyle={{ color: "#000" }}
+                              placeHolderTextStyle={{ color: "#d3d3d3" }}
+                              onDateChange={this.setNexyPayDate}
+                              disabled={false}
+                            />
+                          </Item>
+                        ) : null
+                      }
+                      {
+                        trans_type === 'Renew' ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Next Due Date*</Label>
+                            <DatePicker
+                              defaultDate={new Date(new Date(this.props.transInfo.next_renew_due_date).getFullYear(), new Date(this.props.transInfo.next_renew_due_date).getMonth(), new Date(this.props.transInfo.next_renew_due_date).getDate())}
+                              // minimumDate={new Date(2018, 1, 1)}
+                              locale={"en"}
+                              timeZoneOffsetInMinutes={undefined}
+                              modalTransparent={false}
+                              animationType={"fade"}
+                              androidMode={"default"}
+                              textStyle={{ color: "#000" }}
+                              placeHolderTextStyle={{ color: "#d3d3d3" }}
+                              onDateChange={this.setNexyPayDate}
+                              disabled={false}
+                            />
+                          </Item>
+                        ) : null
+                      }
+                      {
+                        trans_type === 'Settle' ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Refund Amount*</Label>
+                            <Input style={styles.input}
+                              onChangeText = {(phoneNo2) => this.setState({refund_amount: phoneNo2})}
+                              keyboardType = 'number-pad'
+                              returnKeyType={"done"}
+                            />
+                          </Item>
+                        ) : null
+                      }
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Bank Account*</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                          selectedValue={this.state.bank_acct_id}
+                          onValueChange={(value) => this.setState({bank_acct_id: value})}
+                        >
+                          {
+                            bankOptions.map((item, index) => {
+                              return(
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Receipt No</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(value) => this.setState({ref_no: value})}
+                        />
+                      </Item>
+                      {
+                        this.state.uploadAccess ? (
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Payment Receipt</Label>
+                            <View style={{ justifyContent: 'center' }}>
+                              <Button
+                                title = 'Select file to upload'
+                                buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
+                                onPress = {()=> this._upload('attachment')}
+                                icon={
+                                  attachment ? (
+                                    <Icon
+                                      name="check-circle"
+                                      size={15}
+                                      color="#4eff4e"
+                                      style={{paddingLeft: 5}}
+                                    />
+                                  ) : null
+                                }
+                                iconRight
+                                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                              />
+                            </View>
+                          </Item>
+                        ) : null
+                      }
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Remark</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(email) => this.setState({remark: email})}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                </View>
+            </ScrollView>
             <ButtonContainer>
               <Button
                 title = 'NEXT'
@@ -751,7 +1063,8 @@ export default class App extends Component {
                 titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
               />
             </ButtonContainer>
-        </KeyboardAvoidingView>
+          </Container>
+        )
       )
     } else {
       return (
