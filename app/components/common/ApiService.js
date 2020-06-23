@@ -1,7 +1,7 @@
 import axios from "axios";
 import DeviceInfo from 'react-native-device-info';
 import { Actions } from "react-native-router-flux";
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import DataService from "./DataService";
 
 let token = '';
@@ -63,12 +63,12 @@ class ApiService {
       }
     }
 
-    if (login) {
-      body.deviceid = DataService.getDeviceId();
-      body.reqtime = new Date().getTime();
-    } else {
-      body.deviceid = DataService.getDeviceId();
-      body.reqtime = new Date().getTime();
+    body.deviceid = DataService.getDeviceId();
+    body.reqtime = new Date().getTime();
+    body.appVersion = DataService.getAppVersion();
+    body.osVersion = Platform.Version
+
+    if (!login) {
       body.token = this.getToken();
       body.username = this.getUsername();
       body.sel_group_id = DataService.getSelectedGroup();
