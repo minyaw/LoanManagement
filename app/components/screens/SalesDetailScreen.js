@@ -487,7 +487,11 @@ export default class App extends Component {
                   </DetailContainer>
                   <DetailContainer>
                     <DetailTitle>Customer</DetailTitle>
-                    <DetailValue>{item.customer_name}</DetailValue>
+                    <TouchableOpacity
+                      onPress = {() => Actions.CustomerDetail({ custId: this.props.cust_id })}
+                      >
+                      <DetailValue>{item.customer_name} {'>'}</DetailValue>
+                    </TouchableOpacity>
                   </DetailContainer>
                   <DetailContainer>
                     <DetailTitle>Sales Date</DetailTitle>
@@ -713,7 +717,7 @@ export default class App extends Component {
     } else {
       return(
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

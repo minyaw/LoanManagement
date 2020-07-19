@@ -129,7 +129,7 @@ export default class App extends Component {
       type: "Currency"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           currencyOptions: res.data.response.records,
         })
@@ -143,7 +143,7 @@ export default class App extends Component {
       type: "BankAccount"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log(res);
         let options = [];
         options.push({id: "0", value: "None"});
@@ -233,7 +233,7 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
       console.log(res);
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         setTimeout(() => {
           Alert.alert('Info', res.data.errMsg,[
             {
@@ -248,6 +248,19 @@ export default class App extends Component {
             }
           ])
         }, 510)
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }
@@ -601,7 +614,7 @@ export default class App extends Component {
     } else {
       return (
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

@@ -75,7 +75,7 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       console.log(res);
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         if (this.state.item) {
           for (const content of res.data.response.records) {
             content.next_due_date = DataService.changeDateFormat(content.next_due_date);
@@ -147,7 +147,18 @@ export default class App extends Component {
           });
         }
       } else {
-        Alert.alert('Error', res.data.errMsg)
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
       console.log(res);
     })
@@ -238,7 +249,7 @@ export default class App extends Component {
     } else {
       return (
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

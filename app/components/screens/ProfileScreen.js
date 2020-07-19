@@ -165,7 +165,7 @@ export default class App extends Component {
       type: "Gender"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           genderOptions: res.data.response.records,
         })
@@ -178,7 +178,7 @@ export default class App extends Component {
       type: "Nationality"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           nationalityOptions: res.data.response.records,
         })
@@ -191,7 +191,7 @@ export default class App extends Component {
       type: "Race"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           raceOptions: res.data.response.records,
         })
@@ -204,7 +204,7 @@ export default class App extends Component {
       type: "State"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           stateOptions: res.data.response.records,
         })
@@ -217,7 +217,7 @@ export default class App extends Component {
       type: "Country"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           countryOptions: res.data.response.records,
         })
@@ -232,12 +232,25 @@ export default class App extends Component {
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false});
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log(res);
         this.setState({
           item: res.data.response.userInfo,
         })
         this._mapData()
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }
@@ -316,8 +329,21 @@ export default class App extends Component {
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         Alert.alert(res.data.errMsg)
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }
@@ -349,11 +375,24 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       console.log(res);
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         if (res.data.ErrCode !== 200) {
           Alert.alert(res.data.ErrMsg);
         } else if (res.data.ErrCode === 200) {
           Alert.alert(res.data.response.succMsg);
+        }
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
         }
       }
     })
@@ -386,11 +425,24 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       console.log(res);
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         if (res.data.ErrCode !== 200) {
           Alert.alert(res.data.ErrMsg);
         } else if (res.data.ErrCode === 200) {
           Alert.alert(res.data.response.succMsg);
+        }
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
         }
       }
     })
@@ -839,7 +891,7 @@ export default class App extends Component {
     } else {
       return (
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

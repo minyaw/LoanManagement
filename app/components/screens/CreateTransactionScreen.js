@@ -150,7 +150,7 @@ export default class App extends Component {
       type: "BankAccount"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log('bank', res);
         this.setState({
           bankOptions: res.data.response.records,
@@ -166,7 +166,7 @@ export default class App extends Component {
       sales_id: this.props.sales_id
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log('options', res);
         this.setState({
           transTypeOptions: res.data.response.records,
@@ -181,7 +181,7 @@ export default class App extends Component {
       type: "Currency"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           currencyOptions: res.data.response.records,
         })
@@ -251,7 +251,7 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
       console.log(res);
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         setTimeout(() => {
           Alert.alert('Info', res.data.errMsg,[
             {
@@ -266,6 +266,19 @@ export default class App extends Component {
             }
           ])
         }, 510);
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }
@@ -345,7 +358,7 @@ export default class App extends Component {
     this.setState({ loading: true });
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({ loading: false});
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log('res', res);
         if (res.data.response.records.length < 1) {
           this.setState({ item: res.data.response.records })
@@ -358,7 +371,20 @@ export default class App extends Component {
         } else {
           this.setState({ item: res.data.response.records, repayOptions: res.data.response.records.repayment_list, repayment_no: res.data.response.records.repayment_list[0].id })
         }
-      }
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
+      } 
     })
   }
 

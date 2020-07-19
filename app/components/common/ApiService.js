@@ -66,7 +66,8 @@ class ApiService {
     body.deviceid = DataService.getDeviceId();
     body.reqtime = new Date().getTime();
     body.appVersion = DataService.getAppVersion();
-    body.osVersion = Platform.Version
+    body.osVersion = Platform.Version;
+    body.notifToken = DataService.getFcmToken();
 
     if (!login) {
       body.token = this.getToken();

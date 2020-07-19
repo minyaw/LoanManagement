@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import CustomHeader from '../common/CustomHeader';
 import { Form, Button, Content } from 'native-base';
@@ -129,10 +129,21 @@ export default class App extends Component {
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({item: res.data.response})
       } else {
-        Alert.alert('Error', res.data.errMsg)
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
       console.log(res);
     })
@@ -151,10 +162,21 @@ export default class App extends Component {
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({item: res.data.response})
       } else {
-        Alert.alert('Error', res.data.errMsg)
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
       console.log(res);
     })
@@ -272,7 +294,7 @@ export default class App extends Component {
     } else {
       return (
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

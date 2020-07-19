@@ -132,11 +132,24 @@ export default class App extends Component {
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       console.log('agentlist', res)
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           agentOptions: res.data.response.records,
           filter_agent: res.data.response.records[0].agent_id
         })
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }
@@ -172,7 +185,7 @@ export default class App extends Component {
     this.setState({ loading: true })
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({ loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log('res', res);
         if (this.state.item && loadPage !== 1) {
           this.state.item.records = this.state.item.records.concat(res.data.response.records);
@@ -181,6 +194,19 @@ export default class App extends Component {
           this.setState({
             item: res.data.response
           })
+        }
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
         }
       }
     })
@@ -221,7 +247,7 @@ export default class App extends Component {
 
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({ loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         Alert.alert('Info', res.data.errMsg, [
           {
             text: 'OK',
@@ -231,6 +257,19 @@ export default class App extends Component {
             }
           }
         ])
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }
@@ -245,7 +284,7 @@ export default class App extends Component {
 
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({ loading: false })
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         Alert.alert('Info', res.data.errMsg, [
           {
             text: 'OK',
@@ -255,6 +294,19 @@ export default class App extends Component {
             }
           }
         ])
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }

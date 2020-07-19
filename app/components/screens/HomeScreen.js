@@ -4,7 +4,7 @@ import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
 import CustomHeader from '../common/CustomHeader';
-import { Header, Avatar, Icon, Badge, Button, Text } from 'react-native-elements';
+import { Header, Avatar, Icon, Badge, Button, Text, Alert } from 'react-native-elements';
 import { TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Actions } from 'react-native-router-flux';
@@ -229,10 +229,21 @@ export default class App extends Component {
       sel_group_id: DataService.getSelectedGroup()
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({item: res.data.response})
       } else {
-        Alert.alert('Error', res.data.errMsg)
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
       console.log(res);
     })
@@ -458,7 +469,7 @@ export default class App extends Component {
     } else {
       return (
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

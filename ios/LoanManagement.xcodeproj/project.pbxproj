@@ -23,6 +23,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		19B78D0924AEE4D9008ACD84 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 19B78D0824AEE4D9008ACD84 /* GoogleService-Info.plist */; };
 		21DE7CEFB6044533A0D74788 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B34C2C38969A4DE6ACD4EBEE /* Feather.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -68,7 +69,6 @@
 		C9E744B5F23D490A9116C452 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0E53CD85EF84C6DAC5C2922 /* FontAwesome5_Solid.ttf */; };
 		D914A162A41A4F1388B59325 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA7F2F392908498A83975726 /* FontAwesome.ttf */; };
 		D9AE6FBCAE27466C80466D77 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B8BF1D3E50EE417C8016C76D /* Foundation.ttf */; };
-		DB49A529247589D8006B6644 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DB49A528247589D8006B6644 /* GoogleService-Info.plist */; };
 		E5D89E9624CF4F8E8283FFEC /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20F19AF0599B4C0E8B4AFBA1 /* AntDesign.ttf */; };
 		E6C38C8D24244A4C8AC7C059 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2BB93EF4A0847B48BCB40D9 /* libRNDeviceInfo-tvOS.a */; };
 		E76ED85CD0F94753ABC524CB /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2DE5D78697442D89B91409D /* FontAwesome5_Regular.ttf */; };
@@ -451,6 +451,8 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		1631028C1AEA4B95B3AC1CEC /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		1669DBDEB33F4521A2303A91 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCAsyncStorage.xcodeproj; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; };
+		194A427824ACB6E400D469F4 /* Finance Management App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "Finance Management App.entitlements"; path = "LoanManagement/Finance Management App.entitlements"; sourceTree = "<group>"; };
+		19B78D0824AEE4D9008ACD84 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1B5B63F687B04028AAFBF992 /* libRNVectorIcons-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNVectorIcons-tvOS.a"; sourceTree = "<group>"; };
 		1CA6366AFAF8463AA628EDC3 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		1DFC81DB325D460E8CF20D76 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
@@ -502,7 +504,6 @@
 		C8134E307233470281B36E1A /* AvenirLTStd-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirLTStd-Heavy.otf"; path = "../assets/fonts/AvenirLTStd-Heavy.otf"; sourceTree = "<group>"; };
 		C8C4C2BF80F44FB68EDF921A /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		D6C621B1F9C448F19808CCA4 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
-		DB49A528247589D8006B6644 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E0CBCEBD1D904C66A6642100 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		E2BB93EF4A0847B48BCB40D9 /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		E60214C07445438BAA0E9C98 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -667,7 +668,8 @@
 		13B07FAE1A68108700A75B9A /* LoanManagement */ = {
 			isa = PBXGroup;
 			children = (
-				DB49A528247589D8006B6644 /* GoogleService-Info.plist */,
+				19B78D0824AEE4D9008ACD84 /* GoogleService-Info.plist */,
+				194A427824ACB6E400D469F4 /* Finance Management App.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -1486,7 +1488,7 @@
 				D9AE6FBCAE27466C80466D77 /* Foundation.ttf in Resources */,
 				885B7102CD4644269CB489B2 /* Ionicons.ttf in Resources */,
 				F9736CFAF3834EE392915545 /* MaterialCommunityIcons.ttf in Resources */,
-				DB49A529247589D8006B6644 /* GoogleService-Info.plist in Resources */,
+				19B78D0924AEE4D9008ACD84 /* GoogleService-Info.plist in Resources */,
 				560E8FDCB8374144AA34A391 /* MaterialIcons.ttf in Resources */,
 				61E6CF5C544E464CA09541AD /* Octicons.ttf in Resources */,
 				6770C6BBF13F44AFA9A87138 /* Roboto_medium.ttf in Resources */,
@@ -1534,7 +1536,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=/usr/local/opt/node@8/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "export NODE_BINARY=/Users/minyaw/.nvm/versions/node/v14.5.0/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		185FFF672E196C1F4B11707B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1777,9 +1779,10 @@
 			baseConfigurationReference = 224F2136C068A5B05DC9AB82 /* Pods-LoanManagement.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "LoanManagement/Finance Management App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6DA7W9H2A6;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1806,7 +1809,7 @@
 				);
 				INFOPLIST_FILE = LoanManagement/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1825,9 +1828,10 @@
 			baseConfigurationReference = 00B037AAAB65DC7E3C4A625B /* Pods-LoanManagement.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "LoanManagement/Finance Management App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6DA7W9H2A6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Firebase",
@@ -1853,7 +1857,7 @@
 				);
 				INFOPLIST_FILE = LoanManagement/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

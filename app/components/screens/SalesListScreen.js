@@ -123,7 +123,7 @@ export default class App extends Component {
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({ agentList: res.data.response.agent_list })
         if (loadPage !== 1) {
           console.log('here');
@@ -168,7 +168,18 @@ export default class App extends Component {
           });
         }
       } else {
-        Alert.alert('Error', res.data.errMsg)
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
       console.log(res);
     })
@@ -231,7 +242,7 @@ export default class App extends Component {
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         if (loadPage === 1) {
           this.setState({item: res.data.response}, () => {
             for (const content of this.state.item.records) {
@@ -273,7 +284,18 @@ export default class App extends Component {
             this.setState({contentList: this.state.contentList, salesIdList: this.state.salesIdList, custIdList: this.state.custIdList})
         }
       } else {
-        Alert.alert('Error', res.data.errMsg)
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
       console.log(res);
     })

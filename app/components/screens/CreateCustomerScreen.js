@@ -282,7 +282,7 @@ export default class App extends Component {
       type: "Gender"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log(res);
         this.setState({
           genderOptions: res.data.response.records,
@@ -297,7 +297,7 @@ export default class App extends Component {
       type: "Nationality"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           nationalityOptions: res.data.response.records,
         })
@@ -310,7 +310,7 @@ export default class App extends Component {
       type: "Race"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           raceOptions: res.data.response.records,
           race: res.data.response.records[0].id,
@@ -324,7 +324,7 @@ export default class App extends Component {
       type: "State"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           stateOptions: res.data.response.records,
           state: res.data.response.records[0].id
@@ -338,7 +338,7 @@ export default class App extends Component {
       type: "Country"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log('country', res);
         this.setState({
           countryOptions: res.data.response.records,
@@ -352,7 +352,7 @@ export default class App extends Component {
       type: "Salutation"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         console.log(res);
         this.setState({
           salutationOptions: res.data.response.records,
@@ -366,7 +366,7 @@ export default class App extends Component {
       type: "Bank"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           bankOptions: res.data.response.records
         })
@@ -379,7 +379,7 @@ export default class App extends Component {
       type: "Broker"
     }
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         let options = [];
         options.push({id: "0", value: "None"});
         for (const item of res.data.response.records) {
@@ -500,13 +500,26 @@ export default class App extends Component {
       ApiService.post(ApiService.getUrl(), body).then((res) => {
         this.setState({loading: false})
         console.log(res);
-        if (res.status === 200) {
+        if (res.status === 200 && res.data.errCode === 200) {
           Alert.alert('Info', res.data.errMsg,[
             {
               text: 'OK',
               onPress: () => Actions.pop({ refresh: true })
             }
           ])
+        } else {
+          if (res.data.errCode === 905) {
+            setTimeout(() => {
+              Alert.alert('Error', res.data.errMsg, [
+                {
+                  text: 'OK',
+                  onPress: () => Actions.Login()
+                }
+              ])
+            }, 501);
+          } else {
+            Alert.alert('Error', res.data.errMsg);
+          }
         }
       })
     } else {
@@ -578,7 +591,7 @@ export default class App extends Component {
       ApiService.post(ApiService.getUrl(), body).then((res) => {
         this.setState({loading: false})
         console.log(res);
-        if (res.status === 200) {
+        if (res.status === 200 && res.data.errCode === 200) {
           this.setState({ cust_id: res.data.response.cust_id});
           setTimeout(() => {
             Alert.alert('Info', res.data.errMsg,[
@@ -592,6 +605,19 @@ export default class App extends Component {
               }
             ])
           }, 501)
+        } else {
+          if (res.data.errCode === 905) {
+            setTimeout(() => {
+              Alert.alert('Error', res.data.errMsg, [
+                {
+                  text: 'OK',
+                  onPress: () => Actions.Login()
+                }
+              ])
+            }, 501);
+          } else {
+            Alert.alert('Error', res.data.errMsg);
+          }
         }
       })
     }
@@ -680,7 +706,6 @@ export default class App extends Component {
               title = {pgView === 'add' ? 'Create Customer' : 'Edit'}
               showBack = {currentPage === 1 && pgView === 'add' ? true : currentPage === 2 && pgView === 'add' ? false : true}
               showMenu = {false}
-              refresh = {true}
             />
             <View>
               <Modal
@@ -1719,7 +1744,7 @@ export default class App extends Component {
     } else {
       return (
         <Container>
-          <Loader loading={true}/>
+          {/* <Loader loading={true}/> */}
         </Container>
       )
     }

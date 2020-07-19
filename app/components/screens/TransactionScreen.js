@@ -107,7 +107,7 @@ export default class App extends Component {
       this.setState({loading: true})
       ApiService.post(ApiService.getUrl(), body).then((res) => {
         this.setState({loading: false})
-        if (res.status === 200) {
+        if (res.status === 200 && res.data.errCode === 200) {
           if (this.state.item) {
             this.state.item.records = this.state.item.records.concat(res.data.response.records);
             this.setState({item: this.state.item})
@@ -115,7 +115,18 @@ export default class App extends Component {
             this.setState({item: res.data.response});
           }
         } else {
-          Alert.alert('Error', res.data.errMsg)
+          if (res.data.errCode === 905) {
+            setTimeout(() => {
+              Alert.alert('Error', res.data.errMsg, [
+                {
+                  text: 'OK',
+                  onPress: () => Actions.Login()
+                }
+              ])
+            }, 501);
+          } else {
+            Alert.alert('Error', res.data.errMsg);
+          }
         }
         console.log(res);
       })
@@ -149,7 +160,7 @@ export default class App extends Component {
       this.setState({loading: true})
       ApiService.post(ApiService.getUrl(), body).then((res) => {
         this.setState({loading: false})
-        if (res.status === 200) {
+        if (res.status === 200 && res.data.errCode === 200) {
           if (loadPage !== 1) {
             this.state.item.records = this.state.item.records.concat(res.data.response.records);
             this.setState({item: this.state.item})
@@ -157,7 +168,18 @@ export default class App extends Component {
             this.setState({item: res.data.response});
           }
         } else {
-          Alert.alert('Error', res.data.errMsg)
+          if (res.data.errCode === 905) {
+            setTimeout(() => {
+              Alert.alert('Error', res.data.errMsg, [
+                {
+                  text: 'OK',
+                  onPress: () => Actions.Login()
+                }
+              ])
+            }, 501);
+          } else {
+            Alert.alert('Error', res.data.errMsg);
+          }
         }
         console.log(res);
       })

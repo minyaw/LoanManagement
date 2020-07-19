@@ -119,7 +119,7 @@ export default class App extends Component {
 
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       console.log(res);
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({
           bankAccountOptions: res.data.response.records,
           bank_acct_id: res.data.response.records[0].id
@@ -144,13 +144,26 @@ export default class App extends Component {
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
       console.log(res);
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         Alert.alert('Info', res.data.errMsg,[
           {
             text: 'OK',
             onPress:() => Actions.pop({refresh: true})
           }
         ])
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
     })
   }

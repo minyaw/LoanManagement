@@ -25,7 +25,8 @@ let prevTitle = null;
 let expensesStatus = [];
 let filterStatus = [];
 let deviceId = '';
-const appVersion = '1.1.0'
+let fcmToken = '';
+const appVersion = '1.1.3'
 
 class DataService {
   setGroup = (item) => {
@@ -284,6 +285,14 @@ class DataService {
 
   getAppVersion = () => {
     return appVersion;
+  }
+
+  setFcmToken = (token) => {
+    fcmToken = token;
+  }
+
+  getFcmToken = () => {
+    return fcmToken;
   }
 }
 

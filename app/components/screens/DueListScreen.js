@@ -100,7 +100,7 @@ export default class App extends Component {
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
       this.setState({loading: false})
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({ agentList: res.data.response.agent_list})
         if (this.state.item) {
           for (const content of res.data.response.records) {
@@ -135,7 +135,18 @@ export default class App extends Component {
           });
         }
       } else {
-        Alert.alert('Error', res.data.errMsg)
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
+        }
       }
       console.log(res);
     })
@@ -211,7 +222,7 @@ export default class App extends Component {
     }
     this.setState({loading: true})
     ApiService.post(ApiService.getUrl(), body).then((res) => {
-      if (res.status === 200) {
+      if (res.status === 200 && res.data.errCode === 200) {
         this.setState({loading: false})
         if (loadPage === 1) {
           this.setState({item: res.data.response}, () => {
@@ -244,6 +255,19 @@ export default class App extends Component {
           }
           this.state.item.records = this.state.item.records.concat(res.data.response.records);
           this.setState({contentList: this.state.contentList})
+        }
+      } else {
+        if (res.data.errCode === 905) {
+          setTimeout(() => {
+            Alert.alert('Error', res.data.errMsg, [
+              {
+                text: 'OK',
+                onPress: () => Actions.Login()
+              }
+            ])
+          }, 501);
+        } else {
+          Alert.alert('Error', res.data.errMsg);
         }
       }
       console.log(res);

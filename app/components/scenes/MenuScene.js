@@ -182,8 +182,21 @@ class Scene extends Component {
       ApiService.post(ApiService.getUrl(), body).then((res) => {
         DataService.clearGroup();
         this.setState({loading: false})
-        if (res.status === 200) {
+        if (res.status === 200 && res.data.errCode === 200) {
           Actions.Login();
+        } else {
+          if (res.data.errCode === 905) {
+            setTimeout(() => {
+              Alert.alert('Error', res.data.errMsg, [
+                {
+                  text: 'OK',
+                  onPress: () => Actions.Login()
+                }
+              ])
+            }, 501);
+          } else {
+            Alert.alert('Error', res.data.errMsg);
+          }
         }
       })
     } else {
