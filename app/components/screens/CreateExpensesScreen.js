@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, ListItem, CheckBox, Body } from 'native-base';
 import ApiService from '../common/ApiService';
@@ -351,199 +351,392 @@ export default class App extends Component {
 
     if (expensesOptions.length > 0 && currencyOptions.length > 0 && bankOptions.length > 0) {
       return(
-        <KeyboardAvoidingView
-          style = {{ flex: 1, backgroundColor: `${colors.defaultBackground}` }}
-          behavior = 'padding'
-        >
-          <Loader loading={loading}/>
-          <ScrollView keyboardShouldPersistTaps={'handled'}>
-            <CustomHeader
-              title = { pgView === 'edit' ? 'Edit Expenses' : 'Create Expenses'}
-              showBack = {true}
-              showMenu = {false}
-            />
-            <View>
-              <View>
-                <Modal
-                  isVisible = {isVisible}
-                  onBackdropPress = {() => this.setState({isVisible: false})}
-                  onBackButtonPress = {() => this.setState({isVisible: false})}
-                >
-                  <View
-                    style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
-                  >
-                    <ImageBackground
-                      source = {{uri: source}}
-                      style = {{width: width, height: '90%'}}
-                    >
-                    </ImageBackground>
-                  </View>
-                </Modal>
-              </View>
-              <SecurityModal
-                isVisible = {sVisible}
-                closeModal = {() => this.setState({sVisible: false})}
-                submit = {() => this._submit()}
+        Platform.OS === 'ios' ? (
+          <KeyboardAvoidingView
+            style = {{ flex: 1, backgroundColor: `${colors.defaultBackground}` }}
+            behavior = 'padding'
+          >
+            <Loader loading={loading}/>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
+              <CustomHeader
+                title = { pgView === 'edit' ? 'Edit Expenses' : 'Create Expenses'}
+                showBack = {true}
+                showMenu = {false}
               />
-
-              <Divider>
-                <DividerText>{ pgView === 'edit' ? 'Edit Expenses' : 'New Expenses'}</DividerText>
-                {/* <Pagination>
-                  <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
-                  <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
-                </Pagination> */}
-              </Divider>
-              <Section>
-                {/* <SectionName>Personal Details</SectionName> */}
-                <Form>
-                  {
-                    pgView === 'edit' ? (
-                      <Item fixedLabel style={styles.inputContainer}>
-                        <Label style={styles.label}>Submit Date</Label>
-                        <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                          value = {content.submit_date}
-                          disabled = {true}
-                          style = {{textAlign: 'right'}}
-                        />
-                      </Item>
-                    ) : null
-                  }
-                  {
-                    pgView !== 'edit' ? (
-                      <Item fixedLabel style={styles.inputContainer}>
-                        <Label style={styles.label}>Transaction Date*</Label>
-                        <DatePicker
-                          maxDate={new Date()}
-                          date={this.state.trans_date}
-                          androidMode={"default"}
-                          // placeHolderText="Select date"
-                          textStyle={{ color: "#000" }}
-                          placeHolderTextStyle={{ color: "#d3d3d3" }}
-                          onDateChange={(date) => this.setState({ trans_date: date })}
-                          disabled={false}
-                          confirmBtnText="OK"
-                          cancelBtnText="Cancel"
-                        />
-                      </Item>
-                    ) : null
-                  }
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Expenses Type*</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.expense_type}
-                      onValueChange={(value) => this.setState({expense_type: value})}
+              <View>
+                <View>
+                  <Modal
+                    isVisible = {isVisible}
+                    onBackdropPress = {() => this.setState({isVisible: false})}
+                    onBackButtonPress = {() => this.setState({isVisible: false})}
+                  >
+                    <View
+                      style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
                     >
-                      {
-                        expensesOptions.map((item, index) => {
-                          return(
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Trans Amount*</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
-                      keyboardType = 'number-pad'
-                      value = {trans_amount}
-                      returnKeyType={"done"}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Currency*</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.currency}
-                      onValueChange={(value) => this.setState({currency: value})}
-                      placeholder="Select Currency"
-                      placeholderStyle={{ color: "#bfc6ea" }}
-                      placeholderIconColor="#007aff"
-                    >
-                      {
-                        currencyOptions.map((item, index) => {
-                          return(
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Reference No.</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(ref_no) => this.setState({ref_no: ref_no})}
-                      value = {ref_no}
-                      returnKeyType={"done"}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Upload Receipt</Label>
-                    <View style={{ justifyContent: 'center' }}>
-                      <Button
-                        title = 'Select file to upload'
-                        buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
-                        onPress = {()=> this._upload('attachment')}
-                        icon={
-                          attachment ? (
-                            <Icon
-                              name="check-circle"
-                              size={15}
-                              color="#4eff4e"
-                              style={{paddingLeft: 5}}
-                            />
-                          ) : null
-                        }
-                        iconRight
-                        titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                      />
+                      <ImageBackground
+                        source = {{uri: source}}
+                        style = {{width: width, height: '90%'}}
+                      >
+                      </ImageBackground>
                     </View>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Bank Account*</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: width*0.65 }}
-                      selectedValue={this.state.bank_acct_id}
-                      onValueChange={(value) => this.setState({bank_acct_id: value})}
+                  </Modal>
+                </View>
+                <SecurityModal
+                  isVisible = {sVisible}
+                  closeModal = {() => this.setState({sVisible: false})}
+                  submit = {() => this._submit()}
+                />
+
+                <Divider>
+                  <DividerText>{ pgView === 'edit' ? 'Edit Expenses' : 'New Expenses'}</DividerText>
+                  {/* <Pagination>
+                    <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                    <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                  </Pagination> */}
+                </Divider>
+                <Section>
+                  {/* <SectionName>Personal Details</SectionName> */}
+                  <Form>
+                    {
+                      pgView === 'edit' ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Submit Date</Label>
+                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                            value = {content.submit_date}
+                            disabled = {true}
+                            style = {{textAlign: 'right'}}
+                          />
+                        </Item>
+                      ) : null
+                    }
+                    {
+                      pgView !== 'edit' ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Transaction Date*</Label>
+                          <DatePicker
+                            maxDate={new Date()}
+                            date={this.state.trans_date}
+                            androidMode={"default"}
+                            // placeHolderText="Select date"
+                            textStyle={{ color: "#000" }}
+                            placeHolderTextStyle={{ color: "#d3d3d3" }}
+                            onDateChange={(date) => this.setState({ trans_date: date })}
+                            disabled={false}
+                            confirmBtnText="OK"
+                            cancelBtnText="Cancel"
+                          />
+                        </Item>
+                      ) : null
+                    }
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Expenses Type*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.expense_type}
+                        onValueChange={(value) => this.setState({expense_type: value})}
+                      >
+                        {
+                          expensesOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Trans Amount*</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
+                        keyboardType = 'number-pad'
+                        value = {trans_amount}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Currency*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.currency}
+                        onValueChange={(value) => this.setState({currency: value})}
+                        placeholder="Select Currency"
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                      >
+                        {
+                          currencyOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Reference No.</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(ref_no) => this.setState({ref_no: ref_no})}
+                        value = {ref_no}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Upload Receipt</Label>
+                      <View style={{ justifyContent: 'center' }}>
+                        <Button
+                          title = 'Select file to upload'
+                          buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
+                          onPress = {()=> this._upload('attachment')}
+                          icon={
+                            attachment ? (
+                              <Icon
+                                name="check-circle"
+                                size={15}
+                                color="#4eff4e"
+                                style={{paddingLeft: 5}}
+                              />
+                            ) : null
+                          }
+                          iconRight
+                          titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                        />
+                      </View>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Bank Account*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                        selectedValue={this.state.bank_acct_id}
+                        onValueChange={(value) => this.setState({bank_acct_id: value})}
+                      >
+                        {
+                          bankOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Remark</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(remark) => this.setState({remark: remark})}
+                        value = {remark}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                  </Form>
+                </Section>
+              </View>
+            </ScrollView>
+            <ButtonContainer>
+              <Button
+                title = 'NEXT'
+                buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                onPress = {() => this._checkRequiredField()}
+                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+              />
+            </ButtonContainer>
+          </KeyboardAvoidingView>
+        ) : (
+          <Container>
+            <Loader loading={loading}/>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
+              <CustomHeader
+                title = { pgView === 'edit' ? 'Edit Expenses' : 'Create Expenses'}
+                showBack = {true}
+                showMenu = {false}
+              />
+              <View>
+                <View>
+                  <Modal
+                    isVisible = {isVisible}
+                    onBackdropPress = {() => this.setState({isVisible: false})}
+                    onBackButtonPress = {() => this.setState({isVisible: false})}
+                  >
+                    <View
+                      style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
                     >
-                      {
-                        bankOptions.map((item, index) => {
-                          return(
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Remark</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(remark) => this.setState({remark: remark})}
-                      value = {remark}
-                      returnKeyType={"done"}
-                    />
-                  </Item>
-                </Form>
-              </Section>
-            </View>
-          </ScrollView>
-          <ButtonContainer>
-            <Button
-              title = 'NEXT'
-              buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-              onPress = {() => this._checkRequiredField()}
-              titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-            />
-          </ButtonContainer>
-        </KeyboardAvoidingView>
+                      <ImageBackground
+                        source = {{uri: source}}
+                        style = {{width: width, height: '90%'}}
+                      >
+                      </ImageBackground>
+                    </View>
+                  </Modal>
+                </View>
+                <SecurityModal
+                  isVisible = {sVisible}
+                  closeModal = {() => this.setState({sVisible: false})}
+                  submit = {() => this._submit()}
+                />
+
+                <Divider>
+                  <DividerText>{ pgView === 'edit' ? 'Edit Expenses' : 'New Expenses'}</DividerText>
+                  {/* <Pagination>
+                    <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                    <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                  </Pagination> */}
+                </Divider>
+                <Section>
+                  {/* <SectionName>Personal Details</SectionName> */}
+                  <Form>
+                    {
+                      pgView === 'edit' ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Submit Date</Label>
+                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                            value = {content.submit_date}
+                            disabled = {true}
+                            style = {{textAlign: 'right'}}
+                          />
+                        </Item>
+                      ) : null
+                    }
+                    {
+                      pgView !== 'edit' ? (
+                        <Item fixedLabel style={styles.inputContainer}>
+                          <Label style={styles.label}>Transaction Date*</Label>
+                          <DatePicker
+                            maxDate={new Date()}
+                            date={this.state.trans_date}
+                            androidMode={"default"}
+                            // placeHolderText="Select date"
+                            textStyle={{ color: "#000" }}
+                            placeHolderTextStyle={{ color: "#d3d3d3" }}
+                            onDateChange={(date) => this.setState({ trans_date: date })}
+                            disabled={false}
+                            confirmBtnText="OK"
+                            cancelBtnText="Cancel"
+                          />
+                        </Item>
+                      ) : null
+                    }
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Expenses Type*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.expense_type}
+                        onValueChange={(value) => this.setState({expense_type: value})}
+                      >
+                        {
+                          expensesOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Trans Amount*</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(trans_amount) => this.setState({trans_amount: trans_amount})}
+                        keyboardType = 'number-pad'
+                        value = {trans_amount}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Currency*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.currency}
+                        onValueChange={(value) => this.setState({currency: value})}
+                        placeholder="Select Currency"
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                      >
+                        {
+                          currencyOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Reference No.</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(ref_no) => this.setState({ref_no: ref_no})}
+                        value = {ref_no}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Upload Receipt</Label>
+                      <View style={{ justifyContent: 'center' }}>
+                        <Button
+                          title = 'Select file to upload'
+                          buttonStyle = {{ backgroundColor: colors.primary, alignContent: 'center' }}
+                          onPress = {()=> this._upload('attachment')}
+                          icon={
+                            attachment ? (
+                              <Icon
+                                name="check-circle"
+                                size={15}
+                                color="#4eff4e"
+                                style={{paddingLeft: 5}}
+                              />
+                            ) : null
+                          }
+                          iconRight
+                          titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                        />
+                      </View>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Bank Account*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                        selectedValue={this.state.bank_acct_id}
+                        onValueChange={(value) => this.setState({bank_acct_id: value})}
+                      >
+                        {
+                          bankOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Remark</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(remark) => this.setState({remark: remark})}
+                        value = {remark}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                  </Form>
+                </Section>
+              </View>
+            </ScrollView>
+            <ButtonContainer>
+              <Button
+                title = 'NEXT'
+                buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                onPress = {() => this._checkRequiredField()}
+                titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+              />
+            </ButtonContainer>
+          </Container>
+        )
       )
     } else {
       return (

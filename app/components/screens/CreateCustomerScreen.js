@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import CustomHeader from '../common/CustomHeader';
 import { colors } from '../../constants/colors';
-import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Alert, ImageBackground, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body } from 'native-base';
 import { Actions } from 'react-native-router-flux';
@@ -696,1050 +696,2096 @@ export default class App extends Component {
     const { pgView, item } = this.props;
     if (raceOptions.length > 0 && countryOptions.length > 0 && nationalityOptions.length > 0 && stateOptions.length > 0 && bankOptions.length > 0 && brokerOptions.length > 0) {
       return(
-        <KeyboardAvoidingView
-          style = {{ flex: 1, backgroundColor: `${colors.defaultBackground}` }}
-          behavior = 'padding'
-        >
-          <Loader loading={loading}/>
-          <ScrollView keyboardShouldPersistTaps={'handled'}>
-            <CustomHeader
-              title = {pgView === 'add' ? 'Create Customer' : 'Edit'}
-              showBack = {currentPage === 1 && pgView === 'add' ? true : currentPage === 2 && pgView === 'add' ? false : true}
-              showMenu = {false}
-            />
-            <View>
-              <Modal
-                isVisible = {isVisible}
-                onBackdropPress = {() => this.setState({isVisible: false})}
-                onBackButtonPress = {() => this.setState({isVisible: false})}
-              >
-                <View
-                  style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
+        Platform.OS === 'ios' ? (
+          <KeyboardAvoidingView
+            style = {{ flex: 1, backgroundColor: `${colors.defaultBackground}` }}
+            behavior = 'padding'
+          >
+            <Loader loading={loading}/>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
+              <CustomHeader
+                title = {pgView === 'add' ? 'Create Customer' : 'Edit'}
+                showBack = {currentPage === 1 && pgView === 'add' ? true : currentPage === 2 && pgView === 'add' ? false : true}
+                showMenu = {false}
+                refresh = {true}
+              />
+              <View>
+                <Modal
+                  isVisible = {isVisible}
+                  onBackdropPress = {() => this.setState({isVisible: false})}
+                  onBackButtonPress = {() => this.setState({isVisible: false})}
                 >
-                  <ImageBackground
-                    source = {{uri: source}}
-                    style = {{width: width, height: '90%'}}
+                  <View
+                    style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
                   >
-                  </ImageBackground>
-                </View>
-              </Modal>
-            </View>
-            <SecurityModal
-              isVisible = {sVisible}
-              closeModal = {() => this.setState({sVisible: false})}
-              submit = {() => this._submit()}
-            />
-            {
-              pgView === 'add' ?
-                currentPage === 1 ?
-                <Divider>
-                  <DividerText>Customer Details</DividerText>
-                  <Pagination>
-                    <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
-                    <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
-                  </Pagination>
-                </Divider> :
-                <Divider>
-                  <DividerText>Guarantor Details</DividerText>
-                  <Pagination>
-                    <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
-                    <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
-                  </Pagination>
-                </Divider>
-                :
-                <Tab>
-                  <CustomerTab
-                    style = {{borderBottomColor: currentPage === 1 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
-                    onPress = {() => this.setState({currentPage: 1})}
-                  >
-                    <Customer>Customer</Customer>
-                  </CustomerTab>
-                  <GuarantorTab
-                    style = {{borderBottomColor: currentPage === 2 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
-                    onPress = {() => this.setState({currentPage: 2})}
-                  >
-                    <Guarantor>Guarantor</Guarantor>
-                  </GuarantorTab>
-                </Tab>
-
-            }
-            {
-              currentPage === 1 ?
-              <View>
-                <Section>
-                  <SectionName>Personal Details</SectionName>
-                  <Form>
-                    {
-                      pgView === 'edit' ?
-                      <Form>
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Register Date</Label>
-                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                            value = {item.register_date.substring(0,10)}
-                            editable = {false}
-                          />
-                        </Item>
-                        <Item fixedLabel style={styles.inputContainer}>
-                          <Label style={styles.label}>Customer ID</Label>
-                          <Input style={[styles.input, {backgroundColor: '#eee'}]}
-                            value = {item.customer_code}
-                            editable = {false}
-                          />
-                        </Item>
-                      </Form> : null
-                    }
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>{pgView === 'edit' ? 'Customer Name' : 'Customer Name*'}</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(cusName) => this.setState({customer_name: cusName})}
-                        defaultValue = {pgView === 'add' ? customer_name : item.customer_name}
-                        autoCorrect = {false}
-                        autoCapitalize = {'characters'}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>{pgView === 'edit' ? 'NRIC/Passport' : 'NRIC/Passport*'}</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(nric) => this.setState({ic_no: nric})}
-                        defaultValue = {pgView === 'add' ? ic_no: item.ic_no}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>{pgView === 'edit' ? 'Phone No' : 'Phone No*'}</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(phoneNo) => this.setState({phoneno: phoneNo})}
-                        keyboardType = 'number-pad'
-                        returnKeyType={"done"}
-                        defaultValue = {item ? item.phone_no : null}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Phone No.2</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(phoneNo2) => this.setState({phoneno2: phoneNo2})}
-                        keyboardType = 'number-pad'
-                        returnKeyType={"done"}
-                        defaultValue = {item ? item.phone_no2 : null}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Email</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(email) => this.setState({email: email})}
-                        keyboardType = 'email-address'
-                        defaultValue = {item ? item.email : null}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Race</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={this.state.race}
-                        onValueChange={(value) => this.setState({race: value})}
-                      >
-                        {
-                          raceOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Nationality</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={this.state.nationality}
-                        onValueChange={(value) => this.setState({nationality: value})}
-                      >
-                        {
-                          nationalityOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Remark</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(remark) => this.setState({remark: remark})}
-                        defaultValue = {item ? item.remark : null}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Broker</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={this.state.broker}
-                        onValueChange={(value) => this.setState({broker: value})}
-                      >
-                        {
-                          brokerOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                  </Form>
-                </Section>
-                <Section>
-                  <SectionName>Permanent Address</SectionName>
-                  <Form>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Address 1</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(addr1) => this.setState({address: addr1})}
-                        defaultValue = {item ? item.address: null}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Address 2</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(addr2) => this.setState({address2: addr2})}
-                        defaultValue = {item ? item.address2: null}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Country</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={this.state.country}
-                        onValueChange={(value) => this.setState({country: value})}
-                      >
-                        {
-                          countryOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>State</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={this.state.state}
-                        onValueChange={(value) => this.setState({state: value})}
-                      >
-                        {
-                          stateOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>City</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(city) => this.setState({city: city})}
-                          defaultValue = {item ? item.city: null}
-                        />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Postcode</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(postcode) => this.setState({postcode: postcode})}
-                        keyboardType = 'number-pad'
-                        returnKeyType={"done"}
-                        defaultValue = {item ? item.postcode: null}
-                      />
-                    </Item>
-                  </Form>
-                </Section>
-                <Section>
-                  <SectionName>Mailing Address</SectionName>
-                  <Form>
-                  <ListItem style={styles.listItem}>
-                    <CheckBox
-                      checked={copyAddr}
-                      onPress={() => this._copyAddr()}
-                    />
-                    <Body>
-                      <Text style={[styles.label, {paddingLeft: 10}]}>Same as above address</Text>
-                    </Body>
-                  </ListItem>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 1</Label>
-                    <Input style={styles.input}
-                        onChangeText = {(addr1) => this.setState({mail_address: addr1})}
-                        defaultValue = {item ? item.mail_address: mail_address}
-                      />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 2</Label>
-                    <Input style={styles.input}
-                        onChangeText = {(addr2) => this.setState({mail_address2: addr2})}
-                        defaultValue = {item ? item.mail_address2: mail_address2}
-                      />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Country</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.mail_country}
-                      onValueChange={(value) => this.setState({mail_country: value})}
+                    <ImageBackground
+                      source = {{uri: source}}
+                      style = {{width: width, height: '90%'}}
                     >
-                      {
-                        countryOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>State</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.mail_state}
-                      onValueChange={(value) => this.setState({mail_state: value})}
-                    >
-                      {
-                        stateOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>City</Label>
-                    <Input style={styles.input}
-                        onChangeText = {(city) => this.setState({mail_city: city})}
-                        defaultValue = {item ? item.mail_city: mail_city}
-                      />
-                  </Item>
-
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Postcode</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(postcode) => this.setState({mail_postcode: postcode})}
-                      keyboardType = 'number-pad'
-                      returnKeyType={"done"}
-                      defaultValue = {item ? item.mail_postcode: mail_postcode}
-                    />
-                  </Item>
-                  </Form>
-                </Section>
-                <Section>
-                  <SectionName>Bank Account Info</SectionName>
-                  <Form>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Bank Name</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={bankid}
-                        onValueChange={(bankName) => this.setState({bankid: bankName})}
-                      >
-                        {
-                          bankOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Account Holder</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(accHolder) => this.setState({bank_holder_name: accHolder})}
-                          defaultValue = {item ? item.bank_holder_name: null}
-                        />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Account No.</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(accNo) => this.setState({bank_accountno: accNo})}
-                          defaultValue = {item ? item.bank_acct_no: null}
-                        />
-                    </Item>
-                  </Form>
-                </Section>
-                <Section>
-                  <SectionName>Company Info</SectionName>
-                  <Form>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Company Name</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(companyName) => this.setState({company_name: companyName})}
-                        defaultValue = {item ? item.company_name: null}
-                      />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Job Title</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(jobTitle) => this.setState({jobtitle: jobTitle})}
-                          // defaultValue = {item ? item.bank_holder_name: null}
-                        />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Company Phone</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(companyPhone) => this.setState({company_phoneno: companyPhone})}
-                          defaultValue = {item ? item.company_phoneno: null}
-                        />
-                    </Item>
-                  </Form>
-                </Section>
-                <Section>
-                  <SectionName>Company Address</SectionName>
-                  <Form>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Address 1</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(addr1) => this.setState({company_address: addr1})}
-                          defaultValue = {item ? item.company_address: null}
-                        />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Address 2</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(addr2) => this.setState({company_address2: addr2})}
-                          defaultValue = {item ? item.company_address2: null}
-                        />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Country</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={company_country}
-                        onValueChange={(value) => this.setState({company_country: value})}
-                      >
-                        {
-                          countryOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>State</Label>
-                      <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                        style={{ width: undefined }}
-                        selectedValue={company_state}
-                        onValueChange={(value) => this.setState({company_state: value})}
-                      >
-                        {
-                          stateOptions.map((item,index) => {
-                            return (
-                              <Picker.Item label={item.value} value={item.id}/>
-                            )
-                          })
-                        }
-                      </Picker>
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>City</Label>
-                      <Input style={styles.input}
-                          onChangeText = {(city) => this.setState({company_city: city})}
-                          defaultValue = {item ? item.company_city: null}
-                        />
-                    </Item>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Postcode</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(postcode) => this.setState({company_postcode: postcode})}
-                        keyboardType = 'number-pad'
-                        returnKeyType={"done"}
-                        defaultValue = {item ? item.company_postcode: null}
-                      />
-                    </Item>
-                  </Form>
-                </Section>
-                <Section>
-                  <SectionName>Upload Photos/Documents</SectionName>
-                  <ImageContainer
-                    onPress = {() => this._upload('profile_image')}
-                  >
-                  {
-                    profile_image == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Customer's Photo</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Customer's Photo</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('nric_doc_image1')}
-                  >
-                  {
-                    nric_doc_image1 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>NRIC Photo 1</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>NRIC Photo 1</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('nric_doc_image2')}
-                  >
-                  {
-                    nric_doc_image2 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>NRIC Photo 2</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>NRIC Photo 2</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('doc_image1')}
-                  >
-                  {
-                    doc_image1 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 1</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 1</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('doc_image2')}
-                  >
-                  {
-                    doc_image2 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 2</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 2</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('doc_image3')}
-                  >
-                  {
-                    doc_image3 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 3</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 3</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('doc_image4')}
-                  >
-                  {
-                    doc_image4 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 4</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 4</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('doc_image5')}
-                  >
-                  {
-                    doc_image5 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 5</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 5</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-
-                </Section>
+                    </ImageBackground>
+                  </View>
+                </Modal>
               </View>
-              : null
-            }
-            {
-              currentPage === 2 ?
-              <View>
-                <Section>
-                  <SectionName>Personal Details</SectionName>
-                  <Form>
-                    <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Name</Label>
-                      <Input style={styles.input}
-                        onChangeText = {(gName) => this.setState({beneficiary_fullname: gName})}
-                        defaultValue = {item ? item.beneficiary_name: null}
+              <SecurityModal
+                isVisible = {sVisible}
+                closeModal = {() => this.setState({sVisible: false})}
+                submit = {() => this._submit()}
+              />
+              {
+                pgView === 'add' ?
+                  currentPage === 1 ?
+                  <Divider>
+                    <DividerText>Customer Details</DividerText>
+                    <Pagination>
+                      <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                      <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                    </Pagination>
+                  </Divider> :
+                  <Divider>
+                    <DividerText>Guarantor Details</DividerText>
+                    <Pagination>
+                      <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                      <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                    </Pagination>
+                  </Divider>
+                  :
+                  <Tab>
+                    <CustomerTab
+                      style = {{borderBottomColor: currentPage === 1 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
+                      onPress = {() => this.setState({currentPage: 1})}
+                    >
+                      <Customer>Customer</Customer>
+                    </CustomerTab>
+                    <GuarantorTab
+                      style = {{borderBottomColor: currentPage === 2 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
+                      onPress = {() => this.setState({currentPage: 2})}
+                    >
+                      <Guarantor>Guarantor</Guarantor>
+                    </GuarantorTab>
+                  </Tab>
+
+              }
+              {
+                currentPage === 1 ?
+                <View>
+                  <Section>
+                    <SectionName>Personal Details</SectionName>
+                    <Form>
+                      {
+                        pgView === 'edit' ?
+                        <Form>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Register Date</Label>
+                            <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                              value = {item.register_date.substring(0,10)}
+                              editable = {false}
+                            />
+                          </Item>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Customer ID</Label>
+                            <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                              value = {item.customer_code}
+                              editable = {false}
+                            />
+                          </Item>
+                        </Form> : null
+                      }
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>{pgView === 'edit' ? 'Customer Name' : 'Customer Name*'}</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(cusName) => this.setState({customer_name: cusName})}
+                          defaultValue = {pgView === 'add' ? customer_name : item.customer_name}
+                          autoCorrect = {false}
+                          autoCapitalize = {'characters'}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>{pgView === 'edit' ? 'NRIC/Passport' : 'NRIC/Passport*'}</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(nric) => this.setState({ic_no: nric})}
+                          defaultValue = {pgView === 'add' ? ic_no: item.ic_no}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>{pgView === 'edit' ? 'Phone No' : 'Phone No*'}</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(phoneNo) => this.setState({phoneno: phoneNo})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.phone_no : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Phone No.2</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(phoneNo2) => this.setState({phoneno2: phoneNo2})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.phone_no2 : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Email</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(email) => this.setState({email: email})}
+                          keyboardType = 'email-address'
+                          defaultValue = {item ? item.email : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Race</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.race}
+                          onValueChange={(value) => this.setState({race: value})}
+                        >
+                          {
+                            raceOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Nationality</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.nationality}
+                          onValueChange={(value) => this.setState({nationality: value})}
+                        >
+                          {
+                            nationalityOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Remark</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(remark) => this.setState({remark: remark})}
+                          defaultValue = {item ? item.remark : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Broker</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.broker}
+                          onValueChange={(value) => this.setState({broker: value})}
+                        >
+                          {
+                            brokerOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Permanent Address</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 1</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(addr1) => this.setState({address: addr1})}
+                          defaultValue = {item ? item.address: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 2</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(addr2) => this.setState({address2: addr2})}
+                          defaultValue = {item ? item.address2: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Country</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.country}
+                          onValueChange={(value) => this.setState({country: value})}
+                        >
+                          {
+                            countryOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>State</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.state}
+                          onValueChange={(value) => this.setState({state: value})}
+                        >
+                          {
+                            stateOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>City</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(city) => this.setState({city: city})}
+                            defaultValue = {item ? item.city: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Postcode</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(postcode) => this.setState({postcode: postcode})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.postcode: null}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Mailing Address</SectionName>
+                    <Form>
+                    <ListItem style={styles.listItem}>
+                      <CheckBox
+                        checked={copyAddr}
+                        onPress={() => this._copyAddr()}
                       />
+                      <Body>
+                        <Text style={[styles.label, {paddingLeft: 10}]}>Same as above address</Text>
+                      </Body>
+                    </ListItem>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Address 1</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(addr1) => this.setState({mail_address: addr1})}
+                          defaultValue = {item ? item.mail_address: mail_address}
+                        />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>NRIC/Passport</Label>
+                      <Label style={styles.label}>Address 2</Label>
                       <Input style={styles.input}
-                        onChangeText = {(gNric) => this.setState({beneficiary_nricno: gNric})}
-                        defaultValue = {item ? item.beneficiary_ic_no: null}
-                      />
+                          onChangeText = {(addr2) => this.setState({mail_address2: addr2})}
+                          defaultValue = {item ? item.mail_address2: mail_address2}
+                        />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Phone No</Label>
+                      <Label style={styles.label}>Country</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.mail_country}
+                        onValueChange={(value) => this.setState({mail_country: value})}
+                      >
+                        {
+                          countryOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>State</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.mail_state}
+                        onValueChange={(value) => this.setState({mail_state: value})}
+                      >
+                        {
+                          stateOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>City</Label>
                       <Input style={styles.input}
-                        onChangeText = {(bphone) => this.setState({beneficiary_phoneno: bphone})}
-                        defaultValue = {item ? item.beneficiary_phone_no: null}
+                          onChangeText = {(city) => this.setState({mail_city: city})}
+                          defaultValue = {item ? item.mail_city: mail_city}
+                        />
+                    </Item>
+
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Postcode</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(postcode) => this.setState({mail_postcode: postcode})}
                         keyboardType = 'number-pad'
                         returnKeyType={"done"}
+                        defaultValue = {item ? item.mail_postcode: mail_postcode}
                       />
+                    </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Bank Account Info</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Bank Name</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={bankid}
+                          onValueChange={(bankName) => this.setState({bankid: bankName})}
+                        >
+                          {
+                            bankOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Account Holder</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(accHolder) => this.setState({bank_holder_name: accHolder})}
+                            defaultValue = {item ? item.bank_holder_name: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Account No.</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(accNo) => this.setState({bank_accountno: accNo})}
+                            defaultValue = {item ? item.bank_acct_no: null}
+                          />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Company Info</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Company Name</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(companyName) => this.setState({company_name: companyName})}
+                          defaultValue = {item ? item.company_name: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Job Title</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(jobTitle) => this.setState({jobtitle: jobTitle})}
+                            // defaultValue = {item ? item.bank_holder_name: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Company Phone</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(companyPhone) => this.setState({company_phoneno: companyPhone})}
+                            defaultValue = {item ? item.company_phoneno: null}
+                          />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Company Address</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 1</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(addr1) => this.setState({company_address: addr1})}
+                            defaultValue = {item ? item.company_address: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 2</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(addr2) => this.setState({company_address2: addr2})}
+                            defaultValue = {item ? item.company_address2: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Country</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={company_country}
+                          onValueChange={(value) => this.setState({company_country: value})}
+                        >
+                          {
+                            countryOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>State</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={company_state}
+                          onValueChange={(value) => this.setState({company_state: value})}
+                        >
+                          {
+                            stateOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>City</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(city) => this.setState({company_city: city})}
+                            defaultValue = {item ? item.company_city: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Postcode</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(postcode) => this.setState({company_postcode: postcode})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.company_postcode: null}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Upload Photos/Documents</SectionName>
+                    <ImageContainer
+                      onPress = {() => this._upload('profile_image')}
+                    >
+                    {
+                      profile_image == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Customer's Photo</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Customer's Photo</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('nric_doc_image1')}
+                    >
+                    {
+                      nric_doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('nric_doc_image2')}
+                    >
+                    {
+                      nric_doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image1')}
+                    >
+                    {
+                      doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image2')}
+                    >
+                    {
+                      doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image3')}
+                    >
+                    {
+                      doc_image3 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image4')}
+                    >
+                    {
+                      doc_image4 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image5')}
+                    >
+                    {
+                      doc_image5 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+
+                  </Section>
+                </View>
+                : null
+              }
+              {
+                currentPage === 2 ?
+                <View>
+                  <Section>
+                    <SectionName>Personal Details</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Name</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(gName) => this.setState({beneficiary_fullname: gName})}
+                          defaultValue = {item ? item.beneficiary_name: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>NRIC/Passport</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(gNric) => this.setState({beneficiary_nricno: gNric})}
+                          defaultValue = {item ? item.beneficiary_ic_no: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Phone No</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(bphone) => this.setState({beneficiary_phoneno: bphone})}
+                          defaultValue = {item ? item.beneficiary_phone_no: null}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Relationship</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(relationship) => this.setState({beneficiary_relationship: relationship})}
+                          defaultValue = {item ? item.beneficiary_relationship: null}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Guarantor's Address</SectionName>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Address 1</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(addr1) => this.setState({beneficiary_address: addr1})}
+                          defaultValue = {item ? item.beneficiary_address: null}
+                        />
                     </Item>
                     <Item fixedLabel style={styles.inputContainer}>
-                      <Label style={styles.label}>Relationship</Label>
+                      <Label style={styles.label}>Address 2</Label>
                       <Input style={styles.input}
-                        onChangeText = {(relationship) => this.setState({beneficiary_relationship: relationship})}
-                        defaultValue = {item ? item.beneficiary_relationship: null}
+                          onChangeText = {(addr2) => this.setState({beneficiary_address2: addr2})}
+                          defaultValue = {item ? item.beneficiary_address2: null}
+                        />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Country</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.beneficiary_country}
+                        onValueChange={(value) => this.setState({beneficiary_country: value})}
+                      >
+                        {
+                          countryOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>State</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.beneficiary_state}
+                        onValueChange={(value) => this.setState({beneficiary_state: value})}
+                      >
+                        {
+                          stateOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.value}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>City</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(city) => this.setState({beneficiary_city: city})}
+                          defaultValue = {item ? item.beneficiary_city: null}
+                        />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Postcode</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(postcode) => this.setState({beneficiary_postcode: postcode})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                        defaultValue = {item ? item.beneficiary_zip: null}
                       />
                     </Item>
-                  </Form>
-                </Section>
-                <Section>
-                  <SectionName>Guarantor's Address</SectionName>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 1</Label>
-                    <Input style={styles.input}
-                        onChangeText = {(addr1) => this.setState({beneficiary_address: addr1})}
-                        defaultValue = {item ? item.beneficiary_address: null}
-                      />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Address 2</Label>
-                    <Input style={styles.input}
-                        onChangeText = {(addr2) => this.setState({beneficiary_address2: addr2})}
-                        defaultValue = {item ? item.beneficiary_address2: null}
-                      />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Country</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.beneficiary_country}
-                      onValueChange={(value) => this.setState({beneficiary_country: value})}
+                  </Section>
+                  <Section>
+                    <SectionName>Upload Photos/Documents</SectionName>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_profile_image')}
                     >
-                      {
-                        countryOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.id}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>State</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: undefined }}
-                      selectedValue={this.state.beneficiary_state}
-                      onValueChange={(value) => this.setState({beneficiary_state: value})}
+                    {
+                      beneficiary_profile_image == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Guarantor's Photo</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Guarantor's Photo</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_nric_doc_image1')}
                     >
-                      {
-                        stateOptions.map((item,index) => {
-                          return (
-                            <Picker.Item label={item.value} value={item.value}/>
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>City</Label>
-                    <Input style={styles.input}
-                        onChangeText = {(city) => this.setState({beneficiary_city: city})}
-                        defaultValue = {item ? item.beneficiary_city: null}
-                      />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Postcode</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(postcode) => this.setState({beneficiary_postcode: postcode})}
-                      keyboardType = 'number-pad'
-                      returnKeyType={"done"}
-                      defaultValue = {item ? item.beneficiary_zip: null}
-                    />
-                  </Item>
-                </Section>
-                <Section>
-                  <SectionName>Upload Photos/Documents</SectionName>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_profile_image')}
-                  >
-                  {
-                    beneficiary_profile_image == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Guarantor's Photo</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Guarantor's Photo</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_nric_doc_image1')}
-                  >
-                  {
-                    beneficiary_nric_doc_image1 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>NRIC Photo 1</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>NRIC Photo 1</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_nric_doc_image2')}
-                  >
-                  {
-                    beneficiary_nric_doc_image2 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>NRIC Photo 2</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>NRIC Photo 2</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_doc_image1')}
-                  >
-                  {
-                    beneficiary_doc_image1 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 1</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 1</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_doc_image2')}
-                  >
-                  {
-                    beneficiary_doc_image2 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 2</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 2</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_doc_image3')}
-                  >
-                  {
-                    beneficiary_doc_image3 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 3</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 3</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_doc_image4')}
-                  >
-                  {
-                    beneficiary_doc_image4 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 4</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 4</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                  <ImageContainer
-                    onPress = {() => this._upload('beneficiary_doc_image5')}
-                  >
-                  {
-                    beneficiary_doc_image5 == null ? (
-                    <View>
-                      <Icon
-                        name = 'image'
-                        type = 'font-awesome'
-                        color = '#000'
-                      />
-                      <ImageLabel>Document 5</ImageLabel>
-                    </View>
-                    ) : (
-                    <View>
-                      <Icon
-                        name = 'check-circle'
-                        type = 'font-awesome'
-                        color = '#4eff4e'
-                      />
-                      <ImageLabel>Document 5</ImageLabel>
-                    </View>
-                    )
-                  }
-                  </ImageContainer>
-                </Section>
-              </View> : null
-            }
+                    {
+                      beneficiary_nric_doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_nric_doc_image2')}
+                    >
+                    {
+                      beneficiary_nric_doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image1')}
+                    >
+                    {
+                      beneficiary_doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image2')}
+                    >
+                    {
+                      beneficiary_doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image3')}
+                    >
+                    {
+                      beneficiary_doc_image3 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image4')}
+                    >
+                    {
+                      beneficiary_doc_image4 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image5')}
+                    >
+                    {
+                      beneficiary_doc_image5 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                  </Section>
+                </View> : null
+              }
 
-          </ScrollView>
-          {
-            currentPage === 1 && pgView === 'add' ?
-              <ButtonContainer>
-                <Button
-                  title = 'NEXT'
-                  buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                  onPress = {() => this.setState({currentPage: 2})}
-                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                />
-              </ButtonContainer>
-              : currentPage === 2 && pgView === 'add' ?
-              <ButtonsContainer>
-                <View style={{flex:1}}>
+            </ScrollView>
+            {
+              currentPage === 1 && pgView === 'add' ?
+                <ButtonContainer>
                   <Button
-                    title = 'Back'
+                    title = 'NEXT'
                     buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                    onPress = {() => this.setState({currentPage: 1, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5})}
+                    onPress = {() => this.setState({currentPage: 2})}
                     titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                   />
-                </View>
-                <View style={{flex:1}}>
+                </ButtonContainer>
+                : currentPage === 2 && pgView === 'add' ?
+                <ButtonsContainer>
+                  <View style={{flex:1}}>
+                    <Button
+                      title = 'Back'
+                      buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                      onPress = {() => this.setState({currentPage: 1, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5})}
+                      titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                    />
+                  </View>
+                  <View style={{flex:1}}>
+                    <Button
+                      title = 'SUBMIT'
+                      buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                      onPress = {() => this._checkRequiredField()}
+                      titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                    />
+                  </View>
+                </ButtonsContainer>
+                :
+                <ButtonContainer>
                   <Button
-                    title = 'SUBMIT'
-                    buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                    title = {currentPage === 1 ? 'UPDATE CUSTOMER' : 'UPDATE GUARANTOR'}
+                    buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
                     onPress = {() => this._checkRequiredField()}
                     titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                   />
+                </ButtonContainer>
+            }
+          </KeyboardAvoidingView>
+        ) : (
+          <Container>
+            <Loader loading={loading}/>
+            <ScrollView keyboardShouldPersistTaps={'handled'}>
+              <CustomHeader
+                title = {pgView === 'add' ? 'Create Customer' : 'Edit'}
+                showBack = {currentPage === 1 && pgView === 'add' ? true : currentPage === 2 && pgView === 'add' ? false : true}
+                showMenu = {false}
+                refresh = {true}
+              />
+              <View>
+                <Modal
+                  isVisible = {isVisible}
+                  onBackdropPress = {() => this.setState({isVisible: false})}
+                  onBackButtonPress = {() => this.setState({isVisible: false})}
+                >
+                  <View
+                    style = {{ justifyContent: 'center', alignContent: 'center', alignItems:'center' }}
+                  >
+                    <ImageBackground
+                      source = {{uri: source}}
+                      style = {{width: width, height: '90%'}}
+                    >
+                    </ImageBackground>
+                  </View>
+                </Modal>
+              </View>
+              <SecurityModal
+                isVisible = {sVisible}
+                closeModal = {() => this.setState({sVisible: false})}
+                submit = {() => this._submit()}
+              />
+              {
+                pgView === 'add' ?
+                  currentPage === 1 ?
+                  <Divider>
+                    <DividerText>Customer Details</DividerText>
+                    <Pagination>
+                      <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                      <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                    </Pagination>
+                  </Divider> :
+                  <Divider>
+                    <DividerText>Guarantor Details</DividerText>
+                    <Pagination>
+                      <PageNumber style={{color: currentPage === 1 ? '#303f6a' : '#999', fontWeight: currentPage === 1 ? '600':'100', paddingRight: 15}}>1</PageNumber>
+                      <PageNumber style={{color: currentPage === 2 ? '#303f6a' : '#999', fontWeight: currentPage === 2 ? '600':'100', paddingRight: 15}}>2</PageNumber>
+                    </Pagination>
+                  </Divider>
+                  :
+                  <Tab>
+                    <CustomerTab
+                      style = {{borderBottomColor: currentPage === 1 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 1 ? 2 : 1}}
+                      onPress = {() => this.setState({currentPage: 1})}
+                    >
+                      <Customer>Customer</Customer>
+                    </CustomerTab>
+                    <GuarantorTab
+                      style = {{borderBottomColor: currentPage === 2 ? '#192a59' : '#CCC', borderBottomWidth: currentPage === 2 ? 2 : 1}}
+                      onPress = {() => this.setState({currentPage: 2})}
+                    >
+                      <Guarantor>Guarantor</Guarantor>
+                    </GuarantorTab>
+                  </Tab>
+
+              }
+              {
+                currentPage === 1 ?
+                <View>
+                  <Section>
+                    <SectionName>Personal Details</SectionName>
+                    <Form>
+                      {
+                        pgView === 'edit' ?
+                        <Form>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Register Date</Label>
+                            <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                              value = {item.register_date.substring(0,10)}
+                              editable = {false}
+                            />
+                          </Item>
+                          <Item fixedLabel style={styles.inputContainer}>
+                            <Label style={styles.label}>Customer ID</Label>
+                            <Input style={[styles.input, {backgroundColor: '#eee'}]}
+                              value = {item.customer_code}
+                              editable = {false}
+                            />
+                          </Item>
+                        </Form> : null
+                      }
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>{pgView === 'edit' ? 'Customer Name' : 'Customer Name*'}</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(cusName) => this.setState({customer_name: cusName})}
+                          defaultValue = {pgView === 'add' ? customer_name : item.customer_name}
+                          autoCorrect = {false}
+                          autoCapitalize = {'characters'}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>{pgView === 'edit' ? 'NRIC/Passport' : 'NRIC/Passport*'}</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(nric) => this.setState({ic_no: nric})}
+                          defaultValue = {pgView === 'add' ? ic_no: item.ic_no}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>{pgView === 'edit' ? 'Phone No' : 'Phone No*'}</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(phoneNo) => this.setState({phoneno: phoneNo})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.phone_no : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Phone No.2</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(phoneNo2) => this.setState({phoneno2: phoneNo2})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.phone_no2 : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Email</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(email) => this.setState({email: email})}
+                          keyboardType = 'email-address'
+                          defaultValue = {item ? item.email : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Race</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.race}
+                          onValueChange={(value) => this.setState({race: value})}
+                        >
+                          {
+                            raceOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Nationality</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.nationality}
+                          onValueChange={(value) => this.setState({nationality: value})}
+                        >
+                          {
+                            nationalityOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Remark</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(remark) => this.setState({remark: remark})}
+                          defaultValue = {item ? item.remark : null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Broker</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.broker}
+                          onValueChange={(value) => this.setState({broker: value})}
+                        >
+                          {
+                            brokerOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Permanent Address</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 1</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(addr1) => this.setState({address: addr1})}
+                          defaultValue = {item ? item.address: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 2</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(addr2) => this.setState({address2: addr2})}
+                          defaultValue = {item ? item.address2: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Country</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.country}
+                          onValueChange={(value) => this.setState({country: value})}
+                        >
+                          {
+                            countryOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>State</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={this.state.state}
+                          onValueChange={(value) => this.setState({state: value})}
+                        >
+                          {
+                            stateOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>City</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(city) => this.setState({city: city})}
+                            defaultValue = {item ? item.city: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Postcode</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(postcode) => this.setState({postcode: postcode})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.postcode: null}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Mailing Address</SectionName>
+                    <Form>
+                    <ListItem style={styles.listItem}>
+                      <CheckBox
+                        checked={copyAddr}
+                        onPress={() => this._copyAddr()}
+                      />
+                      <Body>
+                        <Text style={[styles.label, {paddingLeft: 10}]}>Same as above address</Text>
+                      </Body>
+                    </ListItem>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Address 1</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(addr1) => this.setState({mail_address: addr1})}
+                          defaultValue = {item ? item.mail_address: mail_address}
+                        />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Address 2</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(addr2) => this.setState({mail_address2: addr2})}
+                          defaultValue = {item ? item.mail_address2: mail_address2}
+                        />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Country</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.mail_country}
+                        onValueChange={(value) => this.setState({mail_country: value})}
+                      >
+                        {
+                          countryOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>State</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.mail_state}
+                        onValueChange={(value) => this.setState({mail_state: value})}
+                      >
+                        {
+                          stateOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>City</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(city) => this.setState({mail_city: city})}
+                          defaultValue = {item ? item.mail_city: mail_city}
+                        />
+                    </Item>
+
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Postcode</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(postcode) => this.setState({mail_postcode: postcode})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                        defaultValue = {item ? item.mail_postcode: mail_postcode}
+                      />
+                    </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Bank Account Info</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Bank Name</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={bankid}
+                          onValueChange={(bankName) => this.setState({bankid: bankName})}
+                        >
+                          {
+                            bankOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Account Holder</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(accHolder) => this.setState({bank_holder_name: accHolder})}
+                            defaultValue = {item ? item.bank_holder_name: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Account No.</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(accNo) => this.setState({bank_accountno: accNo})}
+                            defaultValue = {item ? item.bank_acct_no: null}
+                          />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Company Info</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Company Name</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(companyName) => this.setState({company_name: companyName})}
+                          defaultValue = {item ? item.company_name: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Job Title</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(jobTitle) => this.setState({jobtitle: jobTitle})}
+                            // defaultValue = {item ? item.bank_holder_name: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Company Phone</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(companyPhone) => this.setState({company_phoneno: companyPhone})}
+                            defaultValue = {item ? item.company_phoneno: null}
+                          />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Company Address</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 1</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(addr1) => this.setState({company_address: addr1})}
+                            defaultValue = {item ? item.company_address: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Address 2</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(addr2) => this.setState({company_address2: addr2})}
+                            defaultValue = {item ? item.company_address2: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Country</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={company_country}
+                          onValueChange={(value) => this.setState({company_country: value})}
+                        >
+                          {
+                            countryOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>State</Label>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                          style={{ width: undefined }}
+                          selectedValue={company_state}
+                          onValueChange={(value) => this.setState({company_state: value})}
+                        >
+                          {
+                            stateOptions.map((item,index) => {
+                              return (
+                                <Picker.Item label={item.value} value={item.id}/>
+                              )
+                            })
+                          }
+                        </Picker>
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>City</Label>
+                        <Input style={styles.input}
+                            onChangeText = {(city) => this.setState({company_city: city})}
+                            defaultValue = {item ? item.company_city: null}
+                          />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Postcode</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(postcode) => this.setState({company_postcode: postcode})}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                          defaultValue = {item ? item.company_postcode: null}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Upload Photos/Documents</SectionName>
+                    <ImageContainer
+                      onPress = {() => this._upload('profile_image')}
+                    >
+                    {
+                      profile_image == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Customer's Photo</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Customer's Photo</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('nric_doc_image1')}
+                    >
+                    {
+                      nric_doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('nric_doc_image2')}
+                    >
+                    {
+                      nric_doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image1')}
+                    >
+                    {
+                      doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image2')}
+                    >
+                    {
+                      doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image3')}
+                    >
+                    {
+                      doc_image3 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image4')}
+                    >
+                    {
+                      doc_image4 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('doc_image5')}
+                    >
+                    {
+                      doc_image5 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+
+                  </Section>
                 </View>
-              </ButtonsContainer>
-              :
-              <ButtonContainer>
-                <Button
-                  title = {currentPage === 1 ? 'UPDATE CUSTOMER' : 'UPDATE GUARANTOR'}
-                  buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                  onPress = {() => this._checkRequiredField()}
-                  titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                />
-              </ButtonContainer>
-          }
-        </KeyboardAvoidingView>
+                : null
+              }
+              {
+                currentPage === 2 ?
+                <View>
+                  <Section>
+                    <SectionName>Personal Details</SectionName>
+                    <Form>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Name</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(gName) => this.setState({beneficiary_fullname: gName})}
+                          defaultValue = {item ? item.beneficiary_name: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>NRIC/Passport</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(gNric) => this.setState({beneficiary_nricno: gNric})}
+                          defaultValue = {item ? item.beneficiary_ic_no: null}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Phone No</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(bphone) => this.setState({beneficiary_phoneno: bphone})}
+                          defaultValue = {item ? item.beneficiary_phone_no: null}
+                          keyboardType = 'number-pad'
+                          returnKeyType={"done"}
+                        />
+                      </Item>
+                      <Item fixedLabel style={styles.inputContainer}>
+                        <Label style={styles.label}>Relationship</Label>
+                        <Input style={styles.input}
+                          onChangeText = {(relationship) => this.setState({beneficiary_relationship: relationship})}
+                          defaultValue = {item ? item.beneficiary_relationship: null}
+                        />
+                      </Item>
+                    </Form>
+                  </Section>
+                  <Section>
+                    <SectionName>Guarantor's Address</SectionName>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Address 1</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(addr1) => this.setState({beneficiary_address: addr1})}
+                          defaultValue = {item ? item.beneficiary_address: null}
+                        />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Address 2</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(addr2) => this.setState({beneficiary_address2: addr2})}
+                          defaultValue = {item ? item.beneficiary_address2: null}
+                        />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Country</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.beneficiary_country}
+                        onValueChange={(value) => this.setState({beneficiary_country: value})}
+                      >
+                        {
+                          countryOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.id}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>State</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: undefined }}
+                        selectedValue={this.state.beneficiary_state}
+                        onValueChange={(value) => this.setState({beneficiary_state: value})}
+                      >
+                        {
+                          stateOptions.map((item,index) => {
+                            return (
+                              <Picker.Item label={item.value} value={item.value}/>
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>City</Label>
+                      <Input style={styles.input}
+                          onChangeText = {(city) => this.setState({beneficiary_city: city})}
+                          defaultValue = {item ? item.beneficiary_city: null}
+                        />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Postcode</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(postcode) => this.setState({beneficiary_postcode: postcode})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                        defaultValue = {item ? item.beneficiary_zip: null}
+                      />
+                    </Item>
+                  </Section>
+                  <Section>
+                    <SectionName>Upload Photos/Documents</SectionName>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_profile_image')}
+                    >
+                    {
+                      beneficiary_profile_image == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Guarantor's Photo</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Guarantor's Photo</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_nric_doc_image1')}
+                    >
+                    {
+                      beneficiary_nric_doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_nric_doc_image2')}
+                    >
+                    {
+                      beneficiary_nric_doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>NRIC Photo 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image1')}
+                    >
+                    {
+                      beneficiary_doc_image1 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 1</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image2')}
+                    >
+                    {
+                      beneficiary_doc_image2 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 2</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image3')}
+                    >
+                    {
+                      beneficiary_doc_image3 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 3</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image4')}
+                    >
+                    {
+                      beneficiary_doc_image4 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 4</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                    <ImageContainer
+                      onPress = {() => this._upload('beneficiary_doc_image5')}
+                    >
+                    {
+                      beneficiary_doc_image5 == null ? (
+                      <View>
+                        <Icon
+                          name = 'image'
+                          type = 'font-awesome'
+                          color = '#000'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      ) : (
+                      <View>
+                        <Icon
+                          name = 'check-circle'
+                          type = 'font-awesome'
+                          color = '#4eff4e'
+                        />
+                        <ImageLabel>Document 5</ImageLabel>
+                      </View>
+                      )
+                    }
+                    </ImageContainer>
+                  </Section>
+                </View> : null
+              }
+
+            </ScrollView>
+            {
+              currentPage === 1 && pgView === 'add' ?
+                <ButtonContainer>
+                  <Button
+                    title = 'NEXT'
+                    buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                    onPress = {() => this.setState({currentPage: 2})}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                  />
+                </ButtonContainer>
+                : currentPage === 2 && pgView === 'add' ?
+                <ButtonsContainer>
+                  <View style={{flex:1}}>
+                    <Button
+                      title = 'Back'
+                      buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                      onPress = {() => this.setState({currentPage: 1, profile_image, nric_doc_image1, nric_doc_image2, doc_image1, doc_image2, doc_image3, doc_image4, doc_image5})}
+                      titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                    />
+                  </View>
+                  <View style={{flex:1}}>
+                    <Button
+                      title = 'SUBMIT'
+                      buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                      onPress = {() => this._checkRequiredField()}
+                      titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                    />
+                  </View>
+                </ButtonsContainer>
+                :
+                <ButtonContainer>
+                  <Button
+                    title = {currentPage === 1 ? 'UPDATE CUSTOMER' : 'UPDATE GUARANTOR'}
+                    buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                    onPress = {() => this._checkRequiredField()}
+                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
+                  />
+                </ButtonContainer>
+            }
+          </Container>
+        )
       )
     } else {
       return (

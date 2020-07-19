@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import MenuScene from '../scenes/MenuScene';
 import Drawer from 'react-native-drawer';
-import { ScrollView, StyleSheet, Text, Alert, TouchableOpacity, View, KeyboardAvoidingView, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, Text, Alert, TouchableOpacity, View, KeyboardAvoidingView, Dimensions, Platform } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import CustomHeader from '../common/CustomHeader';
 import { Form, Label, Input, Item, Picker, DatePicker, ListItem, CheckBox, Body, Content, Card, CardItem } from 'native-base';
@@ -333,222 +333,441 @@ export default class App extends Component {
           tapToClose={true}
           onClose={() => this.setState({menuOpen: false})}
         >
-          <KeyboardAvoidingView
-            style = {{ flex:1, backgroundColor: `${colors.defaultBackground}` }}
-            behavior = 'padding'
-          >
-          <Loader loading={loading}/>
-            <CustomHeader
-              title = 'Customer Search'
-              openMenu  = {this.openMenu.bind(this)}
-              // showSearch = {true}
-              showMenu = {true}
-              showEdit = {true}
-              edit = {() => this.setState({ edit: true})}
-            />
-            <ScrollView>
-              <FormContainer>
-                <Form>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Request By*</Label>
-                    <Picker
-                      mode="dropdown"
-                      iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
-                      style={{ width: width*0.65 }}
-                      selectedValue={filter_agent}
-                      onValueChange={(value) => this.setState({filter_agent: value})}
-                    >
-                      {
-                        agentOptions.map((item, index) => {
-                          return(
-                            <Picker.Item label={item.agent_name} value={item.agent_id} />
-                          )
-                        })
-                      }
-                    </Picker>
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Sales Amount*</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(phoneNo) => this.setState({filter_sales_amount: phoneNo})}
-                      keyboardType = 'number-pad'
-                      returnKeyType={"done"}
+        {
+          Platform.OS === 'ios' ? (
+
+            <KeyboardAvoidingView
+              style = {{ flex:1, backgroundColor: `${colors.defaultBackground}` }}
+              behavior = 'padding'
+            >
+            <Loader loading={loading}/>
+              <CustomHeader
+                title = 'Customer Search'
+                openMenu  = {this.openMenu.bind(this)}
+                // showSearch = {true}
+                showMenu = {true}
+                showEdit = {true}
+                edit = {() => this.setState({ edit: true})}
+              />
+              <ScrollView>
+                <FormContainer>
+                  <Form>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Request By*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                        selectedValue={filter_agent}
+                        onValueChange={(value) => this.setState({filter_agent: value})}
+                      >
+                        {
+                          agentOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.agent_name} value={item.agent_id} />
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Sales Amount*</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(phoneNo) => this.setState({filter_sales_amount: phoneNo})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Key In Phone No*</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(phoneNo) => this.setState({filter_keyin_phone: phoneNo})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Search Phone No</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(phoneNo) => this.setState({filter_search_phone: phoneNo})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Full Name</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(fullname) => this.setState({filter_name: fullname})}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>NRIC/Passport</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(nric) => this.setState({filter_ic_no: nric})}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                  </Form>
+                  <ButtonContainer>
+                    <Button
+                      title = 'SEARCH'
+                      buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
+                      onPress = {() => this._search()}
+                      titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                     />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Key In Phone No*</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(phoneNo) => this.setState({filter_keyin_phone: phoneNo})}
-                      keyboardType = 'number-pad'
-                      returnKeyType={"done"}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Search Phone No</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(phoneNo) => this.setState({filter_search_phone: phoneNo})}
-                      keyboardType = 'number-pad'
-                      returnKeyType={"done"}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>Full Name</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(fullname) => this.setState({filter_name: fullname})}
-                      returnKeyType={"done"}
-                    />
-                  </Item>
-                  <Item fixedLabel style={styles.inputContainer}>
-                    <Label style={styles.label}>NRIC/Passport</Label>
-                    <Input style={styles.input}
-                      onChangeText = {(nric) => this.setState({filter_ic_no: nric})}
-                      returnKeyType={"done"}
-                    />
-                  </Item>
-                </Form>
-                <ButtonContainer>
-                  <Button
-                    title = 'SEARCH'
-                    buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
-                    onPress = {() => this._search()}
-                    titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
-                  />
-                </ButtonContainer>
-              </FormContainer>
-              {
-                item ? (
-                  item.records.length > 0 ? (
-                    <Info>Customer profile found in other group: {item.total_count_other}</Info>
+                  </ButtonContainer>
+                </FormContainer>
+                {
+                  item ? (
+                    item.records.length > 0 ? (
+                      <Info>Customer profile found in other group: {item.total_count_other}</Info>
+                    ) : (
+                      null
+                    )
                   ) : (
                     null
                   )
-                ) : (
-                  null
-                )
-              }
-                {
-                item ? (
-                  item.records.map((content, index) => {
-                    return(
-                      <View>
-                        <ItemCard key={index} style = {{ backgroundColor: content.can_view ? '' : '#eee' }}>
-                          {
-                            edit ?
-                            <SelectCol>
+                }
+                  {
+                  item ? (
+                    item.records.map((content, index) => {
+                      return(
+                        <View>
+                          <ItemCard key={index} style = {{ backgroundColor: content.can_view ? '' : '#eee' }}>
+                            {
+                              edit ?
+                              <SelectCol>
+                                {
+                                  content.can_share ? (
+                                    <CheckBox
+                                      checked={this.state[content.cust_id]}
+                                      onPress={() => this._select(content.cust_id)}
+                                    />
+                                  ) : (
+                                    null
+                                  )
+                                }
+                              </SelectCol> : null
+                            }
+                            <DetailsCol onPress={() => content.can_view ? Actions.CustomerDetail({custId: content.cust_id}) : {} }>
+                              <Username>{content.cust_name}</Username>
+                              <DueDateDetail>Customer ID: {content.cust_no}</DueDateDetail>
+                              <DueDateDetail>NRIC/Passport: {content.cust_icno}</DueDateDetail>
+                              <DueDateDetail>Total Loan Amt: {content.total_loan_amount}</DueDateDetail>
+                              <DueDateDetail>Total Loan (s): {content.total_loan_count}</DueDateDetail>
+                              <DueDateDetail>Outstanding Amt: {content.total_outstanding}</DueDateDetail>
                               {
-                                content.can_share ? (
-                                  <CheckBox
-                                    checked={this.state[content.cust_id]}
-                                    onPress={() => this._select(content.cust_id)}
-                                  />
+                                !content.can_share ? (
+                                  content.sharing_list.map((itm, index) => {
+                                    return (
+                                    <View style={{paddingVertical: 10, flexDirection:'row'}}>
+                                      <View style={{flex:3, justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold'}}>Shared to: {itm.value}</Text>
+                                      </View>
+                                      <View style={{flex:1}}>
+                                        <Button
+                                          icon={
+                                            <Icon
+                                              name="trash"
+                                              size={15}
+                                              color="white"
+                                              type='font-awesome'
+                                            />
+                                          }
+                                          buttonStyle = {{backgroundColor: '#B71C1C'}}
+                                          onPress = {() => this._unshareProfile(itm.id)}
+                                        />
+                                      </View>
+                                    </View>
+                                    )
+                                  })
                                 ) : (
                                   null
                                 )
                               }
-                            </SelectCol> : null
-                          }
-                          <DetailsCol onPress={() => content.can_view ? Actions.CustomerDetail({custId: content.cust_id}) : {} }>
-                            <Username>{content.cust_name}</Username>
-                            <DueDateDetail>Customer ID: {content.cust_no}</DueDateDetail>
-                            <DueDateDetail>NRIC/Passport: {content.cust_icno}</DueDateDetail>
-                            <DueDateDetail>Total Loan Amt: {content.total_loan_amount}</DueDateDetail>
-                            <DueDateDetail>Total Loan (s): {content.total_loan_count}</DueDateDetail>
-                            <DueDateDetail>Outstanding Amt: {content.total_outstanding}</DueDateDetail>
+                            </DetailsCol>
+                            <RemarksCol>
                             {
-                              !content.can_share ? (
-                                content.sharing_list.map((itm, index) => {
-                                  return (
-                                  <View style={{paddingVertical: 10, flexDirection:'row'}}>
-                                    <View style={{flex:3, justifyContent: 'center'}}>
-                                      <Text style={{fontWeight: 'bold'}}>Shared to: {itm.value}</Text>
-                                    </View>
-                                    <View style={{flex:1}}>
-                                      <Button
-                                        icon={
-                                          <Icon
-                                            name="trash"
-                                            size={15}
-                                            color="white"
-                                            type='font-awesome'
-                                          />
-                                        }
-                                        buttonStyle = {{backgroundColor: '#B71C1C'}}
-                                        onPress = {() => this._unshareProfile(itm.id)}
-                                      />
-                                    </View>
-                                  </View>
-                                  )
-                                })
+                              content.status === 'Bad Debt' || content.status === 'Arrears' ? (
+                                <RemarkAlert>{content.status}</RemarkAlert>
                               ) : (
-                                null
+                                <Remark>{content.status}</Remark>
                               )
                             }
-                          </DetailsCol>
-                          <RemarksCol>
-                          {
-                            content.status === 'Bad Debt' || content.status === 'Arrears' ? (
-                              <RemarkAlert>{content.status}</RemarkAlert>
-                            ) : (
-                              <Remark>{content.status}</Remark>
-                            )
-                          }
-                          </RemarksCol>
-                        </ItemCard>
-                      </View>
-                    )
-                  })
-                ) : (
-                  <Content>
-                    <Card>
-                      <CardItem>
-                        <Body style={{alignItems: 'center'}}>
-                          <Text>
-                            Empty
-                          </Text>
-                        </Body>
-                      </CardItem>
-                    </Card>
-                  </Content>
-                )
+                            </RemarksCol>
+                          </ItemCard>
+                        </View>
+                      )
+                    })
+                  ) : (
+                    <Content>
+                      <Card>
+                        <CardItem>
+                          <Body style={{alignItems: 'center'}}>
+                            <Text>
+                              Empty
+                            </Text>
+                          </Body>
+                        </CardItem>
+                      </Card>
+                    </Content>
+                  )
+                }
+                {
+                item ? (
+                  item.records.length < item.total_count ? (
+                    <TouchableOpacity
+                      onPress={() => this._loadmore()}
+                    >
+                      <Loadmore>View More ({item.records.length}/{item.total_count}) ...</Loadmore>
+                    </TouchableOpacity>
+                  ) : (
+                    null
+                  )
+                ) : null
               }
+              </ScrollView>
               {
-              item ? (
-                item.records.length < item.total_count ? (
-                  <TouchableOpacity
-                    onPress={() => this._loadmore()}
-                  >
-                    <Loadmore>View More ({item.records.length}/{item.total_count}) ...</Loadmore>
-                  </TouchableOpacity>
+                edit ? (
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={{flex:1}}>
+                      <Button
+                        title = 'CANCEL'
+                        buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                        onPress = {() => this.setState({ edit: false })}
+                      />
+                    </View>
+                    <View style={{flex:1}}>
+                      <Button
+                        title = 'SHARE'
+                        buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                        // disabled = {selectedList.length > 0 ? false: true}
+                        onPress = {() => this._shareProfile()}
+                      />
+                    </View>
+                  </View>
                 ) : (
                   null
                 )
-              ) : null
-            }
-            </ScrollView>
-            {
-              edit ? (
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{flex:1}}>
+              }
+            </KeyboardAvoidingView>
+          ) : (
+            <Container>
+              <Loader loading={loading}/>
+              <CustomHeader
+                title = 'Customer Search'
+                openMenu  = {this.openMenu.bind(this)}
+                // showSearch = {true}
+                showMenu = {true}
+                showEdit = {true}
+                edit = {() => this.setState({ edit: true})}
+              />
+              <ScrollView>
+                <FormContainer>
+                  <Form>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Request By*</Label>
+                      <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name = 'chevron-down' type = 'font-awesome' size={16} />}
+                        style={{ width: Platform.OS === 'ios' ? width*0.65 : undefined }}
+                        selectedValue={filter_agent}
+                        onValueChange={(value) => this.setState({filter_agent: value})}
+                      >
+                        {
+                          agentOptions.map((item, index) => {
+                            return(
+                              <Picker.Item label={item.agent_name} value={item.agent_id} />
+                            )
+                          })
+                        }
+                      </Picker>
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Sales Amount*</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(phoneNo) => this.setState({filter_sales_amount: phoneNo})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Key In Phone No*</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(phoneNo) => this.setState({filter_keyin_phone: phoneNo})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Search Phone No</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(phoneNo) => this.setState({filter_search_phone: phoneNo})}
+                        keyboardType = 'number-pad'
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>Full Name</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(fullname) => this.setState({filter_name: fullname})}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                    <Item fixedLabel style={styles.inputContainer}>
+                      <Label style={styles.label}>NRIC/Passport</Label>
+                      <Input style={styles.input}
+                        onChangeText = {(nric) => this.setState({filter_ic_no: nric})}
+                        returnKeyType={"done"}
+                      />
+                    </Item>
+                  </Form>
+                  <ButtonContainer>
                     <Button
-                      title = 'CANCEL'
-                      buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
-                      onPress = {() => this.setState({ edit: false })}
+                      title = 'SEARCH'
+                      buttonStyle = {{backgroundColor: colors.primary, borderRadius: 0, width: 130}}
+                      onPress = {() => this._search()}
+                      titleStyle = {{fontFamily: 'AvenirLTStd-Black', fontSize: 14 }}
                     />
+                  </ButtonContainer>
+                </FormContainer>
+                {
+                  item ? (
+                    item.records.length > 0 ? (
+                      <Info>Customer profile found in other group: {item.total_count_other}</Info>
+                    ) : (
+                      null
+                    )
+                  ) : (
+                    null
+                  )
+                }
+                  {
+                  item ? (
+                    item.records.map((content, index) => {
+                      return(
+                        <View>
+                          <ItemCard key={index} style = {{ backgroundColor: content.can_view ? '' : '#eee' }}>
+                            {
+                              edit ?
+                              <SelectCol>
+                                {
+                                  content.can_share ? (
+                                    <CheckBox
+                                      checked={this.state[content.cust_id]}
+                                      onPress={() => this._select(content.cust_id)}
+                                    />
+                                  ) : (
+                                    null
+                                  )
+                                }
+                              </SelectCol> : null
+                            }
+                            <DetailsCol onPress={() => content.can_view ? Actions.CustomerDetail({custId: content.cust_id}) : {} }>
+                              <Username>{content.cust_name}</Username>
+                              <DueDateDetail>Customer ID: {content.cust_no}</DueDateDetail>
+                              <DueDateDetail>NRIC/Passport: {content.cust_icno}</DueDateDetail>
+                              <DueDateDetail>Total Loan Amt: {content.total_loan_amount}</DueDateDetail>
+                              <DueDateDetail>Total Loan (s): {content.total_loan_count}</DueDateDetail>
+                              <DueDateDetail>Outstanding Amt: {content.total_outstanding}</DueDateDetail>
+                              {
+                                !content.can_share ? (
+                                  content.sharing_list.map((itm, index) => {
+                                    return (
+                                    <View style={{paddingVertical: 10, flexDirection:'row'}}>
+                                      <View style={{flex:3, justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold'}}>Shared to: {itm.value}</Text>
+                                      </View>
+                                      <View style={{flex:1}}>
+                                        <Button
+                                          icon={
+                                            <Icon
+                                              name="trash"
+                                              size={15}
+                                              color="white"
+                                              type='font-awesome'
+                                            />
+                                          }
+                                          buttonStyle = {{backgroundColor: '#B71C1C'}}
+                                          onPress = {() => this._unshareProfile(itm.id)}
+                                        />
+                                      </View>
+                                    </View>
+                                    )
+                                  })
+                                ) : (
+                                  null
+                                )
+                              }
+                            </DetailsCol>
+                            <RemarksCol>
+                            {
+                              content.status === 'Bad Debt' || content.status === 'Arrears' ? (
+                                <RemarkAlert>{content.status}</RemarkAlert>
+                              ) : (
+                                <Remark>{content.status}</Remark>
+                              )
+                            }
+                            </RemarksCol>
+                          </ItemCard>
+                        </View>
+                      )
+                    })
+                  ) : (
+                    <Content>
+                      <Card>
+                        <CardItem>
+                          <Body style={{alignItems: 'center'}}>
+                            <Text>
+                              Empty
+                            </Text>
+                          </Body>
+                        </CardItem>
+                      </Card>
+                    </Content>
+                  )
+                }
+                {
+                item ? (
+                  item.records.length < item.total_count ? (
+                    <TouchableOpacity
+                      onPress={() => this._loadmore()}
+                    >
+                      <Loadmore>View More ({item.records.length}/{item.total_count}) ...</Loadmore>
+                    </TouchableOpacity>
+                  ) : (
+                    null
+                  )
+                ) : null
+              }
+              </ScrollView>
+              {
+                edit ? (
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={{flex:1}}>
+                      <Button
+                        title = 'CANCEL'
+                        buttonStyle = {{backgroundColor: colors.primary, borderRadius:0}}
+                        onPress = {() => this.setState({ edit: false })}
+                      />
+                    </View>
+                    <View style={{flex:1}}>
+                      <Button
+                        title = 'SHARE'
+                        buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
+                        // disabled = {selectedList.length > 0 ? false: true}
+                        onPress = {() => this._shareProfile()}
+                      />
+                    </View>
                   </View>
-                  <View style={{flex:1}}>
-                    <Button
-                      title = 'SHARE'
-                      buttonStyle = {{backgroundColor: '#1e3d8f', borderRadius:0}}
-                      // disabled = {selectedList.length > 0 ? false: true}
-                      onPress = {() => this._shareProfile()}
-                    />
-                  </View>
-                </View>
-              ) : (
-                null
-              )
-            }
-          </KeyboardAvoidingView>
+                ) : (
+                  null
+                )
+              }
+            </Container>
+          )
+        }
         </Drawer>
       )
     } else {
